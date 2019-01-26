@@ -1,0 +1,60 @@
+INV-HOSNAG
+VERSION 1.0
+
+Sistema de Inventario y Farmacia para el Hospital Naval de Guayaquil.
+
+Arquitectura
+Gestion y construccion de proyectos:Maven
+Modular:MVC
+Artefactos:
+
+<modules>
+    <module>Inv-Web</module>
+    <module>Inv-Api</module>
+    <module>Inv-Servicios</module>
+    <module>Inv-Modelo</module>
+</modules>
+
+
+
+DESCRIPCION
+Sistema modular y multiempresa que permite gestionar los procesos de invetario de articulos y descarga de medicamentos e insumos en farmacia en una o varias empresa.
+
+ESTRUCTURA
+Modulo de catalogos
+Modulos de Bodega
+Bodulos de Farmacia
+Reportes
+
+REQUERIMIENTOS TECNICOS.
+Lenguaje de Progamacion Java(JDK 1.8)
+JSF(PrimeFaces 5.3)
+Servidor(Glasfish Sever 4.1)
+Base de Datos(Oracle XE 11g)
+Ide de Desarrollo(Netbeans IDE 8.0.2)
+Reportes(iReport-5.1.0)
+
+INSTALACION
+ENTORNO DESARROLLO
+Copiar las librerias necesarias(ver carpeta del repositorio librerias)
+...\glassfish-4.1\glassfish\domains\domain1\lib
+importante:si existe cambio en el modelo sobreescribir el archivo Inv-Modelo-1.0
+ABRIR EL PROYECTO EN EL IDE Y DEPLOYAR CADA MODULO CON DEPENDENCIAS
+RUN AL MODULO WEB
+
+ENTORNO DE PRUEBAS
+INSTALAR SERVIDOR GLASSFISH
+Copiar las librerias necesarias(ver carpeta del repositorio librerias)
+...\glassfish-4.1\glassfish\domains\domain1\lib
+Abrir la consolo de administracion del servidor
+Paso 1 Crear el pool de conexiones (JDBC Connection Pools)
+Armada-Pool
+Paso 2 Crear la conexion a la base de datos (JDBC Resources)
+jdbc/prueba
+Paso 3 Asignar al JDBC Resources el pool de conexion.
+Paso 4 Deployar las aplicaciones (subir ejb y web)
+Deployar el jar(Inv-Servicios-1.0.jar)
+Deployar el war(Inv-Web-1.0.war)
+Si no existe el fichero generar los ficheros.
+Ver la carpeta COMPILADOS
+
