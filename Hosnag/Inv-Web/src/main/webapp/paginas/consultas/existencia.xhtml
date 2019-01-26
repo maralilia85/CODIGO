@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                 template="/WEB-INF/template.xhtml">
+  <ui:define name="content">
+         <p:growl id="msg" class="Fs10"/>  
+    
+        <p:tabView  id="tabPrincipal" 
+                    orientation="top" activeIndex="#{inventarioController.inxTab}"   cache="false" style="border: hidden"
+                    dynamic="true" tabindex="true">
+            <p:ajax event="tabChange" listener="#{inventarioController.cambiaTabExistencia}"/>
+            <p:tab id="tab0" title="Ubicación">
+                <p:outputPanel>
+                    <ui:include src="/WEB-INF/encabezadoBodega.xhtml"/>
+                   <ui:include src="/paginas/consultas/5ubicacion.xhtml"/>
+                </p:outputPanel>
+            </p:tab>
+             <p:tab id="tab1" title="Existencia">
+                <p:outputPanel>
+                    <ui:include src="/WEB-INF/encabezadoBodega.xhtml"/>
+                   <ui:include src="/paginas/consultas/9existencia.xhtml"/>
+                </p:outputPanel>
+            </p:tab>
+             <p:tab id="tab2" title="Bodega">
+                <p:outputPanel>
+                    <ui:include src="/WEB-INF/encabezadoBodega.xhtml"/>
+                   <ui:include src="/paginas/consultas/7bodega.xhtml"/>
+                </p:outputPanel>
+            </p:tab>
+               <p:tab id="tab3" title="Stock">
+                <p:outputPanel>
+                    <ui:include src="/WEB-INF/encabezadoBodega.xhtml"/>
+                   <ui:include src="/paginas/consultas/6stock.xhtml"/>
+                </p:outputPanel>
+            </p:tab>
+
+           
+
+           
+          
+         
+          
+           
+           
+ 
+             
+
+        </p:tabView>
+     
+        
+    </ui:define>
+
+   
+        
+       
+  
+
+</ui:composition>

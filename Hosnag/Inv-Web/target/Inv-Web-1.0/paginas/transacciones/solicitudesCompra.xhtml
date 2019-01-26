@@ -1,0 +1,206 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formSolicCompra">
+        <p:fieldset legend=" Visualizar Orden de Compra">
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                <p:selectOneRadio value="#{inventarioController.tipoFiltro}" columns="1" 
+                                  required="false" requiredMessage="Tipo filtro es requerido">
+                <f:selectItem itemLabel="Pendiente" itemValue="P" />
+            </p:selectOneRadio>
+            
+                   <p:outputLabel  value="Número:" class="Fs16" />
+                   <p:spacer width="5"/>
+               <p:inputText onblur="value = value.toUpperCase();" 
+                                              placeholder="Número Orden/Factura" 
+                                              value="#{inventarioController.descripcion}"
+                                              autocomplete="off" required="true" requiredMessage="Numero requerido">
+                 </p:inputText>
+                   <div class="EmptyBox5"/>
+                    <p:outputLabel  value="Fecha:" class="Fs16" />
+                    <p:spacer width="5"/>
+                    <p:inputText  onblur="value = value.toUpperCase();" placeholder="dd/MM/yyyy"
+                                  value="#{inventarioController.fecha}"
+                                              autocomplete="off" 
+                                              required="true" requiredMessage="Fecha es Requerido">
+                 </p:inputText>
+                    
+                        
+                    
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarOrdenCompra('OC')}"
+                                     update="msgs,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                           
+       
+                   </p:panel>
+         
+         
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                    <p:dataTable id="dtOrdenCompra" value="#{inventarioController.listRegCabordencompra}" var="oc"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                  
+                    
+                    <p:column headerText="Fecha Solicitud" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                           <h:outputText value="#{oc.cocFecha}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                     </h:outputText>
+                      
+                    </p:column>
+           
+                      <p:column headerText="No.Solicitud" filterBy="#" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid5" >
+                          <h:outputText value="#{oc.cocNumero}" />
+                    </p:column>
+                     <p:column headerText="Tipo Solicitud" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                       
+                         <h:outputText value="#{oc.cocTipoorden  == 'O' ? 'Operativas' :
+                                               oc.cocTipoorden  == 'S' ? 'Otras' : null}"/>
+                    </p:column>
+                 
+                
+                    <p:column headerText="Tipo" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid15" >
+                        <h:outputText value="#{oc.catArticulo.artNombgenerico}" />
+                       
+                    </p:column>
+                    
+             
+            
+
+                    <p:column headerText="Observacion" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                        <h:outputText value="#{oc.cocObservacion}" />
+                     
+                    </p:column>
+                    
+                     <p:column headerText="Proveedor" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="#{oc.catEmpresa.empNombre}" />
+                      
+                    </p:column>
+                    <p:column headerText="Estado" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                        <h:outputText value="#{oc.cocEstado == 'P' ? 'Pendientes' :
+                                                 oc.cocEstado == 'F' ? 'Finalizado' :
+                                                 oc.cocEstado == 'I' ? 'Inaciva' : null}" />
+                      
+                    </p:column>
+                     
+                     
+                  
+                      <p:column headerText="Detalle" class="Wid8 TexAlCenter">
+                          <p:commandLink class="#{botones.lnkDetalle}"
+                                   title="#{botones['title.detalle']}"  
+                                   update="tabPrincipal:fmDetalle"
+                                   action="#{inventarioController.buscarOrdenCompra('OD')}"
+                                   onclick="PF('dlgDetalle').show();">
+                              <f:setPropertyActionListener value="#{oc}" target="#{inventarioController.objRegCabordencompra}" />
+                    </p:commandLink>
+                      </p:column>
+                     <p:column headerText="Ingreso Factura" class="Wid8 TexAlCenter">
+                         <p:commandLink  class="#{botones.lnkIngreso}"
+                                         action="#{inventarioController.generaIngreso(oc.cocId, 'IF')}"
+                                         update="tabPrincipal"
+                                        title="Realizar Ingreso">
+                              <f:setPropertyActionListener value="#{oc}" target="#{inventarioController.objRegCabordencompra}" />
+                        </p:commandLink>
+                      </p:column>
+
+                
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Detalle Orden de Compra" widgetVar="dlgDetalle"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetalle" enctype="multipart/form-data" >
+                <p:outputPanel>
+                   
+               
+                    <p:dataTable id="dtSolicDetalle" value="#{inventarioController.listRegDetordencompra}" var="detalle" 
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index"  editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                     <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                     
+                        <p:column headerText="#{etiquetas['codigo']}" class="TexAlCenter" width="5%">
+                            <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artCodigo}"/>
+                        </p:column>
+                      <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                          <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}"/>
+                  
+                    </p:column>
+                          <p:column headerText="Cantidad" class="TexAlCenter" width="5%">
+                              <h:outputText value="#{detalle.docCantidadsol}"/>
+               
+                        </p:column>
+                           <p:column headerText="Precio Compra" class="TexAlCenter" width="5%">
+                               <h:outputText value="#{detalle.docPreciocompra}"/>
+               
+                        </p:column>
+                          <p:column headerText="Iva" class="TexAlCenter" width="5%">
+                              <h:outputText value="#{detalle.docIva == 'S' ? 'Si' : 
+                               detalle.docIva == 'N' ? 'No' : null}"/>
+               
+                        </p:column>
+                         <p:column headerText="%Desc" class="TexAlCenter" width="5%">
+                             <h:outputText value="#{detalle.docPorDesc}"/>
+               
+                        </p:column>
+                 
+                        <p:column headerText="Estado" class="TexAlCenter" width="5%">
+                              <h:outputText value="#{detalle.docEstado == 'P' ? 'Pendientes' :
+                                                 detalle.docEstado == 'F' ? 'Finalizado' :
+                                                 detalle.docEstado == 'I' ? 'Inaciva' : null}" />
+                        </p:column>
+                       
+               
+
+
+
+                    </p:dataTable> 
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+        
+                        <p:commandButton id="btnCancelar" value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgDetalle').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+        
+       
+  
+
+</ui:composition>

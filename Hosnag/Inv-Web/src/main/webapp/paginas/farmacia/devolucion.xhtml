@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+         <p:growl id="msgs" class="Fs10"/>
+        
+    
+        <p:tabView  id="tabPrincipal" orientation="top"   cache="false" style="border: hidden"   dynamic="true" tabindex="true">
+     
+
+                  
+                 <p:tab id="tab0" title="Crear Devolución" >
+                <p:outputPanel>
+                     <ui:include src="/WEB-INF/encabezadoBodega.xhtml"/>
+                    <ui:include src="/paginas/farmacia/ingresoDevolucion.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+           
+
+         
+           
+           
+          
+
+
+        </p:tabView>
+              <p:dialog header="Eliminar Registro" widgetVar="dlgEliminaDet" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+            <h:form id="formEliminaDet">
+                <p:outputPanel>
+                    <center>
+                        <h:panelGrid columns="1">                          
+
+                            <p:outputLabel value="¿Está seguro que desea eliminar el registro?" class="Fs14 red"/>
+                            <p:outputLabel value="#{inventarioController.objInvDetTransaccion.invExistenciaBodega.catArticulo.artNombgenerico}" class="Fs14 red"/>
+
+                        </h:panelGrid>
+                    </center>
+                    <p:spacer height="10"></p:spacer>
+                    <h:panelGroup>
+                        <center>
+
+                            <p:spacer class="Wid5px"/>
+                            <p:commandButton  value="#{botones['si']}"
+                                              icon="fa fa-check Fs16 white"
+                                              title="#{botones['title.si']}"
+                                              process="@this"
+                                              action="#{inventarioController.eliminaDetalle(inventarioController.objInvDetTransaccion.dtrId)}"
+                                              onclick="PF('dlgEliminaDet').hide();"
+                                              update="tabPrincipal:formDevolucion">
+                            </p:commandButton>
+                            <p:spacer class="Wid5px"/>
+
+                            <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                             title="#{botones['title.no']}"
+                                             onclick="PF('dlgEliminaDet').hide();">
+                            </p:commandButton>
+
+                        </center>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        <p:dialog header="Crear Ingreso por Devolución" widgetVar="dlgGeneraEg" responsive="true"
+                 position="center top"
+                 resizable="false" width="500" closable="true" modal="true" appendTo="@(body)"  >
+
+        <h:form id="formNewEgreso" enctype="multipart/form-data">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Confirma generar devolución?" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          process="@this"
+                                          action="#{inventarioController.generaCabecera('IV')}"
+                                          onclick="PF('dlgGeneraEg').hide();"
+                                          update="tabPrincipal:formDevolucion">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['buscar']}" icon="#{botones['boton.iconbuscar']}"
+                                         title="#{botones['title.no']}"
+                                         action="#{inventarioController.cargaCabDetalleTransaccion(null)}"
+                                          update="msgs,tabPrincipal:formDevolucion"
+                                         onclick="PF('dlgGeneraEg').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>  
+          <p:dialog header="Imprimir Reporte" widgetVar="dlgImpReporte" responsive="true"  width="90%" height="90%" class="Wid100"  position="center top"  
+              fitViewport="true"     resizable="true" modal="true" appendTo="@(body)">
+        <h:form style="width: 100%; height: 3%">               
+            <p:commandButton icon="#{botones['boton.iconcancelar']}" value="#{botones.cerrar}"
+                             title="Regresar"
+                             onclick="PF('dlgImpReporte').hide();" >
+            </p:commandButton>
+            <p:commandButton icon="#{botones['boton.cuenta']}" value="Comprobante"
+                             actionListener="#{inventarioController.imprimirReporte('CI')}"
+                              update="formImpReporte"
+                                     title="Imprimir Comprobante Ingreso">
+            </p:commandButton>
+           
+                     
+          
+        </h:form>
+
+        <h:form id="formImpReporte" class="Bord0"  style="width: 100%; height: 100%"   enctype="multipart/form-data" >
+            <p:panel class="Bord0" >
+                <object type="application/pdf" data="#{inventarioController.pathImpresion}" class="Wid100"  height="100%" width="100%" ></object>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+ 
+    </ui:define>
+
+</ui:composition>

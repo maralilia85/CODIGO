@@ -1,0 +1,453 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+         <h:form id="formReferencia">
+        <p:fieldset legend="Realizar Ingreso por No.Referencia u Oficio">
+              <p:outputLabel  value="Estado:#{inventarioController.objInvCabTransaccion.ctrEstado == 'I' ? 'Inaciva' : 
+                                            inventarioController.objInvCabTransaccion.ctrEstado == 'P' ? 'Pendiente' :
+                                            inventarioController.objInvCabTransaccion.ctrEstado == 'F' ? 'Finalizada' :
+                                            null}" class="Red FontBold" rendered="#{inventarioController.objInvCabTransaccion.ctrId != null}" /> 
+            <p:commandButton id="btnImprimir"  
+                             actionListener="#{inventarioController.imprimirReporte('IG')}"
+                             disabled="#{inventarioController.objInvCabTransaccion.ctrId == null}"
+                             icon="#{botones['boton.iconimprimir']}"
+                             title="#{botones['imprimir']}"
+                             style="float: right"
+                             process="@this"
+                             update="formImpReporte"
+                             onclick="PF('dlgImpReporte').show();"/>
+            
+   <p:commandButton  icon="#{botones['boton.iconinactiva']}"
+                                action="#{inventarioController.inactivaIngreso()}"
+                                disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'I'}"
+                                     style="float: right"
+                                     update="formReferencia"
+                                     title="#{botones['title.inactiva']}">
+                    </p:commandButton>
+          
+            <p:commandButton  icon="#{botones['boton.ingrseo']}"
+                                     style="float: right"
+                                     update="msgs,formReferencia"
+                                     disabled="#{inventarioController.objInvCabTransaccion.ctrId == null or inventarioController.objInvCabTransaccion.ctrEstado == 'F' or empty inventarioController.listInvDetTransaccion}"
+                                     action="#{inventarioController.confirmaIngreso()}"
+                                     title="#{botones['title.ingreso']}">
+                    </p:commandButton>
+          
+            <p:selectOneRadio value="#{inventarioController.objInvCabTransaccion.ctrTipo}" columns="1" 
+                              required="true" requiredMessage="Tipo Transacción es Requerido" >
+                <f:selectItem itemLabel="Donación" itemValue="ID" />
+                <f:selectItem itemLabel="Referencia" itemValue="IR" />
+                <p:ajax event="change" update="msgs,formReferencia" listener="#{inventarioController.enceraListas()}" />
+            </p:selectOneRadio>
+            
+            <p:panelGrid columns="3" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-5,ui-grid-col-4,ui-grid-col-3" >
+               
+                       <p:fieldset legend="Datos de Ingreso">
+                    <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-2,ui-grid-col-10" >
+                        
+                    
+            
+                    <p:outputLabel  value="#{etiquetas['tipo']}"/>
+                         
+                    <p:selectOneMenu  value="#{inventarioController.tipoArticulo}" class="Wid70"
+                                      disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                  filter="true" filterMatchMode="contains"
+                                  required="true" requiredMessage="Tipo Artículo Requerido">
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(inventarioController.objCatBodega.bodId)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                        <p:ajax event="change" update="msgs,formReferencia" listener="#{inventarioController.btnNewTransaccion()}" />
+                         </p:selectOneMenu>
+                     <p:outputLabel  value="#{etiquetas['fechaIng']}"/>   
+                      <p:calendar   value="#{inventarioController.objInvCabTransaccion.ctrFecha}" 
+                                     disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                   placeholder="#{etiquetas['fechaIng']}" 
+                                required="true"  size="12"
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                  <p:ajax event="dateSelect" update="msgs,formReferencia"  />
+
+
+                    </p:calendar>
+                <p:outputLabel  value="#{etiquetas['noIngreso']}"/>
+                    
+                    <p:inputText value="#{inventarioController.objInvCabTransaccion.ctrNumero}"
+                                  disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                 placeholder="#{etiquetas['noIngreso']}" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                        <p:ajax event="blur" update="formReferencia" listener="#{inventarioController.cargaCabDetalleTransaccion(null)}" />
+                    </p:inputText>
+            
+         
+                    
+         
+                    </p:panelGrid>
+     
+            </p:fieldset>
+                  <p:fieldset legend="No.Documentos">
+                
+               
+                     <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-4,ui-grid-col-8" >
+                    <p:outputLabel  value="No.Ofi/Ref"/>
+                    
+                     <p:inputText placeholder="#{etiquetas['noOfi']}  " 
+                                   disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                   class="Wid80"
+                                 autocomplete="off" 
+                                 value="#{inventarioController.objInvCabTransaccion.ctrNoRef}"
+                                 onblur="value = value.toUpperCase();" 
+                                 requiredMessage="No.ref u oficio es requerido"
+                                 required="true">
+                         <p:ajax event="blur" update="pResultado" listener="#{inventarioController.editarCabecera('NR')}" />
+                    </p:inputText>
+                         
+                <p:outputLabel  value="#{etiquetas['fecha']}"/>
+                      
+                <p:calendar value="#{inventarioController.objInvCabTransaccion.ctrFechaDoc}" placeholder="#{etiquetas['fecha']}" 
+                             disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                required="true"  size="12"
+                                requiredMessage="Fecha doc es requerida"
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+             <p:ajax event="dateSelect" update="formReferencia" listener="#{inventarioController.editarCabecera('FD')}" />
+                </p:calendar>
+            
+                   
+                </p:panelGrid>
+                 </p:fieldset>
+                            <p:fieldset legend="Total">
+               <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-4,ui-grid-col-8" >
+                    <p:outputLabel  value="#{etiquetas['totalFact']}"/>
+                        
+                    <p:inputText id="vTotal" value="#{inventarioController.objInvCabTransaccion.ctrTotal}" placeholder="#{etiquetas['totalFact']} " 
+                                 autocomplete="off" disabled="true" 
+                                 class="Wid80"
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                     <p:outputLabel  value="#{etiquetas['desc']}"/>    
+                     <p:inputText value="#{inventarioController.objInvCabTransaccion.ctrTotalDesc}" placeholder="#{etiquetas['desc']}" 
+                                 autocomplete="off" disabled="true" 
+                                 class="Wid80"
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                     <p:outputLabel  value="#{etiquetas['iva']}"/>    
+                     <p:inputText value="#{inventarioController.objInvCabTransaccion.ctrTotalIva}" placeholder="#{etiquetas['iva']}  " 
+                                 autocomplete="off" disabled="true" 
+                                 class="Wid80"
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                     <p:outputLabel  value="#{etiquetas['totalCanc']}"/>     
+                     <p:inputText value="#{inventarioController.objInvCabTransaccion.ctrTotaGeneral}" placeholder="#{etiquetas['total']}  " 
+                                 autocomplete="off" disabled="true" 
+                                 class="Wid80"
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                    </p:panelGrid>
+                
+            </p:fieldset>
+                
+            </p:panelGrid>
+                <p:outputLabel  value="Observación"/>
+                <p:inputTextarea value="#{inventarioController.objInvCabTransaccion.ctrObservacion}"  placeholder="Observación"
+                                     rows="3" cols="33" class="Wid100">
+                    <p:ajax event="blur" update="formReferencia" listener="#{inventarioController.editarCabecera('OB')}" />
+                </p:inputTextarea>
+            
+           
+                    
+<p:commandButton value="Detalle" icon="#{botones['boton.iconnuevo']}"
+                 disabled="#{inventarioController.objInvCabTransaccion.ctrId == null or inventarioController.objInvCabTransaccion.ctrEstado != 'P' }"
+                 action="#{inventarioController.crearDetalleTrans()}"
+                                     update="msgs,pResultado"
+                                     title="#{botones['title.nuevo']}">
+</p:commandButton>
+                    
+           
+               
+                <p:panel id="pResultado" style="border: hidden">
+                    <p:dataTable id="dtDetransaccion" value="#{inventarioController.listInvDetTransaccion}" var="detalle"
+                             paginatorPosition="top"
+                             disabledSelection="true"
+                             reflow="true"
+                             scrollWidth="110%"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtDetransaccion"  />
+
+
+                    <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter  Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                   
+
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#{detalle.invExistenciaBodega.catArticulo.artCodigo}"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artCodigo}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                       
+                        <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                            <f:facet name="output">
+                                <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artCodigo}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:autoComplete id="autoExp" value="#{detalle.exiId}" 
+                                                completeMethod="#{inventarioController.autocompletarArt}" 
+                                        var="exi" itemLabel="#{exi.label}"  itemValue="#{exi.value}"  minQueryLength="4" 
+                                        placeholder="Codigo/Descripcion" scrollHeight="120" 
+                                        required="true"
+                                        requiredMessage="Articulo requerido"
+                                        title="Ingrese primeros 5 digitos" class="Wid90"
+                                        inputStyleClass="Wid90">
+                                    <p:ajax event="itemSelect" update="dtDetransaccion"  listener="#{inventarioController.editarDetTrans(detalle, 'EX')}"/>
+                        </p:autoComplete>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                       
+                    </p:column>
+                        
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}"
+                              filterMatchMode="contains" class="TexAlCenter  Wid25" >
+                        <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}" title="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}" />
+                  
+                    </p:column>
+                    <p:column headerText="Pres."  class="Wid10" >
+                        <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.catGenConcen.genDescripcion}"/>
+                    </p:column>
+                    <p:column headerText="Cant."  class="Wid5" >
+                        <h:outputText value="#{detalle.dtrCantingreso}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                       
+                          <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                            <f:facet name="output"> <h:outputText value="#{detalle.dtrCantingreso}"/>   </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#{detalle.dtrCantingreso}"
+                                              requiredMessage="Cantidad Ingreso es requerido"
+                                              autocomplete="off" required="true">
+                                    <p:ajax event="blur"  listener="#{inventarioController.editarDetTrans(detalle, 'CI', 'formReferencia' )}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                         <p:column headerText="#{etiquetas['cIngreso']}"  class="Wid8" >
+                             <h:outputText value="#{detalle.dtrCostoIngreso}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                         <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                            <f:facet name="output"> <h:outputText value="#{detalle.dtrCostoIngreso}"/>  </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cIngreso']}" 
+                                              value="#{detalle.dtrCostoIngreso}"
+                                              requiredMessage="Descuento es requerido"
+                                              autocomplete="off" required="true">
+                                    <p:ajax event="blur" update="dtDetransaccion"  listener="#{inventarioController.editarDetTrans(detalle, 'VI','formReferencia')}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['iva']}"  class="Wid5" >
+                        <h:outputText value="#{detalle.dtrIva}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                           <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                             <f:facet name="output"> <h:outputText value="#{detalle.dtrIva}"/>  </f:facet>
+                            <f:facet name="input">
+                                <p:selectBooleanCheckbox value="#{inventarioController.iva}" class="Wid80 TexAlCenter">
+                                    <p:ajax event="change" listener="#{inventarioController.editIva(detalle)}" />
+                            </p:selectBooleanCheckbox>
+                           
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="#{etiquetas['porDesc']}"  class="Wid5" >
+                        <h:outputText value="#{detalle.dtrPorDesc}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                      
+                         <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                             <f:facet name="output"> <h:outputText value="#{detalle.dtrPorDesc}"/>  </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['porDesc']}" 
+                                              value="#{detalle.dtrPorDesc}"
+                                              requiredMessage="Descuento es requerido"
+                                              autocomplete="off" required="true">
+                                    <p:ajax event="blur" listener="#{inventarioController.editarDetTrans(detalle, 'DE','formReferencia')}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                   
+                    <p:column headerText="#{etiquetas['total']}"  class="Wid8" >
+                        <h:outputText value="#{detalle.dtrTotal}"/>
+                    </p:column>
+                    <p:column headerText="#{etiquetas['lote']}"  class="Wid15" >
+                         <h:outputText value="#{detalle.invLoteArticulo.lotDescripion}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                        <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                            <f:facet name="output">
+                                <h:outputText value="#{detalle.invLoteArticulo.lotDescripion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['lote']}" 
+                                              value="#{inventarioController.objInvLoteArticulo.lotDescripion}"
+                                              autocomplete="off" required="false">
+                                    <p:ajax event="blur"  listener="#{inventarioController.crearEditLote(detalle.invExistenciaBodega.catArticulo.artId,detalle.dtrId,detalle.dtrCantingreso)}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['regSani']}"  class="Wid10" >
+                         <h:outputText value="#{detalle.invLoteArticulo.lotRegsanitario}" rendered="#{detalle.dtrEstado != 'P'}"/>
+                        <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                            <f:facet name="output">
+                                <h:outputText value="#{detalle.invLoteArticulo.lotRegsanitario}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['regSani']}" 
+                                              value="#{detalle.invLoteArticulo.lotRegsanitario}"
+                                              autocomplete="off" required="false">
+                                    <p:ajax event="blur"  listener="#{inventarioController.editarLote(detalle.invLoteArticulo)}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fechaElab']}"  class="Wid15" >
+                         <h:outputText value="#{detalle.invLoteArticulo.lotFechaelab}" rendered="#{detalle.dtrEstado != 'P'}">
+                                      <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                        <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+                            <f:facet name="output">
+                                <h:outputText value="#{detalle.invLoteArticulo.lotFechaelab}">
+                                      <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                      
+                                 <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="dd/MM/yyyy"  
+                                              value="#{detalle.invLoteArticulo.lotFechaelab}"
+                                              autocomplete="off" required="false">
+                                    <p:ajax event="blur"  listener="#{inventarioController.editarLote(detalle.invLoteArticulo)}" />
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </p:inputText>
+                              
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fechaCaduc']}"  class="Wid15" >
+                          <h:outputText value="#{detalle.invLoteArticulo.lotFechacaduc}" rendered="#{detalle.dtrEstado != 'P'}">
+                                     <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                        <p:cellEditor rendered="#{detalle.dtrEstado == 'P'}">
+
+                            <f:facet name="output">
+                                <h:outputText value="#{detalle.invLoteArticulo.lotFechacaduc}">
+                                     <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+    
+                                  <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="dd/MM/yyyy"  
+                                              value="#{detalle.invLoteArticulo.lotFechacaduc}"
+                                              autocomplete="off" required="false">
+                                    <p:ajax event="blur"  listener="#{inventarioController.editarLote(detalle.invLoteArticulo)}" />
+                                       <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </p:inputText>
+                                
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                          
+                    <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-trash"
+                                        disabled="#{detalle.dtrEstado == 'F'}"
+                                        update="formEliminaDet"
+                                        onclick="PF('dlgEliminaDet').show();"
+                                        title="Eliminar Registro">
+                            <f:setPropertyActionListener value="#{detalle}" target="#{inventarioController.objInvDetTransaccion}" />
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                     
+                    
+                    
+                     
+
+                </p:dataTable>                     
+            </p:panel>
+      
+           
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Crear Ingreso" widgetVar="dlgGeneraIng" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formIngreso">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Confirma generar ingreso?" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          process="@this"
+                                          action="#{inventarioController.generaCabeceraByReferencia()}"
+                                          onclick="PF('dlgGeneraIng').hide();"
+                                          update="tabPrincipal:formReferencia">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgGeneraIng').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+   
+        
+ 
+        
+       
+  
+
+</ui:composition>

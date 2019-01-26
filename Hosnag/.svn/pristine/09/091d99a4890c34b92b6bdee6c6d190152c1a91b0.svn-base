@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        
+    
+        <p:tabView  id="tabPrincipal" orientation="top"   cache="false" style="border: hidden"   dynamic="true" tabindex="true">
+
+            <p:tab id="tab0" title="Solictudes de Pedidos">
+                <p:outputPanel>
+                   <ui:include src="/paginas/transacciones/solicitudesDespacho.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+           
+
+            <p:tab id="tab1" title="Transferencia" >
+                <p:outputPanel>
+ <ui:include src="/paginas/transacciones/transferencia.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+             <p:tab id="tab2" title="Baja" >
+                <p:outputPanel>
+                     <ui:include src="/paginas/transacciones/egresoBaja.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+           
+           
+           
+          
+
+
+        </p:tabView>
+     
+        
+    </ui:define>
+
+</ui:composition>

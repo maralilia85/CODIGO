@@ -1,0 +1,118 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+         <p:growl id="msgs" class="Fs10"/> 
+        <!--Se solicita por el usuario quitar catalogo de Bodega,Proveedores aumentar tipo subtipo dentro de bodega, dentro de seccione saumentar cat percha columna y nivel reunion 03-10-2017!-->
+
+         <ui:include src="/WEB-INF/encabezadoEmpresa.xhtml"/>
+        <p:tabView  id="tabPrincipal" orientation="top" activeIndex="#{catalogoController.inxTab}"   cache="false" style="border: hidden"
+                    dynamic="true" tabindex="true">
+            <p:ajax event="tabChange" listener="#{catalogoController.cambiaTab}"/>
+
+
+            <p:tab id="tab0" title="Artículos">
+                <p:outputPanel>
+                    <ui:include src="/paginas/catalogos/1articulos.xhtml"/>
+                </p:outputPanel>
+            </p:tab>
+
+
+            <p:tab id="tab1"  title="Bodega" >
+                <p:outputPanel>
+                    <ui:include src="/paginas/catalogos/3bodega.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+
+            <p:tab id="tab2" title="Tipo/SubTipo" >
+                <p:outputPanel>
+                    <ui:include src="/paginas/catalogos/10tipo.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+            <p:tab id="tab3" title="Secciones/Percha/Columna/Nivel" >
+                <p:outputPanel>
+                    <ui:include src="/paginas/catalogos/11ubicacion.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+
+            <p:tab id="tab4" title="Marca">
+                <p:outputPanel>
+                    <ui:include src="/paginas/catalogos/6marca.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+            <p:tab id="tab5" title="Modelo"  >
+                <p:outputPanel>
+                    <ui:include src="/paginas/catalogos/7modelo.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+            <p:tab id="tab6" title="Medida/Concentración"  >
+                <p:outputPanel>
+                     <ui:include src="/paginas/catalogos/9presentacion.xhtml"/>
+                     
+                </p:outputPanel>
+            </p:tab>
+            <p:tab id="tab7" title="Presentación/Forma Farmáceutica"  >
+                <p:outputPanel>
+                   <ui:include src="/paginas/catalogos/8forma.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+           
+            <!--SE SOLICITA POR EL USUARIO QUITAR CATALOGO DE AREA REUNION 13/10/2017
+              <p:tab  title="Área" >
+                 <p:outputPanel>
+                     <ui:include src="/paginas/catalogos/2areas.xhtml"/> 
+                 </p:outputPanel>
+             </p:tab>-->
+            <!--   <p:tab  title="Proveedores">
+      <p:outputPanel>
+          <ui:include src="/paginas/catalogos/5proveedor.xhtml"/> 
+
+      </p:outputPanel>
+  </p:tab>-->
+
+        </p:tabView>
+        <p:dialog header="Confirmar" widgetVar="dlgNew" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+            <h:form id="formNew">
+                <p:outputPanel>
+                    <center>
+                        <h:panelGrid columns="1">                          
+
+                            <p:outputLabel value="Verifique.No existe registro para la descrpción :#{catalogoController.descripcion}" class="Fs14 red" />
+                            <p:outputLabel value="¿Esta seguro de crear un nuevo registro?" class="red"/>
+
+                        </h:panelGrid>
+                    </center>
+                    <p:spacer height="10"></p:spacer>
+                    <h:panelGroup>
+                        <center>
+
+                            <p:spacer class="Wid5px"/>
+                            <p:commandButton  value="#{botones['si']}"
+                                              icon="fa fa-check Fs16 white"
+                                              title="#{botones['title.si']}"
+                                              process="@this"
+                                              action="#{catalogoController.crearGeneral(catalogoController.tipo)}"
+                                              onclick="PF('dlgNew').hide();"
+                                              update="tabPrincipal:#{catalogoController.formulario}:pResultado">
+                            </p:commandButton>
+                            <p:spacer class="Wid5px"/>
+
+                            <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                             title="#{botones['title.no']}"
+                                             onclick="PF('dlgNew').hide();">
+                            </p:commandButton>
+
+                        </center>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
+
+</ui:composition>

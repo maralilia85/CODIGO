@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetComprobanteIngresoBodega" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+S.ART_CODIGO CODSUB,
+S.ART_NOMBGENERICO SUBTIPO,
+A.ART_CODIGO,
+A.ART_NOMBGENERICO,
+G.GEN_DESCRIPCION,
+DT.DTR_CANTINGRESO,
+DT.DTR_IVA,
+DT.DTR_VALORIVA,
+DT.DTR_VALORDESC,
+DT.DTR_PORDESC,
+DT.DTR_COSTOINGRESO,
+DT.DTR_TOTAL,
+DT.DTR_CINGRESOUNITARIO,
+L.LOT_DESCRIPION,
+L.LOT_REGSANITARIO,
+L.LOT_FECHAELAB,
+L.LOT_FECHACADUC
+
+
+  FROM INV_DETTRANSACCION DT
+       LEFT JOIN INV_EXISTENCIA_BODEGA E ON DT.EXI_ID = E.EXI_ID
+       LEFT JOIN CAT_ARTICULO A ON E.ART_ID = A.ART_ID
+       LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+       LEFT JOIN CAT_GENERAL G ON A.GENID_CONCEN = G.GEN_ID
+       LEFT JOIN INV_LOTE_ARTICULO L ON DT.LOT_ID = L.LOT_ID
+ WHERE DT.CTR_ID = $P{clave}]]>
+	</queryString>
+	<field name="CODSUB" class="java.lang.String"/>
+	<field name="SUBTIPO" class="java.lang.String"/>
+	<field name="ART_CODIGO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<field name="GEN_DESCRIPCION" class="java.lang.String"/>
+	<field name="DTR_CANTINGRESO" class="java.math.BigDecimal"/>
+	<field name="DTR_IVA" class="java.lang.String"/>
+	<field name="DTR_VALORIVA" class="java.lang.Double"/>
+	<field name="DTR_VALORDESC" class="java.lang.Double"/>
+	<field name="DTR_PORDESC" class="java.math.BigDecimal"/>
+	<field name="DTR_COSTOINGRESO" class="java.lang.Double"/>
+	<field name="DTR_TOTAL" class="java.lang.Double"/>
+	<field name="DTR_CINGRESOUNITARIO" class="java.lang.Double"/>
+	<field name="LOT_DESCRIPION" class="java.lang.String"/>
+	<field name="LOT_REGSANITARIO" class="java.lang.String"/>
+	<field name="LOT_FECHAELAB" class="java.sql.Timestamp"/>
+	<field name="LOT_FECHACADUC" class="java.sql.Timestamp"/>
+	<variable name="subtotal" class="java.lang.Double" resetType="Group" resetGroup="SUBTIPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{DTR_TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL" class="java.lang.Double" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{DTR_TOTAL} - $F{DTR_VALORDESC}]]></variableExpression>
+	</variable>
+	<variable name="DESC" class="java.lang.Double" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{DTR_VALORDESC}]]></variableExpression>
+	</variable>
+	<group name="SUBTIPO">
+		<groupExpression><![CDATA[$F{SUBTIPO}]]></groupExpression>
+		<groupHeader>
+			<band height="20" splitType="Immediate">
+				<textField>
+					<reportElement uuid="9150b396-77cc-438f-a7c9-00bc6cac6ac8" mode="Opaque" x="1" y="4" width="611" height="16" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G1Field"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="47006f90-56b7-430b-8288-ce38791156db" x="1" y="3" width="39" height="17"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{CODSUB}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="0f8c7d3c-4ab1-4969-8083-7a15e4d3ec1a" x="43" y="4" width="199" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{SUBTIPO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15">
+				<staticText>
+					<reportElement uuid="f388aecd-c24a-4944-9ac2-999467084341" x="371" y="1" width="77" height="14"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SUBTOTAL:]]></text>
+				</staticText>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="369ae516-8d0d-4c3a-89cc-eac198a99334" x="451" y="0" width="100" height="15"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subtotal}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="41" y="1" width="169" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="208" y="1" width="74" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="282" y="1" width="50" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd0f56fc-48ba-43f2-ad90-933e728b66de" x="333" y="1" width="59" height="17"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.Unitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="071f2a21-3239-4151-a877-21d868ecf201" x="393" y="1" width="48" height="17"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="02264f12-905d-41ad-8713-0fd43c01f440" x="0" y="6" width="39" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f09856ed-4558-4ddc-a22b-fb9d6ad2e23f" x="39" y="6" width="170" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_NOMBGENERICO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="de61e834-296c-4649-b342-12f5bcb4c1e0" x="209" y="5" width="73" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GEN_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="3" width="611" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="2b93844d-4924-4285-99e6-e35bbf39c413" x="283" y="5" width="49" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTR_CANTINGRESO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9c681cf2-54ec-4b60-8674-977f7186b981" x="393" y="4" width="47" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTR_TOTAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6f2f5277-e5d4-4557-804b-da37c32563dc" x="333" y="3" width="58" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTR_CINGRESOUNITARIO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="94720529-2cf5-4331-9942-b025cc296da7" x="345" y="1" width="100" height="15"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESCUENTOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c0b51ce0-e710-453b-b923-de4e0017231e" x="343" y="16" width="100" height="15"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALES:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c768435c-39cc-4749-a3f8-f078c0c8efee" x="451" y="1" width="100" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="b337bd23-597b-481e-8fc2-871350fcf411" x="452" y="15" width="100" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

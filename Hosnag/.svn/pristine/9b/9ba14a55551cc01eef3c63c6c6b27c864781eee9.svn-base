@@ -1,0 +1,51 @@
+<ui:composition 
+
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    
+    <div id="layout-topbar">
+    	<div id="logo" class="Fleft">
+            <a href="#"><h:graphicImage name="images/logoB.png" styleClass="Fleft" /></a>
+            <br/>
+            <span class="Fs18 FontRobotoRegular FontBold">Sistema de </span><span class="Fs18 FontRobotoRegular WhiteBlue" >Inventario</span>
+             
+          
+            <a id="mobile-menu-button" class="Fright ShowOnMobile ripplelink Unselectable ShadowEffect"><i class="icon-add186"></i></a>
+        </div>
+        
+        <a class="ripplelink WhiteBlue Fright ShowOnMobile" id="show-top-menu"><i class="icon-show8"></i></a>
+       
+        <a href="#" id="layout-logo" >
+            <a href="#"> <h:graphicImage name="images/logoHosnag.png" styleClass="Fleft" /></a>
+             <span class="Fs20 FontRobotoRegular FontBold"><span class="WhiteBlue">Hospital Naval General HOSNAG</span></span>
+        </a>
+    
+        <ul id="top-menu" class="ShowOnDesktop">
+            <li>
+              
+                <a class="ripplelink"><i class="icon-search100"></i> <span class="Txt">Buscar</span></a>
+                <ul>
+                    <li><input type="text" placeholder="Buscar"/></li>
+                </ul>
+            </li>
+            <li>
+                <a class="ripplelink"><i class="icon-set6"></i> <span class="Txt">Tareas</span></a>
+                <ul>
+                    <li><a href="#">Tareas</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="ripplelink"><i class="icon-notifications1"></i> <span class="Txt">Alertas</span></a>
+                <ul>
+                    <li><a href="#">Alertas</a></li>
+                </ul>
+            </li>
+            <li><a href="inicio.xhtml" class="ripplelink"><i class="icon-home149"></i> <span class="Txt">Inicio</span></a></li>
+        </ul>
+    </div>
+    
+</ui:composition>

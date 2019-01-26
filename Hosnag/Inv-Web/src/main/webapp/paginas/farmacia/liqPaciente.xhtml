@@ -1,0 +1,261 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formLiq">
+        <p:fieldset legend="Liquidación por Paciente">
+             <p:outputLabel  value="Estado:#{inventarioController.objRegCabliquidacion.cliEstado == 'I' ? 'Inaciva' : 
+                                            inventarioController.objRegCabliquidacion.cliEstado == 'P' ? 'Pendiente' :
+                                            inventarioController.objRegCabliquidacion.cliEstado == 'F' ? 'Finalizada' :
+                                            null}" class="Red FontBold" />
+             <p:commandButton id="btnImprimir"  
+                             actionListener="#{inventarioController.imprimirReporte('LI')}"
+                             disabled="#{inventarioController.objRegCabliquidacion.cliEstado == null}"
+                             icon="#{botones['boton.iconimprimir']}"
+                             title="#{botones['imprimir']}"
+                             style="float: right"
+                             process="@this"
+                             update="formImpReporte"
+                             onclick="PF('dlgImpReporte').show();"/>
+             
+            <p:commandButton  icon="#{botones['boton.iconinactiva']}"
+                                action="#{inventarioController.inactivaIngreso()}"
+                                disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'I'}"
+                                     style="float: right"
+                                     update="formLiq"
+                                     title="#{botones['title.inactiva']}">
+             </p:commandButton>
+          
+            <p:commandButton  icon="#{botones['boton.egreso']}"
+                              action="#{inventarioController.confirmaEgreso()}"
+                               disabled="#{inventarioController.objRegCabliquidacion.cliEstado == null or inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                     style="float: right"
+                                    update="msgs,formLiq"
+                                     title="#{botones['title.egreso']}">
+                    </p:commandButton>
+          
+                 <p:panelGrid columns="3" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-5,ui-grid-col-4,,ui-grid-col-3">
+                         <p:fieldset legend="Datos del Paciente">
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-4,ui-grid-col-8">
+                  
+                     <p:outputLabel  value="Servicio"/>
+ <p:selectOneMenu  value="#{inventarioController.servicioId}" class="Wid80"
+                   disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                              filter="true" filterMatchMode="contains"
+                                              required="true" requiredMessage="Tipo Servicio">
+                                <f:selectItem itemLabel="Seleccione Tipo Servicio" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{listasController.getListCatGeneral('SEVH')}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                                <p:ajax event="change" update="msgs,formLiq"  />
+                            </p:selectOneMenu>                     
+         
+
+                    <p:outputLabel  value="Cédula/RUC"/>
+                    
+                   <p:inputText value="#{inventarioController.objRegPaciente.pacCedula}" placeholder="Cédula/RUC" 
+                                class="Wid100"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                       <p:ajax event="blur" update="msgs,formLiq" listener="#{inventarioController.cargaCabLiquidacion(inventarioController.objRegPaciente.pacCedula, 'A')}" />
+                    </p:inputText>
+                    <p:outputLabel  value="HC"/>
+
+                    <p:inputText value="#{inventarioController.objRegPaciente.pacHc}" placeholder="HC" 
+                                 class="Wid100"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                        <p:ajax event="blur" update="msgs,formLiq" listener="#{inventarioController.cargaCabLiquidacion(inventarioController.objRegPaciente.pacCedula, 'A')}" />
+                    </p:inputText>
+                       <p:outputLabel  value="Nombre y Apellidos"/>
+
+                       <p:inputText value="#{inventarioController.objRegPaciente.pacNombreApellidos}" placeholder="Nombre y Apellidos" 
+                                    class="Wid100"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                      
+
+                    
+                 </p:panelGrid>
+                </p:fieldset>
+                      <p:fieldset legend="Datos Liquidación">
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-4,ui-grid-col-8">
+                           
+                       <p:outputLabel  value="Fecha"/>   
+                       <p:calendar   value="#{inventarioController.objRegCabliquidacion.cliFecha}" 
+                                   placeholder="#{etiquetas['fechaEgreso']}"
+                                   requiredMessage="Ingrese fecha de la transaccion."
+                                required="true"  size="12"
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                          <p:ajax event="dateSelect" update="formLiq" />
+                    </p:calendar>
+                  
+                      <p:outputLabel  value="No."/>     
+                      <p:inputText value="#{inventarioController.objRegCabliquidacion.cliNumero}"
+                                 placeholder="#{etiquetas['noIngreso']}" 
+                                 disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 requiredMessage="Ingrese No.Egreso"
+                                 required="true">
+                        <p:ajax event="blur" update="msgs,formLiq" listener="#{inventarioController.cargaCabDetalleTransaccion(null)}" />
+                    </p:inputText>
+                                         </p:panelGrid>
+    
+            </p:fieldset>
+                   
+                     
+                     <p:fieldset legend="SubTotal">
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+              
+ <p:outputLabel  value="SubTotal 0%"/>                   
+                    <p:inputText value="#{inventarioController.objRegCabliquidacion.cliSubTotal}" placeholder="SubTotal"
+                                 disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+ <p:outputLabel  value="SubTotal Iva"/>                   
+ <p:inputText value="#{inventarioController.objRegCabliquidacion.cliIva}" placeholder="SubTotal Iva"
+                                 disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+ <p:outputLabel  value="Desc"/>
+ <p:inputText value="#{inventarioController.objRegCabliquidacion.cliDesc}" placeholder="SubTotal Iva"
+                                 disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+ <p:outputLabel  value="10% Servicios"/>                   
+ <p:inputText value="#{inventarioController.objRegCabliquidacion.cliPorc}" placeholder="SubTotal Iva"
+                                 disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+ <p:outputLabel  value="Total"/>                   
+ <p:inputText value="#{inventarioController.objRegCabliquidacion.cliTotal}" placeholder="SubTotal Iva"
+                                 disabled="#{inventarioController.objRegCabliquidacion.cliEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+ 
+ 
+ 
+
+
+                </p:panelGrid>
+                        
+    
+            </p:fieldset>
+                 </p:panelGrid>
+
+    <p:commandButton value="Detalle" icon="#{botones['boton.iconnuevo']}"
+                     disabled="#{inventarioController.objRegCabliquidacion.cliId == null or inventarioController.objRegCabliquidacion.cliEstado != 'P'}"
+                 action="#{inventarioController.crearDetalleTrans()}"
+                                     update="msgs,pResultado"
+                                     title="#{botones['title.nuevo']}">
+</p:commandButton>
+        
+
+            <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dtDetransaccion" value="#{inventarioController.listRegDetliquidacion}" 
+                             var="detalle"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtDetransaccion"  />
+
+
+                        <p:column headerText="#{etiquetas['ord']}" class="Wid3">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                   
+
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#{detalle.invExistenciaBodega.catArticulo.artCodigo}"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artCodigo}"  />
+                       
+                    </p:column>
+                        
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}"
+                              filterMatchMode="contains" class="Wid20" >
+                        <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}"/>
+                  
+                    </p:column>
+                    <p:column headerText="Pres."  class="Wid10" >
+                        <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.catGenConcen.genDescripcion}"/>
+                    </p:column>
+                    <p:column headerText="Cant."  class="Wid5" >
+                        <h:outputText value="#{detalle.dliCantidad}" rendered="#{detalle.dliEstado != 'P'}"/> 
+                       
+                        <p:cellEditor rendered="#{detalle.dliEstado == 'P'}">
+
+                            <f:facet name="output"> <h:outputText value="#{detalle.dliCantidad}"/>   </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#{detalle.dliCantidad}"
+                                              requiredMessage="Cantidad Ingreso es requerido"
+                                              autocomplete="off" required="true">
+                                    <p:ajax event="blur"  listener="#{inventarioController.validaCantEgreso(detalle, 'CE', 'formLiq')}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                   
+                  
+                    <p:column headerText="P.V.P"  class="Wid10" >
+                        <h:outputText value="#{detalle.dliValor}" />
+                    </p:column>
+                         <p:column headerText="SubTotal"  class="Wid10" >
+                             <h:outputText value="#{detalle.dliVTotal}" >
+                             </h:outputText>
+                     
+                    </p:column>
+                   
+             
+                   
+                 
+                          
+                    <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-trash"
+                                        disabled="#{detalle.dliEstado == 'F'}"
+                                        update="formEliminaDet"
+                                        onclick="PF('dlgEliminaDet').show();"
+                                        title="Eliminar Registro">
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                     
+                    
+                    
+                     
+
+                </p:dataTable>                      
+            </p:panel>
+
+
+        </p:fieldset>
+
+    </h:form>
+
+
+
+
+
+</ui:composition>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <name>primefaces-rio</name>
+    
+   
+   
+     <application>
+        <resource-bundle>
+            <base-name>ec.mil.armada.hosnag.inv.etiquetas_es</base-name>
+            <var>etiquetas</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>ec.mil.armada.hosnag.inv.mensajes_es</base-name>
+            <var>mensajes</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>ec.mil.armada.hosnag.inv.botones_es</base-name>
+            <var>botones</var>
+        </resource-bundle>
+    </application>
+    
+    
+</faces-config>

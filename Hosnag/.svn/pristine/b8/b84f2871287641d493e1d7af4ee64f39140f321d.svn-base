@@ -1,0 +1,164 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.inventario;
+
+import ec.mil.armada.inv.modelo.catalago.CatArticulo;
+import ec.mil.armada.inv.modelo.catalago.CatBodega;
+import ec.mil.armada.inv.modelo.inventario.InvLoteArticulo;
+import ec.mil.armada.inv.servicios.abstractFacade.AbstractFacade;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Stateless
+public class InvLoteArticuloFacade extends AbstractFacade<InvLoteArticulo> implements ec.mil.armada.inv.servicios.inventario.InvLoteArticuloFacadeRemote {
+    @PersistenceContext(unitName = "ec.mil.armada_Inv-Servicios_ejb_1.0PU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public InvLoteArticuloFacade() {
+        super(InvLoteArticulo.class);
+    }
+    public CatArticulo objCatArticulo(BigInteger artId){
+    
+        CatArticulo objeto = null;
+
+        final Query query = em.createQuery("Select object (a) from CatArticulo a where a.artId = :artId ");
+        query.setParameter("artId", artId);
+        query.setHint("eclipselink.refresh", true);
+        final List<CatArticulo> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+    public CatBodega objCatBodega(BigInteger bodId){
+    
+        CatBodega objeto = null;
+
+        final Query query = em.createQuery("Select object (b) from CatBodega b where b.bodId = :bodId  ");
+        query.setParameter("bodId", bodId);
+        query.setHint("eclipselink.refresh", true);
+        final List<CatBodega> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+  
+    
+    @Override
+    public List<InvLoteArticulo> listAllByParam(BigInteger bodId, BigInteger artId, BigInteger artIdTipo, String estado, String descripcion, String fecha, String operador) {
+        final StringBuilder SQLNative = new StringBuilder();
+        boolean isBodega = bodId != null;
+        boolean isArticulo = artId != null;
+        boolean isArtTipo = artIdTipo != null;
+        boolean isEstado = estado != null && estado.trim().length() > 0 && !(estado.trim().toLowerCase().compareTo("null") == 0);
+        boolean isDescripcion = descripcion != null && descripcion.trim().length() > 0 && !(descripcion.trim().toLowerCase().compareTo("null") == 0);
+        boolean isfecha = fecha  != null && fecha.trim().length() > 0 && !(fecha.trim().toLowerCase().compareTo("null") == 0);
+        boolean isOperador = operador != null && operador.trim().length() > 0 && !(operador.trim().toLowerCase().compareTo("null") == 0);
+
+        SQLNative.append(" SELECT LA.LOT_ID ,LA.LOT_DESCRIPION ,LA.LOT_ESTADO,  ");
+        SQLNative.append("   LA.LOT_FECHAELAB ,LA.LOT_FECHACADUC ,LA.LOT_REGSANITARIO , LA.LOT_CANTIDAD , LA.LOT_CANTINGRESO ,LA.LOT_CANTEGRESO , ");
+        SQLNative.append("   LA.BOD_ID, LA.ART_ID ");
+        SQLNative.append("   FROM INV_LOTE_ARTICULO LA ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO A ON LA.ART_ID = A.ART_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK ");
+        SQLNative.append("   WHERE 1=1 ");
+        if (isBodega || isArticulo || isArtTipo) {
+            if (isBodega) {
+                SQLNative.append("   AND LA.BOD_ID = ").append(bodId);
+
+            }
+            if (isArticulo) {
+                SQLNative.append("   AND LA.ART_ID = = ").append(artId);
+
+            }
+            if (isArtTipo) {
+                SQLNative.append("   AND  T.ART_ID = ").append(artId);
+
+            }
+            if (isEstado) {
+                SQLNative.append(" AND LA.LOT_ESTADO =  '").append(estado).append("' ");
+
+            }
+            if (isDescripcion) {
+                SQLNative.append("       AND  A.ART_NOMBCOMERCIAL || ' '||  A.ART_NOMBGENERICO || ' '|| A.ART_CODIGO  || ' '|| A.ART_CODBARRA ");
+                SQLNative.append("   LIKE '%").append(descripcion.toUpperCase()).append("%'");
+
+            }
+            if (isfecha && isOperador) {
+                //Buscar por existencia
+                if (operador.equalsIgnoreCase("=")) {
+                     SQLNative.append(" AND TRUNC (LA.LOT_FECHACADUC) = to_date('").append(fecha).append("','dd/mm/yyyy')");
+                }
+                if (operador.equalsIgnoreCase(">")) {
+                     SQLNative.append(" AND TRUNC (LA.LOT_FECHACADUC) > to_date('").append(fecha).append("','dd/mm/yyyy')");
+                }
+                if (operador.equalsIgnoreCase("<")) {
+                    SQLNative.append(" AND TRUNC (LA.LOT_FECHACADUC) <  to_date('").append(fecha).append("','dd/mm/yyyy')");
+                   
+                }
+
+            }
+
+        } else {
+            SQLNative.append(" AND 1=2   ");
+
+        }
+final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<InvLoteArticulo> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final InvLoteArticulo inv = new InvLoteArticulo();
+            inv.setLotId(new BigInteger(obj[a].toString()));
+            a++;
+            inv.setLotDescripion((String) obj[a]);
+            a++;
+            inv.setLotEstado((String) obj[a]);
+            a++;
+             inv.setLotFechaelab((Date) obj[a]);
+            a++;
+             inv.setLotFechacaduc((Date) obj[a]);
+            a++;
+             inv.setLotRegsanitario((String) obj[a]);
+            a++;
+             inv.setLotCantidad(new BigInteger(obj[a].toString()));
+            a++;
+             inv.setLotCantingreso(new BigInteger(obj[a].toString()));
+            a++;
+             inv.setLotCantegreso(new BigInteger(obj[a].toString()));
+            a++;
+            inv.setCatBodega(new CatBodega());
+            inv.setCatBodega(objCatBodega(new BigInteger(obj[a].toString())));
+            a++;
+            inv.setCatArticulo(new CatArticulo());
+            inv.setCatArticulo(objCatArticulo(new BigInteger(obj[a].toString())));
+            
+            datosRetorno.add(inv);
+        }
+
+        return datosRetorno;
+    }
+    
+
+    
+}

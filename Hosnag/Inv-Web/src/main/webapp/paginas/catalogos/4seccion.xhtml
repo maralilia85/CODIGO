@@ -1,0 +1,285 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formSeccion">
+        <p:fieldset legend="Crear Secciones/Percha/Columna/Nivel">
+            <p:panel id="filtro" visible="true" style="border: hidden">
+
+                <p:panel  style="border: hidden">
+                    <p:selectOneMenu value="#{catalogoController.objBodega.bodId}" class="Wid20">
+                        <f:selectItem itemLabel="Seleccione Bodega" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItems value="#{listasController.getListItemBodega(catalogoController.objEmpresa.empId,'B')}" var="bodega" itemLabel="#{bodega.label}" itemValue="#{bodega.value}" />
+                        <p:ajax event="change" update="btnNew,dtSeccion" listener="#{catalogoController.enceraListas('S')}"  />
+                                </p:selectOneMenu>
+                    <div class="Wid1" />
+                     <p:inputText placeholder="Buscar por descripción" style="width: 20%" 
+                                 autocomplete="off" 
+                                 value="#{catalogoController.descripcion}"
+                                 onblur="value = value.toUpperCase();" >
+                    </p:inputText>
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                      action="#{catalogoController.buscarByDescripcion('N', 'S')}"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                   
+                    <p:commandButton id="btnNew" icon="#{botones['boton.iconnuevo']}"
+                                     rendered="false"
+                                     disabled="#{catalogoController.objBodega.bodId == null}"
+                                     action="#{catalogoController.crearBodega(catalogoController.tipo, catalogoController.objBodega, 1)}"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+                    </p:commandButton>
+                </p:panel> 
+                <p:panel id="pResultado" style="border: hidden">
+                    <p:dataTable id="dtSeccion" value="#{catalogoController.listBodNivel1}" var="seccion"
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                                 editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtSeccion" listener="#{catalogoController.onCellEditNivel1}"/>
+                        <p:ajax event="rowToggle" listener="#{catalogoController.onRowToggleBodegaNiv2}" update="dtPercha" />
+                        <p:column class="Wid5">
+                            <p:rowToggler />
+
+                        </p:column>
+
+
+                        <p:column headerText="Código" filterBy="#{seccion.bodId}" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid5" >
+                        
+                           
+                                      <h:outputText value="#{seccion.bodId}" />
+                              
+                      
+                        </p:column>
+
+
+                        <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{seccion.bodDescripcion}"
+                                  filterMatchMode="contains" class="Wid15" >
+
+                            <p:cellEditor>
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{seccion.bodDescripcion}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText  onblur="value = value.toUpperCase();" 
+                                                  placeholder="#{etiquetas['descripcion']}" 
+                                                  value="#{seccion.bodDescripcion}"
+                                                  autocomplete="off" required="true">
+                                    </p:inputText>
+
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        
+                        <p:column headerText="#{etiquetas['tipo']}" filterBy="#{seccion.bodTipo}"
+                                  filterMatchMode="contains" class="Wid5" >
+                            <p:cellEditor>
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{seccion.bodTipo == 'S' ? 'Seccion' : seccion.bodTipo == 'C' ? 'Columna' : seccion.bodTipo == 'N' ? 'Nivel' : seccion.bodTipo == 'P' ? 'Percha' : 'Bodega'}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{seccion.bodTipo}"
+                                                     required="true">
+                                        <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="Sección" itemValue="S" /> 
+                                        <f:selectItem itemLabel="Columna" itemValue="C" />
+                                         <f:selectItem itemLabel="Percha" itemValue="P" />
+                                          <f:selectItem itemLabel="Nivel" itemValue="N" />
+
+                                    </h:selectOneMenu> 
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+
+
+                        <p:column headerText="#{etiquetas['estado']}"  class="Wid5" >
+                            <p:cellEditor>
+
+                                <f:facet name="output">
+                                    <h:outputText value="#{seccion.bodEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{seccion.bodEstado}"
+                                                     required="true">
+                                      
+                                        <f:selectItem itemLabel="Activo" itemValue="A" /> 
+                                        <f:selectItem itemLabel="Inactivo" itemValue="I" />
+
+                                    </h:selectOneMenu> 
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Nuevo" class="Wid5 TexAlCenter">
+                            <p:commandLink  class="icon-plus80 Fs20"
+                                            actionListener="#{catalogoController.crearBodega(seccion.bodTipo, seccion, 2)}"
+                                            update="dtPercha"
+                                            title="Crear nuevo registro Percha">
+                            </p:commandLink>
+
+
+                        </p:column>
+                        <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                            <p:commandLink  class="icon-trash"
+                                            action="#{catalogoController.obtieneBodega(seccion.bodId)}"
+                                            disabled="#{catalogoController.obtieneBodega(seccion.bodId)}"
+                                            update="tabPrincipal:formEliminaUbi"
+                                            onclick="PF('dlgEliminaUbi').show();"
+                                            title="Eliminar Registro">
+                             
+                            </p:commandLink>
+
+
+                        </p:column>
+
+
+
+
+
+
+                        <p:rowExpansion>
+                            <p:dataTable id="dtPercha" value="#{catalogoController.listBodNivel2}" var="percha"
+                                         paginatorPosition="top"
+                                         reflow="true"
+                                         paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                         paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                                         editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                                <p:ajax event="cellEdit" update="dtPercha" listener="#{catalogoController.onCellEditNivel2}"/>
+                               
+
+                                <p:column headerText="#{etiquetas['codigo']}" filterBy="#{percha.bodCodigo}"
+                                          filterMatchMode="contains" class="Wid5" >
+                                  
+                              
+
+                                            <h:outputText value="#{percha.bodId}"/>
+
+                                </p:column>
+
+
+
+                                <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{percha.bodDescripcion}"
+                                          filterMatchMode="contains" class="Wid15" >
+                                    <p:cellEditor>
+
+                                        <f:facet name="output">
+                                            <h:outputText value="#{percha.bodDescripcion}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText  onblur="value = value.toUpperCase();" 
+                                                          placeholder="Descripcion" 
+                                                          value="#{percha.bodDescripcion}"
+                                                          autocomplete="off" required="true">
+                                            </p:inputText>
+
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+
+
+                                <p:column headerText="#{etiquetas['estado']}"  class="Wid5" >
+                                    <p:cellEditor>
+
+                                        <f:facet name="output">
+                             
+                                             <h:outputText value="#{percha.bodEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{percha.bodEstado}"
+                                                             required="true">
+                                               
+                                                <f:selectItem itemLabel="Activo" itemValue="A" /> 
+                                                <f:selectItem itemLabel="Inactivo" itemValue="I" />
+
+                                            </h:selectOneMenu> 
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                
+                               <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                            <p:commandLink  class="icon-trash"
+                                            action="#{catalogoController.obtieneBodega(percha.bodId)}"
+                                            update="tabPrincipal:formEliminaUbi"
+                                            onclick="PF('dlgEliminaUbi').show();"
+                                            title="Eliminar Registro">
+                             
+                            </p:commandLink>
+
+
+                        </p:column>
+
+
+
+
+
+
+
+
+
+                            </p:dataTable>   
+                        </p:rowExpansion>
+
+
+
+
+                    </p:dataTable>      
+
+
+                </p:panel>
+            </p:panel>
+
+        </p:fieldset>
+
+    </h:form>
+    
+     <p:dialog header="Eliminar Registro" widgetVar="dlgEliminaUbi" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formEliminaUbi">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Está seguro que desea eliminar el registro?" class="Fs14 red"/>
+                        <p:outputLabel value="#{catalogoController.objBodegaNivel.bodDescripcion}" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          action="#{catalogoController.eliminaBodega()}"
+                                          onclick="PF('dlgEliminaUbi').hide();"
+                                          update="tabPrincipal:formSeccion">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgEliminaUbi').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+  
+
+
+
+
+</ui:composition>

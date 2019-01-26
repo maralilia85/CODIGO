@@ -1,0 +1,222 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formEgresoBaja">
+        <p:fieldset legend="Realizar Egreso por Baja o Caducidad">
+             <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+            <p:commandButton  icon="#{botones['boton.iconinactiva']}"
+                                     action="#"
+                                     style="float: right"
+                                     update="pResultado"
+                                     title="#{botones['title.inactiva']}">
+                    </p:commandButton>
+          
+            <p:commandButton  icon="#{botones['boton.egreso']}"
+                                     action="#"
+                                     style="float: right"
+                                     update="pResultado"
+                                     title="#{botones['title.egreso']}">
+                    </p:commandButton>
+          
+                 <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                       <p:fieldset legend="Datos Egreso">
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                      <p:outputLabel  value="Tipo"/>
+                    <p:selectOneMenu  value="#" 
+                                      required="true">
+                        <f:selectItem itemLabel="Medicamentos" itemValue="" noSelectionOption="true"/>
+                        <f:selectItem  itemLabel="Suministro" itemValue="S" />  
+
+                    </p:selectOneMenu>
+     
+                     
+
+ <p:outputLabel  value="No.Egreso"/>
+
+                    <p:inputText placeholder="No.Egreso" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+  <p:outputLabel  value="Fecha Egreso"/>
+
+
+                    <p:calendar  placeholder="Fecha Egreso" 
+                                 required="true"  size="12"
+                                 pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+     <p:outputLabel  value="#{etiquetas['noOfi']}"/>
+
+                      <p:inputText value="2550" placeholder="#{etiquetas['noOfi']}" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+       
+
+
+
+
+
+                </p:panelGrid>
+    
+            </p:fieldset>
+
+                     <p:fieldset legend="Total">
+                <p:panelGrid columns="1" layout="grid" style="border: none; background: none">
+              
+                    
+                    <p:inputText placeholder="Total Egreso" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+
+
+
+
+
+                </p:panelGrid>
+    
+            </p:fieldset>
+                 </p:panelGrid>
+               <p:outputLabel  value="Motivo"/>
+                        <p:inputTextarea  placeholder="Motivo"
+                                     rows="3" cols="33" class="Wid100">
+                         </p:inputTextarea>
+
+            <p:commandButton value="Detalle" icon="#{botones['boton.iconnuevo']}"
+                             action="#"
+                             update="pResultado"
+                             title="#{botones['title.nuevo']}">
+            </p:commandButton>
+        
+
+            <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dtDetalleBaja" value="#" var="baja"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtDetalleBaja"/>
+
+
+
+
+
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="4586"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Generico" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="GASA QUIRURGICA"/>
+
+                    </p:column>
+                      <p:column headerText="#{etiquetas['medida']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="ROLLOS"/>
+                    </p:column>
+                    <p:column headerText="#{etiquetas['lote']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="rty-89"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['lote']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+
+                            </f:facet>
+                        </p:cellEditor>
+
+                    </p:column>
+                  
+
+
+                    <p:column headerText="#{etiquetas['cant']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="6"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+
+                            </f:facet>
+                        </p:cellEditor>
+
+                    </p:column>
+                    <p:column headerText="Costo Promedio" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="64.1245"/>
+                    </p:column>
+                    <p:column headerText="Total" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="386"/>
+                    </p:column>
+                         <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-trash"
+                                        title="#{etiquetas.eliminar}">
+                            <f:setPropertyActionListener value="#{baja}" target="#" />
+                        </p:commandLink>
+                        
+
+                    </p:column>
+
+
+
+
+
+
+
+
+                </p:dataTable>                     
+            </p:panel>
+
+
+        </p:fieldset>
+
+    </h:form>
+
+
+
+
+
+
+
+
+
+</ui:composition>

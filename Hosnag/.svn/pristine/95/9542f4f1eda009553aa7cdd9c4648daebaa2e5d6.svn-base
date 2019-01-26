@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formItems">
+        <p:fieldset legend="Realizar Consultas de Existencia">
+              <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:selectOneRadio value="#{inventarioController.tipoFiltro}" 
+                                      required="true"
+                                      requiredMessage="Tipo Consulta Requerido"
+                                      columns="1">
+                <f:selectItem itemLabel="Lote" itemValue="L" />
+                <f:selectItem itemLabel="Caducados" itemValue="C" />
+                <p:ajax event="change" update="pResultado" listener="#{inventarioController.buscarByFiltro(inventarioController.tipoFiltro)}"  />
+            </p:selectOneRadio>
+                  
+                    <p:inputText value="#{inventarioController.descripcion}" placeholder="Buscar por código o descripción" 
+                                autocomplete="off"  style="width: 20%" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="false">
+                    </p:inputText>
+                           <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                            action="#{inventarioController.buscarByFiltro(inventarioController.tipoFiltro)}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+
+                 
+               
+              
+                  
+                   
+                    
+
+                   
+                </p:panel> 
+              
+             <p:panel id="pResultado" style="border: hidden">
+               
+                       <p:dataTable id="dtLote" value="#{inventarioController.lisInvLoteArticulo}" var="lote"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" emptyMessage="No se encontraron resultados">
+
+                    <p:column headerText="Bodega" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{lote.catBodega.bodDescripcion}" />
+                 
+                    </p:column> 
+
+                   <p:column headerText="#{etiquetas['codigo']}" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                       <h:outputText value="#{lote.catArticulo.artCodigo}" />
+                 
+                    </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{lote.catArticulo.artNombgenerico}" />
+                       
+                    </p:column>
+
+                    <p:column headerText="#{etiquetas['lote']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{lote.lotDescripion}" />
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['regSani']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{lote.lotRegsanitario}" />
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fechaElab']}" class="Wid10" >
+                        <h:outputText value="#{lote.lotFechaelab}">
+                               <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                        </h:outputText>
+                 
+                      
+                    </p:column>
+                        
+                        <p:column headerText="#{etiquetas['fechaCaduc']}" class="Wid10" >
+                         <h:outputText value="#{lote.lotFechacaduc}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                       </h:outputText>
+                      
+                    </p:column>
+                       
+
+                    <p:column headerText="#{etiquetas['saldo']}"  class="Wid10" >
+                        <h:outputText value="#{lote.lotCantidad}" />
+                      
+                    </p:column>
+                    
+
+                
+                </p:dataTable>     
+             
+                    
+                  
+                  
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

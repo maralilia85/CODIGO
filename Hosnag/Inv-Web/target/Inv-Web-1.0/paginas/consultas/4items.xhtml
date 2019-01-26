@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formItems">
+        <p:fieldset legend="Realizar Consultas de Existencia">
+              <p:commandButton id="btnImprimir"  
+                             actionListener="#{inventarioController.imprimirReporte('LO')}"
+                             disabled="#{empty inventarioController.lisInvLoteArticulo}"
+                             icon="#{botones['boton.iconimprimir']}"
+                             title="#{botones['imprimir']}"
+                             style="float: right"
+                             process="@this"
+                             update="formImpReporte"
+                             onclick="PF('dlgImpReporte').show();"/>
+
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:selectOneRadio value="#{inventarioController.tipoFiltro}" 
+                                      required="true"
+                                      requiredMessage="Tipo Consulta Requerido"
+                                      columns="1">
+                <f:selectItem itemLabel="Lote" itemValue="L" />
+                <f:selectItem itemLabel="Caducados" itemValue="C" />
+                <p:ajax event="change" update="pResultado,tipo" listener="#{inventarioController.enceraListas()}"  />
+            </p:selectOneRadio>
+                    <p:selectOneMenu id="tipo"  value="#{inventarioController.tipoArticulo}" 
+                                          requiredMessage="Tipo Artíulo Requerido" required="true" 
+                                          filter="true" filterMatchMode="contains">
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(inventarioController.objCatBodega.bodId)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                        <p:ajax event="change" update="msg,pResultado,btnImprimir" listener="#{inventarioController.buscarByFiltro(inventarioController.tipoFiltro)}"  />
+                         </p:selectOneMenu>
+                  
+                 
+                </p:panel> 
+              
+             <p:panel id="pResultado" style="border: hidden">
+                 
+               
+                       <p:dataTable id="dtLote" value="#{inventarioController.lisInvLoteArticulo}" var="lote"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" emptyMessage="No se encontraron resultados">
+
+                   <p:column headerText="#{etiquetas['codigo']}" filterBy="#{lote.catArticulo.artCodigo}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid8" >
+                       <h:outputText value="#{lote.catArticulo.artCodigo}" />
+                 
+                    </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{lote.catArticulo.artNombgenerico}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid45" >
+                        <h:outputText value="#{lote.catArticulo.artNombgenerico}" title="#{lote.catArticulo.artNombgenerico}" />
+                       
+                    </p:column>
+                           <p:column headerText="#{etiquetas['present']}"  class="Wid10" >
+                               <h:outputText value="#{lote.catArticulo.catGenConcen.genDescripcion}" />
+                       
+                    </p:column>
+
+
+                    <p:column headerText="#{etiquetas['lote']}"  class="Wid10" >
+                        <h:outputText value="#{lote.lotDescripion}" />
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['regSani']}"  class="Wid10" >
+                        <h:outputText value="#{lote.lotRegsanitario}" />
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fechaElab']}" class="Wid10" >
+                        <h:outputText value="#{lote.lotFechaelab}">
+                               <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                        </h:outputText>
+                 
+                      
+                    </p:column>
+                        
+                        <p:column headerText="#{etiquetas['fechaCaduc']}" class="Wid10" >
+                         <h:outputText value="#{lote.lotFechacaduc}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                       </h:outputText>
+                      
+                    </p:column>
+                       
+
+                    <p:column headerText="#{etiquetas['saldo']}"  class="Wid5" >
+                        <h:outputText value="#{lote.lotCantidad}" />
+                      
+                    </p:column>
+                    
+
+                
+                </p:dataTable>     
+             
+                    
+                  
+                  
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

@@ -1,0 +1,659 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.controller;
+
+import ec.mil.armada.inv.modelo.catalago.CatArticulo;
+import ec.mil.armada.inv.modelo.catalago.CatBodega;
+import ec.mil.armada.inv.modelo.catalago.CatEmpresa;
+import ec.mil.armada.inv.modelo.inventario.InvCabTransaccion;
+import ec.mil.armada.inv.modelo.inventario.InvDetTransaccion;
+import ec.mil.armada.inv.modelo.inventario.InvExistenciaBodega;
+import ec.mil.armada.inv.modelo.inventario.InvLoteArticulo;
+import ec.mil.armada.inv.modelo.registro.RegCabordencompra;
+import ec.mil.armada.inv.modelo.registro.RegDetordencompra;
+import ec.mil.armada.inv.remotos.catalogo.CatArticuloFacadeRemote;
+import ec.mil.armada.inv.remotos.catalogo.CatBodegaFacadeRemote;
+import ec.mil.armada.inv.remotos.catalogo.CatEmpresaFacadeRemote;
+import ec.mil.armada.inv.remotos.registro.RegCabordencompraFacadeRemote;
+import ec.mil.armada.inv.remotos.registro.RegDetordencompraFacadeRemote;
+import ec.mil.armada.inv.servicios.inventario.InvCabTransaccionFacadeRemote;
+import ec.mil.armada.inv.servicios.inventario.InvDetTransaccionFacadeRemote;
+import ec.mil.armada.inv.servicios.inventario.InvExistenciaBodegaFacadeRemote;
+import ec.mil.armada.inv.servicios.inventario.InvLoteArticuloFacadeRemote;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.inject.Named;
+import javax.faces.view.ViewScoped;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
+
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Named(value = "inventarioController")
+@ViewScoped
+public class InventarioController implements Serializable{
+    @EJB
+    private CatEmpresaFacadeRemote catEmpresaFacade;
+    @EJB
+    private RegDetordencompraFacadeRemote regDetordencompraFacade;
+    @EJB
+    private RegCabordencompraFacadeRemote regCabordencompraFacade;
+    @EJB
+    private InvDetTransaccionFacadeRemote invDetTransaccionFacade;
+    @EJB
+    private InvCabTransaccionFacadeRemote invCabTransaccionFacade;
+    @EJB
+    private CatArticuloFacadeRemote catArticuloFacade;
+    @EJB
+    private CatBodegaFacadeRemote catBodegaFacade;
+    @EJB
+    private InvLoteArticuloFacadeRemote invLoteArticuloFacade;
+    @EJB
+    private InvExistenciaBodegaFacadeRemote invExistenciaBodegaFacade;
+
+    /**
+     * Creates a new instance of InventarioController
+     */
+    public InventarioController() {
+    }
+    //<editor-fold defaultstate="collapsed" desc="Declaracion de Variables">
+     //<editor-fold defaultstate="collapsed" desc="Variables-Consultas">
+    private InvExistenciaBodega objInvExistenciaBodega;
+    private List<InvExistenciaBodega> listInvExistenciaBodega;
+    private InvLoteArticulo objInvLoteArticulo;
+    private List<InvLoteArticulo> lisInvLoteArticulo;
+    private String tipoBsq;
+    private String descripcion;
+    private String tipoFiltro;
+    private String tipoMovimiento;
+    private CatBodega objCatBodega;
+    private CatArticulo objCatArticulo;
+    private BigInteger tipoArticulo;
+    private int inxTab;
+    private InvCabTransaccion objInvCabTransaccion;
+     private List<InvDetTransaccion> listInvDetTransaccion;
+     private InvDetTransaccion objInvDetTransaccion;
+     private Date fechaIni;
+     private Date fechaFin;
+     private CatBodega objBodega;
+     private CatEmpresa objEmpresa;
+     BigInteger seccionId;
+     BigInteger perchaId;
+     BigInteger columnaId;
+     BigInteger nivelId;
+     
+    
+     //</editor-fold>
+      //<editor-fold defaultstate="collapsed" desc="orden de compra">
+     private RegCabordencompra objRegCabordencompra;
+     private RegDetordencompra objRegDetordencompra;
+     private List<RegDetordencompra> listRegDetordencompra;
+     private List<RegCabordencompra> listRegCabordencompra;
+     private String fecha;
+     
+      //</editor-fold>
+    
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Funciones">
+    @PostConstruct
+    public void init() {
+        //TODO obtener la bodega del user que se conecta
+        objCatBodega = catBodegaFacade.find(new BigInteger("1"));
+        if(objCatBodega == null){
+            mostrarMensajeError("Info", "No existe registro de bodega por favor parametrice.");
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Consultas">
+    public void enceraValores(){
+    descripcion = "";
+    buscarByFiltro("S");
+    }
+    public void buscarByFiltro(String tipo) {
+        String fInicio = null;
+        String fFin = null;
+
+        if (fechaIni != null) {
+            fInicio = convertirFechaString(fechaIni);
+        }
+        System.out.println("fecha convertida" + fInicio);
+        if (fechaFin != null) {
+            fFin = convertirFechaString(fechaFin);
+            System.out.println("fecha convertida" + fFin);
+        }
+
+        if (tipo.equalsIgnoreCase("U")) {
+            //Buscar Ubicacion
+            listInvExistenciaBodega = invExistenciaBodegaFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, "A", descripcion, null, null);
+        }
+        if (tipo.equalsIgnoreCase("K")) {
+            //Buscar Kardex
+            listInvDetTransaccion = invDetTransaccionFacade.listAllByParam(objCatBodega.getBodId(), null, null, descripcion, null, null, null, null, null);
+
+        }
+        if (tipo.equalsIgnoreCase("S")) {
+            //Buscar SALDO
+
+            listInvExistenciaBodega = invExistenciaBodegaFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, "A", descripcion, BigInteger.ZERO, tipoFiltro);
+
+        }
+        if (tipo.equalsIgnoreCase("M")) {
+            //Buscar por Movimientos
+             if(tipoMovimiento.equalsIgnoreCase("I")){
+        
+    listInvDetTransaccion = invDetTransaccionFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, descripcion, null, "'IF','IT'", fInicio, fFin, "ENTRE");
+       
+     }
+     if(tipoMovimiento.equalsIgnoreCase("E")){
+         listInvDetTransaccion = invDetTransaccionFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, descripcion, null, "'ET','EV'", fInicio, fFin, "ENTRE");
+     
+     }
+          
+        }
+        if (tipo.equalsIgnoreCase("L")) {
+            //Buscar por lote
+            lisInvLoteArticulo = invLoteArticuloFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, null, descripcion, null, null);
+        }
+        if (tipo.equalsIgnoreCase("C")) {
+            //Buscar caducados fecha igual al sysdate
+            lisInvLoteArticulo = invLoteArticuloFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, null, descripcion, convertirFechaString(new Date()), "=");
+        }
+        if (tipo.equalsIgnoreCase("B")) {
+            //Buscar por bodega
+            listInvExistenciaBodega = invExistenciaBodegaFacade.listAllByParam(null, null, null, "A", descripcion, null, null);
+        }
+        if (tipo.equalsIgnoreCase("O")) {
+            //Buscar consolidado
+            listInvExistenciaBodega = invExistenciaBodegaFacade.listAllByParam(objCatBodega.getBodId(), null, tipoArticulo, "A", descripcion, null, null);
+        }
+         
+
+    }
+    public void buscarOrdenCompra(String filtro){
+        if (filtro.equalsIgnoreCase("OC")) {
+         //Buscar solicitud orden de compra
+             listRegCabordencompra = regCabordencompraFacade.listAllByParam(objCatBodega.getBodId(), descripcion, tipoFiltro, null, tipoArticulo, fecha, null, "=");
+         }
+         if (filtro.equalsIgnoreCase("OD")) {
+             listRegDetordencompra = regDetordencompraFacade.listAllByParam(objRegCabordencompra.getCocId(), tipoFiltro);
+         
+         }
+    
+    }
+     public void cambiaTabExistencia(final TabChangeEvent event) {
+        final TabView tabView = (TabView) event.getComponent();
+        final int inxA = tabView.getChildren().indexOf(event.getTab());
+
+        if (inxA == 0) {
+            //tab UBICACION
+            tipoBsq = "U";
+            descripcion = "";
+            tipoArticulo = null;
+            listInvExistenciaBodega = null;
+           
+
+        }
+        if (inxA == 1) {
+            //tab STOCK
+            tipoBsq = "U";
+             descripcion = "";
+            tipoArticulo = null;
+            listInvExistenciaBodega = null;
+           
+        }
+        
+       
+
+    }
+     public void cambiaTabConsultas(final TabChangeEvent event) {
+        final TabView tabView = (TabView) event.getComponent();
+        final int inxA = tabView.getChildren().indexOf(event.getTab());
+
+        if (inxA == 0) {
+            //tab kardex
+            tipoBsq = "K";
+            descripcion = "";
+            tipoArticulo = null;
+            listInvExistenciaBodega = null;
+           
+
+        }
+        if (inxA == 1) {
+            System.out.println("es s");
+            //tab Saldos
+             tipoBsq = "S";
+             descripcion = "";
+            tipoArticulo = null;
+            listInvExistenciaBodega = null;
+           
+        }
+         if (inxA == 2) {
+            //tab MOVIMIENTOS
+             tipoBsq = "M";
+             descripcion = "";
+            tipoArticulo = null;
+            listInvExistenciaBodega = null;
+           
+        }
+         if (inxA == 2) {
+            //tab ARTICULO
+             tipoBsq = "A";
+             descripcion = "";
+            tipoArticulo = null;
+            listInvExistenciaBodega = null;
+           
+        }
+        
+       
+
+    }
+     
+   
+    //</editor-fold>
+      //<editor-fold defaultstate="collapsed" desc="Calcular">
+    public Double calTotalActual(Double existencia, Double pCosto) {
+        Double totalActual = null;
+
+        //Total actual = existencia * Pcosto
+        totalActual = existencia.intValue() * pCosto;
+
+        return totalActual;
+    }
+
+    public Double calTotalIng(Double cantidad, Double pIngreso) {
+
+        Double totalIngreso = null;
+
+        //Total ingreso = cantidad * Pingreso
+        totalIngreso = cantidad.intValue() * pIngreso;
+
+        return totalIngreso;
+    }
+
+    public Double calTotalCantidad(Double existencia, Double cantidad) {
+
+        Double totalCantidad = null;
+
+        //Total cantidad = cantidad + existencia
+        totalCantidad = cantidad + existencia;
+
+        return totalCantidad;
+    }
+
+    public Double calcularPrecioCosteo(Double existencia, Double cantidad, Double pCosto, Double pIngreso) {
+
+        Double precioCosteo;
+
+         //Precio Costeo = (TotalActual + TotalIngreso) / TotalCantidad
+        precioCosteo = (calTotalActual(existencia, pCosto) + calTotalIng(cantidad, pIngreso)) / calTotalCantidad(existencia, cantidad);
+
+        return precioCosteo;
+    }
+         //</editor-fold>
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Utilitarios">
+     
+    public String convertirFechaString(Date date) {
+
+        Format formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        return formatter.format(date);
+        
+
+    }
+     public void mostrarMensajeError(final String titulo, final String mensaje) {
+        final FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, titulo, mensaje);
+        RequestContext.getCurrentInstance().showMessageInDialog(facesMsg);
+    }
+      //</editor-fold>
+     public void generaIngreso(BigInteger claveCab, List<RegDetordencompra> listDetalle, String tipo){
+         if(tipo.equalsIgnoreCase("IF")){
+         //Ingreso por 
+             if(claveCab != null){
+             objRegCabordencompra = regCabordencompraFacade.find(claveCab);
+             generaCabeceraTransaccion(objRegCabordencompra.getCocId(), "OC", tipo , "P");
+             if(objInvCabTransaccion != null){
+                 generaDetalleTransaccion(objInvCabTransaccion, listRegDetordencompra, "P");
+             }
+         }
+         }
+     
+     }
+    public InvCabTransaccion generaCabeceraTransaccion(BigInteger claveTabla, String siglaTabla, String tipo, String estado) {
+        objInvCabTransaccion = new InvCabTransaccion();
+
+        if (objRegCabordencompra.getCocId() != null) {
+            //obtiene datos de solicitud bodega
+            objInvCabTransaccion.setTipoArticulo(objRegCabordencompra.getCocTipo());
+            //objInvCabTransaccion.setCtrEncargado(objRegCabordencompra.getCatArticulo().getNombreEmpleado());
+        }
+
+        objInvCabTransaccion.setCatBodega(objCatBodega);
+        if (objCatBodega.getNombreEmpleado() != null) {
+            objInvCabTransaccion.setCtrJefe(objCatBodega.getNombreEmpleado());
+        }
+        objInvCabTransaccion.setCtrClavetabla(claveTabla);
+        objInvCabTransaccion.setCtrSiglastabla(siglaTabla);
+        objInvCabTransaccion.setCtrTipo(tipo);
+        objInvCabTransaccion.setCtrEstado(estado);
+        invCabTransaccionFacade.create(objInvCabTransaccion);
+        return objInvCabTransaccion;
+    }
+     public void generaDetalleTransaccion(InvCabTransaccion objetoCabecera, List<RegDetordencompra> listDetalle, String estado){
+         objInvDetTransaccion = new InvDetTransaccion();
+     if(listDetalle.size() > 0)
+     {
+         for (RegDetordencompra objetoOrdenCompra : listDetalle) {
+             objInvDetTransaccion.setCtrId(objetoCabecera.getCtrId());
+             objInvDetTransaccion.setExiId(objetoOrdenCompra.getInvExistenciaBodega().getExiId());
+             objInvDetTransaccion.setDtrCantingreso(objetoOrdenCompra.getDocCantidadsol());
+             objInvDetTransaccion.setDtrCostoIngreso(objetoOrdenCompra.getDocPreciocompra());
+             objInvDetTransaccion.setDtrTotal(calTotalIng(objetoOrdenCompra.getDocCantidadsol(), objetoOrdenCompra.getDocPreciocompra()));
+             objInvDetTransaccion.setDtrEstado(estado);
+             invDetTransaccionFacade.create(objInvDetTransaccion);
+         }
+     }
+     
+     }
+     public void actualizaExistencia(BigInteger exiId){
+     
+     }
+    
+    //<editor-fold defaultstate="collapsed" desc="Getter and Setter">
+    //<editor-fold defaultstate="collapsed" desc="GYS Consultas">
+     public InvExistenciaBodega getObjInvExistenciaBodega() {
+         if(objInvExistenciaBodega == null){
+         objInvExistenciaBodega = new InvExistenciaBodega();
+         }
+        return objInvExistenciaBodega;
+    }
+
+    public void setObjInvExistenciaBodega(InvExistenciaBodega objInvExistenciaBodega) {
+        this.objInvExistenciaBodega = objInvExistenciaBodega;
+    }
+
+    public List<InvExistenciaBodega> getListInvExistenciaBodega() {
+        return listInvExistenciaBodega;
+    }
+
+    public void setListInvExistenciaBodega(List<InvExistenciaBodega> listInvExistenciaBodega) {
+        this.listInvExistenciaBodega = listInvExistenciaBodega;
+    }
+
+    public InvLoteArticulo getObjInvLoteArticulo() {
+        if(objInvLoteArticulo == null){
+        objInvLoteArticulo = new InvLoteArticulo();
+        }
+        return objInvLoteArticulo;
+    }
+
+    public void setObjInvLoteArticulo(InvLoteArticulo objInvLoteArticulo) {
+        this.objInvLoteArticulo = objInvLoteArticulo;
+    }
+
+    public List<InvLoteArticulo> getLisInvLoteArticulo() {
+        return lisInvLoteArticulo;
+    }
+
+    public void setLisInvLoteArticulo(List<InvLoteArticulo> lisInvLoteArticulo) {
+        this.lisInvLoteArticulo = lisInvLoteArticulo;
+    }
+     public String getTipoBsq() {
+        return tipoBsq;
+    }
+
+    public void setTipoBsq(String tipoBsq) {
+        this.tipoBsq = tipoBsq;
+    }
+     public CatBodega getObjCatBodega() {
+         if(objCatBodega == null){
+         objCatBodega = new CatBodega();
+         }
+        return objCatBodega;
+    }
+
+    public void setObjCatBodega(CatBodega objCatBodega) {
+        this.objCatBodega = objCatBodega;
+    }
+
+    public CatArticulo getObjCatArticulo() {
+        if(objCatArticulo == null){
+        objCatArticulo = new CatArticulo();
+        }
+        return objCatArticulo;
+    }
+
+    public void setObjCatArticulo(CatArticulo objCatArticulo) {
+        this.objCatArticulo = objCatArticulo;
+    }
+     public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    public BigInteger getTipoArticulo() {
+        return tipoArticulo;
+    }
+
+    public void setTipoArticulo(BigInteger tipoArticulo) {
+        this.tipoArticulo = tipoArticulo;
+    }
+     public int getInxTab() {
+        return inxTab;
+    }
+
+    public void setInxTab(int inxTab) {
+        this.inxTab = inxTab;
+    }
+     public List<InvDetTransaccion> getListInvDetTransaccion() {
+        return listInvDetTransaccion;
+    }
+
+    public void setListInvDetTransaccion(List<InvDetTransaccion> listInvDetTransaccion) {
+        this.listInvDetTransaccion = listInvDetTransaccion;
+    }
+
+    public InvDetTransaccion getObjInvDetTransaccion() {
+        if(objInvDetTransaccion == null){
+        objInvDetTransaccion = new InvDetTransaccion();
+        }
+        return objInvDetTransaccion;
+    }
+
+    public void setObjInvDetTransaccion(InvDetTransaccion objInvDetTransaccion) {
+        this.objInvDetTransaccion = objInvDetTransaccion;
+    }
+public String getTipoFiltro() {
+        return tipoFiltro;
+    }
+
+    public void setTipoFiltro(String tipoFiltro) {
+        this.tipoFiltro = tipoFiltro;
+    }
+    public Date getFechaIni() {
+        return fechaIni;
+    }
+
+    public void setFechaIni(Date fechaIni) {
+        this.fechaIni = fechaIni;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+    public String getTipoMovimiento() {
+        return tipoMovimiento;
+    }
+
+    public void setTipoMovimiento(String tipoMovimiento) {
+        this.tipoMovimiento = tipoMovimiento;
+    }
+    
+    //</editor-fold>
+     //<editor-fold defaultstate="collapsed" desc="GYS Orden de Compra">
+    
+     public RegCabordencompra getObjRegCabordencompra() {
+         if(objRegCabordencompra == null){
+         objRegCabordencompra = new RegCabordencompra();
+         }
+        return objRegCabordencompra;
+    }
+
+    public void setObjRegCabordencompra(RegCabordencompra objRegCabordencompra) {
+        this.objRegCabordencompra = objRegCabordencompra;
+    }
+
+    public RegDetordencompra getObjRegDetordencompra() {
+        if(objRegDetordencompra == null){
+        objRegDetordencompra = new RegDetordencompra();
+        }
+        return objRegDetordencompra;
+    }
+
+    public void setObjRegDetordencompra(RegDetordencompra objRegDetordencompra) {
+        this.objRegDetordencompra = objRegDetordencompra;
+    }
+
+    public List<RegDetordencompra> getListRegDetordencompra() {
+        return listRegDetordencompra;
+    }
+
+    public void setListRegDetordencompra(List<RegDetordencompra> listRegDetordencompra) {
+        this.listRegDetordencompra = listRegDetordencompra;
+    }
+     public List<RegCabordencompra> getListRegCabordencompra() {
+        return listRegCabordencompra;
+    }
+
+    public void setListRegCabordencompra(List<RegCabordencompra> listRegCabordencompra) {
+        this.listRegCabordencompra = listRegCabordencompra;
+    }
+      public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+  
+
+
+    
+    //</editor-fold>
+
+    public InvCabTransaccion getObjInvCabTransaccion() {
+        if(objInvCabTransaccion == null){
+        objInvCabTransaccion = new InvCabTransaccion();
+        }
+        return objInvCabTransaccion;
+    }
+
+    public void setObjInvCabTransaccion(InvCabTransaccion objInvCabTransaccion) {
+        this.objInvCabTransaccion = objInvCabTransaccion;
+    }
+
+    public CatBodega getObjBodega() {
+        if (objBodega == null) {
+            objBodega = new CatBodega();
+            //obtiene bodega del usuario conectado
+            objBodega = catBodegaFacade.find(new BigInteger("1"));
+            System.out.println("la bodega es " + objBodega.getBodId());
+
+        }
+        return objBodega;
+    }
+
+    public void setObjBodega(CatBodega objBodega) {
+        this.objBodega = objBodega;
+    }
+
+    public CatEmpresa getObjEmpresa() {
+        if(objEmpresa == null){
+        objEmpresa = new CatEmpresa();
+        //obtiene empresa del usuario conectado
+        objEmpresa = catEmpresaFacade.find(new BigInteger("1"));
+            System.out.println("la empresa es "+objEmpresa.getEmpId());
+        }
+        return objEmpresa;
+    }
+
+    public void setObjEmpresa(CatEmpresa objEmpresa) {
+        this.objEmpresa = objEmpresa;
+    }
+
+    public BigInteger getSeccionId() {
+        return seccionId;
+    }
+
+    public void setSeccionId(BigInteger seccionId) {
+        this.seccionId = seccionId;
+    }
+
+    public BigInteger getPerchaId() {
+        return perchaId;
+    }
+
+    public void setPerchaId(BigInteger perchaId) {
+        this.perchaId = perchaId;
+    }
+
+    public BigInteger getColumnaId() {
+        return columnaId;
+    }
+
+    public void setColumnaId(BigInteger columnaId) {
+        this.columnaId = columnaId;
+    }
+
+    public BigInteger getNivelId() {
+        return nivelId;
+    }
+
+    public void setNivelId(BigInteger nivelId) {
+        this.nivelId = nivelId;
+    }
+
+  
+
+   
+   
+   
+
+    
+
+    
+
+    
+
+   
+
+   
+
+    
+   
+
+   
+
+   
+   
+}

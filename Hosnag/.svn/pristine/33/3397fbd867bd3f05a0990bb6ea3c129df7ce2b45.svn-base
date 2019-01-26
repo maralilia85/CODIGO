@@ -1,0 +1,64 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pr="http://primefaces.org/rio">
+
+    <div class="Animated05" id="layout-menu-cover">
+        <ul class="layout-menu">
+            <li>
+                <a class="menulink ripplelink">
+                    <i class="icon-round58 Fs40"></i>
+                    <span class="Fs16">Rodriguez Maria<i class="icon-downwards Fright Fs16"></i><br /><span class="Fs12 FontRobotoLight">Sr. Administrador</span></span>
+                </a>
+                <ul>
+                    <li><a href="#" class="menulink ripplelink"><i class="icon-user158 Fs16"></i> Perfiles usuarios</a></li>
+                    <li><a href="#" class="menulink ripplelink"><i class="icon-two385 Fs16"></i> Crear usuarios</a></li>
+                    <li><a href="#" class="menulink ripplelink"><i class="icon-thermostat1 Fs16"></i> Cerrar Sesion</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="Separator"></div>
+        <!--Se solicita por el usurio quitar catalogo de Empresa reunion 03-10-2017!-->
+        
+        <pr:menu>
+             <p:submenu label="Catálogos" icon="fa fa-clipboard">
+               
+                <p:menuitem value="Artículos" icon="icon-add" outcome="/paginas/catalogos/mantenimientoArticulos.xhtml" />
+               
+            </p:submenu>
+           
+            <p:submenu label="Bodega" icon="icon-web37">
+               
+                <p:menuitem value="Ingreso" icon="fa fa-sign-in" outcome="/paginas/transacciones/ingreso.xhtml" />
+                <p:menuitem value="Egreso" icon="fa fa-sign-out" outcome="/paginas/transacciones/egreso.xhtml" />
+                <p:menuitem value="Ajustes" icon="icon-adjust6" outcome="/paginas/transacciones/ajuste.xhtml" />
+                 <p:menuitem value="Ubicación/Stock" icon="fa  fa-barcode" outcome="/paginas/consultas/existencia.xhtml" />
+                <p:menuitem  value="Inventario" icon="fa fa-sort-amount-desc" outcome="/paginas/inventario/inventario.xhtml" />
+                <p:menuitem  value="Consultas" icon="icon-search" outcome="/paginas/consultas/consultas.xhtml" />
+                <p:menuitem  value="Reportes" icon="fa fa-clipboard" outcome="/inicio.xhtml" />
+               
+            </p:submenu>
+              <p:submenu  label="Farmacia" icon="fa fa-filter ">
+                   <p:menuitem value="Ingreso" icon="fa fa-sign-in" outcome="/paginas/farmacia/ingreso.xhtml" />
+                <p:menuitem value="Despacho" icon="fa  fa-cart-plus " outcome="/paginas/farmacia/despacho.xhtml" />
+                <p:menuitem value="Devolución" icon="fa fa-retweet" outcome="/paginas/farmacia/devolucion.xhtml" />
+                <p:menuitem value="Ubicación/Stock" icon="fa  fa-barcode" outcome="/paginas/consultas/existencia.xhtml" />
+                <p:menuitem  value="Inventario" icon="fa fa-sort-amount-desc" outcome="/paginas/farmacia/inventarioFarmacia.xhtml" />
+                <p:menuitem  value="Consultas" icon="icon-screen47 Fs16" outcome="/paginas/consultas/consultasFar.xhtml" />
+                <p:menuitem  value="Reportes" icon="fa fa-clipboard" outcome="/inicio.xhtml" />
+               
+            </p:submenu>
+           
+          
+         
+            
+           
+            <p:separator />
+        </pr:menu>
+
+    </div>
+
+</ui:composition>

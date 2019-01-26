@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formEgreso">
+        <p:fieldset legend="Ingreso por Transferencias">
+          
+          <p:panel id="filtro" visible="true" style="border: hidden">
+              
+              
+                    <p:selectOneRadio value="#" columns="1">
+                <f:selectItem itemLabel="Todas" itemValue="T" />
+                <f:selectItem itemLabel="Número" itemValue="N" />
+                <f:selectItem itemLabel="Fecha" itemValue="F" />
+            </p:selectOneRadio>
+            
+                   <p:outputLabel  value="Número:" class="Fs16" />
+                   <p:spacer width="5"/>
+               <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Número" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                 </p:inputText>
+                   <div class="EmptyBox5"/>
+                    <p:outputLabel  value="Fecha:" class="Fs16" />
+                    <p:spacer width="5"/>
+                    
+                    <p:calendar  placeholder="Fecha Transf" 
+                                 required="true"  size="14"
+                                 pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+               
+                    
+                </p:panel> 
+                         <p:panel id="pEncabezado" style="background-color: #EAF4FD">   
+               
+                    <p:outputLabel  value="Bodega: 
+                                    Farmacia"/>
+                    <p:spacer width="20"/>
+                   
+                   
+                 <p:spacer width="20"/>
+                 <p:outputLabel  value="Valor Total : 150" />
+                  <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+               
+                    
+
+            </p:panel>
+      
+
+            <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dtTransferencia" value="#" var="transf"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtTransferencia"/>
+
+
+
+
+
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                      
+                   <h:outputText value="800"/>
+               
+                    </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value=""/>
+
+                    </p:column>
+                    <p:column headerText="#{etiquetas['lote']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                   
+                    <h:outputText value=""/>
+                           
+
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fechaElab']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fechaCaduc']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value=""/>
+                    </p:column>
+
+
+                    <p:column headerText="#{etiquetas['cant']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="6"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cantIngreso']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+
+                            </f:facet>
+                        </p:cellEditor>
+
+                    </p:column>
+                    <p:column headerText="#{etiquetas['cIngreso']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="64.1245"/>
+                    </p:column>
+                    <p:column headerText="Total" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="386"/>
+                    </p:column>
+                  <p:column headerText="Ingreso" class="Wid8 TexAlCenter">
+                         <p:commandLink  class="#{botones.lnkIngreso}"
+                                        title="Realizar Ingreso">
+                             <f:setPropertyActionListener value="#{solic}" target="#" />
+                        </p:commandLink>
+                      </p:column>
+                    
+
+                </p:dataTable>                     
+            </p:panel>
+
+
+        </p:fieldset>
+
+    </h:form>
+
+
+
+
+
+
+
+
+
+</ui:composition>

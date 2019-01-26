@@ -1,0 +1,135 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                 template="/WEB-INF/template.xhtml">
+    <ui:define name="content">
+         <h:form id="formEmpresa">
+        <p:fieldset legend="Crear Empresa">
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:inputText placeholder="Buscar empresa por descripción " style="width: 20%" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+
+
+                     <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                    <p:commandButton icon="#{botones['boton.iconnuevo']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+                    </p:commandButton>
+                </p:panel> 
+                <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dtEmpresa" value="#" var="art"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtEmpresa"/>
+
+
+                   
+                   
+
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Generico" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                   
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <f:facet name="input">
+                                 <h:selectOneMenu value="#"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Activo" itemValue="C" /> 
+                                     <f:selectItem itemLabel="Inactivo" itemValue="C" />
+
+                                </h:selectOneMenu> 
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                  
+                 
+                   
+                    
+                    
+                     <p:column headerText="#{etiquetas['opciones']}" class="Wid10 TexAlCenter">
+                         <p:commandLink id="dynaButton" class="icon-compose-1"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{art}" target="#" />
+                        </p:commandLink>
+                         <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
+                            <p:submenu label="Mantenimiento">
+                                
+                                <p:menuitem value="#{botones['inactivar']}"  icon="#{botones['boton.iconinactiva']}" action="#"
+                                            title="#{botones['title.inactiva']}" />
+                                <p:menuitem value="#{botones['eliminar']}"  icon="#{botones['boton.iconeliminar']}" action="#"
+                                            title="#{botones['title.eliminar']}" />
+                            </p:submenu>
+                              <p:submenu label="Bodegas">
+                                
+                                  <p:menuitem value="#{botones['asignar']}"  icon="#{botones['boton.iconaceptar']}" action="#"
+                                              title="#{botones['title.asignae']}" />
+                                  <p:menuitem value="#{botones['buscar']}"  icon="#{botones['boton.iconbuscar']}" action="#"
+                                              title="#{botones['title.buscar']}" />
+                            </p:submenu>
+                           
+                           
+
+                        </p:menu>
+                       
+
+                    </p:column>
+                    
+                    
+
+
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+        
+    </ui:define>
+
+   
+        
+       
+  
+
+</ui:composition>

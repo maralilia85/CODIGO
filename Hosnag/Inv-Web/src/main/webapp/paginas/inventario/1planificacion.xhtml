@@ -1,0 +1,371 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formPlanif">
+        <p:fieldset legend="Planificación de Inventario">
+            <p:outputLabel  value="Estado:#{inventarioController.objInvCabtomafisica.ctfEstado == 'N' ? 'Planificado' : 
+                                            inventarioController.objInvCabtomafisica.ctfEstado == 'T' ? 'Tomado' :
+                                            inventarioController.objInvCabtomafisica.ctfEstado == 'F' ? 'Finalizado' :
+                                             inventarioController.objInvCabtomafisica.ctfEstado == 'I' ? 'Inactivo' :
+                                            null}" class="Red FontBold" />
+              
+            <p:commandButton id="btnImprimir"  
+                             actionListener="#{inventarioController.imprimirReporte('PL')}"
+                             icon="#{botones['boton.iconimprimir']}"
+                             disabled="#{empty inventarioController.listInvDettomafisica}"
+                             title="#{botones['imprimir']}"
+                             style="float: right"
+                             process="@this"
+                             update="tabPrincipal:formImpReporte"
+                             onclick="PF('dlgImpReporte').show();"/>
+
+            
+            
+            <p:commandButton  icon="#{botones['boton.iconinactiva']}"
+                              action="#{inventarioController.inactivaInv()}"
+                                disabled="#{inventarioController.objInvCabtomafisica.ctfId == null or inventarioController.objInvCabtomafisica.ctfEstado == 'I'}"
+                                     style="float: right"
+                                     process="@this"
+                                     update="formPlanif"
+                                     title="#{botones['title.inactiva']}">
+                    </p:commandButton>
+          
+            <p:commandButton  icon="#{botones['boton.iconfinalizar']}"
+                              action="#{inventarioController.validaFinalizarInv()}"
+                              disabled="#{inventarioController.objInvCabtomafisica.ctfId == null or inventarioController.objInvCabtomafisica.ctfEstado == 'F'}"
+                              style="float: right"
+                              process="@this"
+                              onclick="PF('dlgConfirmaInv').show();"
+                              update="tabPrincipal:formConfInv"
+                              title="Finalizar Inventario">
+            </p:commandButton>
+            <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                <p:fieldset legend="Datos Planificación">
+                      <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-4,ui-grid-col-8" >
+                     <p:outputLabel  value="Tipo"/>   
+               <p:selectOneMenu  value="#{inventarioController.tipoArticulo}" class="Wid80"
+                                               disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                  filter="true" filterMatchMode="contains"
+                                  required="true" requiredMessage="Tipo Artículo Requerido">
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(inventarioController.objCatBodega.bodId)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                        <p:ajax event="change" update="formPlanif" listener="#{inventarioController.selecTipoInv()}"  />
+                </p:selectOneMenu>
+                    
+                      <p:outputLabel  value="Fecha"/>   
+                      <p:calendar   value="#{inventarioController.objInvCabtomafisica.ctfFecha}" 
+                                   placeholder="Fecha.Planif" 
+                                required="true"  size="12"
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                          <p:ajax event="dateSelect" update="msgs,formPlanif"  />
+
+                    </p:calendar>
+                       <p:outputLabel  value="No.Planificación"/>     
+                     <p:inputText value="#{inventarioController.objInvCabtomafisica.ctfNumero}"
+                                 placeholder="No.Planificación" 
+                                  disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                         <p:ajax event="blur" update="msgs,formPlanif" listener="#{inventarioController.cargaCabTomaFisica()}" />
+                    </p:inputText>
+                    
+         
+                <p:outputLabel  value="Imprimir Etiquetas" />
+                <p:selectBooleanCheckbox value="#{inventarioController.etiquetas}" class="Wid80 TexAlCenter">
+                    <p:ajax event="change" update="formPlanif" listener="#{inventarioController.editarCabTomaFisica('IE')}" />
+                </p:selectBooleanCheckbox>
+               
+                    
+                 </p:panelGrid>
+                    
+                </p:fieldset>
+                <p:fieldset legend="Responsables">
+                      <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-4,ui-grid-col-8">
+
+               <p:outputLabel  value="Jefe de Bodega:"/>
+
+               <p:inputText value="#{inventarioController.objInvCabtomafisica.ctfJefeBodega}" placeholder="Jefe de Bodega" 
+                                         autocomplete="off" 
+                                         disabled="true"
+                                         class="Wid90"
+                                         onblur="value = value.toUpperCase();" 
+                                         required="true">
+                </p:inputText>
+                            
+                        
+                    
+
+
+                        </p:panelGrid>
+                    
+                </p:fieldset>
+                
+            </p:panelGrid>
+          
+          
+              
+                  <p:outputLabel  value="Observación"/>
+                 <p:inputTextarea value="#{inventarioController.objInvCabtomafisica.ctfObservacion}"  
+                                  placeholder="Observación"
+                              disabled="#{inventarioController.objInvCabtomafisica.ctfEstado == 'F'}"
+                              required="false"
+                                     rows="3" cols="33" class="Wid100">
+                     <p:ajax event="blur" update="formPlanif" listener="#{inventarioController.editarCabTomaFisica('OB')}" />
+                </p:inputTextarea>
+         
+        </p:fieldset>
+        
+        <p:commandButton value="Reg.Items Fuera de Inv" icon="#{botones['boton.iconnuevo']}"
+                         disabled="#{inventarioController.objInvCabtomafisica.ctfId == null or inventarioController.objInvCabtomafisica.ctfEstado  == 'P'}"
+                 onclick="PF('dlgNew').show();"
+                              update="tabPrincipal:formNew"                                     
+                              title="#{botones['title.nuevo']}">
+</p:commandButton>
+    
+        <p:panel id="pResultado" style="border: hidden">
+            <p:dataTable id="dttomafis" value="#{inventarioController.listInvDettomafisica}" var="tf"
+                         paginatorPosition="top"
+                         reflow="true"
+                         paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                         paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                         editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                <p:ajax event="cellEdit" update="dttomafis" />
+
+                <p:column headerText="#{etiquetas['ord']}" style="width: 2%">
+                    <h:outputText value="#{index + 1}"/>
+                </p:column>
+
+
+                <p:column headerText="#{etiquetas['codigo']}" filterBy="#{tf.invExistenciaBodega.catArticulo.artCodigo}"
+                          filterMatchMode="contains" class="Wid8" >
+                    <h:outputText value="#{tf.invExistenciaBodega.catArticulo.artCodigo}" />
+
+                </p:column>
+
+                <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{tf.invExistenciaBodega.catArticulo.artNombgenerico}"
+                          filterMatchMode="contains" class="Wid45" >
+                    <h:outputText value="#{tf.invExistenciaBodega.catArticulo.artNombgenerico}" title="#{tf.invExistenciaBodega.catArticulo.artNombgenerico}"/>
+
+                </p:column>
+                <p:column headerText="Pres."  class="Wid10" >
+                    <h:outputText value="#{tf.invExistenciaBodega.catArticulo.catGenConcen.genDescripcion}"/>
+                </p:column>
+                <p:column headerText="Precio"  class="Wid8" >
+                    <h:outputText value="#{tf.dtfExiCosto}"/>
+                </p:column>
+
+                <p:column headerText="Cantidad" class="Wid8">
+
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{tf.dtfCantidadtoma}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText  onblur="value = value.toUpperCase();" 
+                                          placeholder="#{etiquetas['cant']}" 
+                                          value="#{tf.dtfCantidadtoma}"
+                                          autocomplete="off" required="true">
+                                <p:ajax event="blur"  listener="#{inventarioController.editDetTomaFisica(tf, 'CT')}" />
+                            </p:inputText>
+
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Observación" class="Wid20">
+
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{tf.dtfObservacion}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText  onblur="value = value.toUpperCase();" 
+                                          placeholder="Observación" 
+                                          value="#{tf.dtfObservacion}"
+                                          autocomplete="off" >
+                                <p:ajax event="blur"  listener="#{inventarioController.editDetTomaFisica(tf, 'OB')}" />
+                            </p:inputText>
+
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+            </p:dataTable>                     
+        </p:panel>
+        
+    </h:form>
+    
+    
+    
+     <p:dialog header="Crear Planificación Inventario" widgetVar="dlgGeneraInv" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formNewInv">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Confirma generar nueva planificación del inventario?" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.nuevo']}"
+                                          process="@this"
+                                          action="#{inventarioController.generaCabTomaFisica()}"
+                                          onclick="PF('dlgGeneraInv').hide();"
+                                          update="tabPrincipal:formPlanif">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgGeneraInv').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog header="Confirmar Finalizar Inventario" widgetVar="dlgConfirmaInv" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formConfInv">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="#{inventarioController.mensajeInv}" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="Reporte"
+                                          icon="fa fa-search Fs16 white"
+                                          title="Visualizar Reporte Comparativo de Saldos"
+                                          process="@this"
+                                          action="#{inventarioController.reporteComparativo()}"
+                                          onclick="PF('dlgConfirmaInv').hide();"
+                                          update="tabPrincipal">
+                        </p:commandButton>
+                        <p:commandButton  value="Finalizar"
+                                          icon="#{botones['boton.iconaceptar']}"
+                                          title="Finalizar Inventario"
+                                          disabled="#{inventarioController.ctrFinaliza}"
+                                          process="@this"
+                                          action="#{inventarioController.finalizaInv()}"
+                                          onclick="PF('dlgConfirmaInv').hide();"
+                                          update="tabPrincipal:formPlanif" >
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgConfirmaInv').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    
+     
+   <p:dialog header="Planificación de Inventario" widgetVar="dlgImpReporte" responsive="true"  width="90%" height="Wid70" class="Wid90" position="center top"  
+              fitViewport="true"     resizable="true" modal="true" appendTo="@(body)">
+        <h:form style="width: 100%; height: 3%">               
+            <p:commandButton icon="#{botones['boton.iconcancelar']}" value="#{botones.cerrar}"
+                             title="Regresar"
+                             onclick="PF('dlgImpReporte').hide();" >
+            </p:commandButton>
+        </h:form>
+
+        <h:form id="formImpReporte" class="Bord0"  style="width: 100%; height: 100%"   enctype="multipart/form-data" >
+            <p:panel class="Bord0">
+                <object type="application/pdf" data="#{inventarioController.pathImpresion}" width="90%" height="600px" ></object>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog header="Registrar Item Fuera de Inventario" widgetVar="dlgNew" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formNew">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="Código Artículo" class="Fs14 red"/>
+                        
+                        <p:autoComplete id="autoExp" value="#{inventarioController.objCatArticulo.artId}" 
+                                        completeMethod="#{inventarioController.autocompletarCatArt}" 
+                                        var="art" itemLabel="#{art.label}"  itemValue="#{art.value}"  minQueryLength="4" 
+                                        placeholder="Codigo/Descripcion" scrollHeight="120" 
+                                        required="true"
+                                        requiredMessage="Articulo requerido"
+                                        title="Ingrese primeros 5 digitos" class="Wid90"
+                                        inputStyleClass="Wid90">
+                                    <p:ajax event="itemSelect" update="btnNew" />
+                        </p:autoComplete>
+                          <p:outputLabel  value="Cant."/>   
+                          <p:inputText  value="#{inventarioController.objInvDettomafisica.dtfCantidadtoma}"
+                                        placeholder="Cantidad"
+                                        disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                        required="true">
+                              <p:ajax event="blur" update="btnNew" />
+                          </p:inputText>
+                            <p:outputLabel  value="Observación"/>     
+                            <p:inputText value="#{inventarioController.objInvDettomafisica.dtfObservacion}"
+                                 placeholder="Observación" 
+                                  disabled="#{inventarioController.objInvCabTransaccion.ctrEstado == 'F'}"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+
+                            <p:ajax event="blur" update="btnNew" />
+                            </p:inputText>
+                                
+
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton id="btnNew"  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.nuevo']}"
+                                          process="@this"
+                                          action="#{inventarioController.crearItemFueraInv()}"
+                                          onclick="PF('dlgNew').hide();"
+                                          update="tabPrincipal:formPlanif">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgNew').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    
+       
+  
+
+</ui:composition>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ACTA" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d591680c-e64d-4c2e-ad23-fdf2fd2546eb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="27"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["G:\\reporte\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+CT.CTR_ID,
+CT.CTR_NUMERO,
+TRUNC(CT.CTR_FECHA) FECHA,
+E.EMP_NOMBRE,
+E.EMP_DESCRIPCION,
+E.EMP_LOGO,
+E.EMP_CIUDAD,
+CT.BOD_ID,
+B.BOD_DESCRIPCION,
+EM.EML_NOMBRE RBODEGA,
+CT.CTR_TIPO,
+A.ART_NOMBGENERICO,
+CT.TIPO_ARTICULO,
+CT.CTR_TOTAL,
+CT.CTR_TOTALDESC,
+CT.CTR_TOTALIVA,
+CT.CTR_TOTAGENERAL,
+CT.CTR_NOREF,
+AR.BOD_DESCRIPCION ARECIBE,
+RA.EML_NOMBRE RAREA,
+RT.EML_NOMBRE RTIPO,
+CT.CTR_NOREF,
+CT.CTR_OBSERVACION,CT.CTR_JEFE,
+CT.CTR_ENCARGADO,
+CT.CTR_ENCARGAREA,
+CT.CTR_PERSONARETIRA
+
+FROM INV_CABTRANSACCION CT
+LEFT JOIN CAT_BODEGA B ON B.BOD_ID = CT.BOD_ID
+LEFT JOIN CAT_BODEGA AR ON AR.BOD_ID = CT.CTR_AREA
+LEFT JOIN CAT_ARTICULO A ON A.ART_ID = CT.TIPO_ARTICULO
+LEFT JOIN REG_EMPLEADO RT ON A.EML_ID = RT.EML_ID
+LEFT JOIN REG_EMPLEADO EM ON B.EML_ID = EM.EML_ID
+LEFT JOIN REG_EMPLEADO RA ON AR.EML_ID = RA.EML_ID
+LEFT JOIN CAT_EMPRESA E ON B.EMP_ID = E.EMP_ID
+WHERE CT.BOD_ID = $P{bodId}
+AND CT.CTR_ID = $P{clave}]]>
+	</queryString>
+	<field name="CTR_ID" class="java.math.BigDecimal"/>
+	<field name="CTR_NUMERO" class="java.math.BigDecimal"/>
+	<field name="FECHA" class="java.sql.Timestamp"/>
+	<field name="EMP_NOMBRE" class="java.lang.String"/>
+	<field name="EMP_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_LOGO" class="java.lang.String"/>
+	<field name="EMP_CIUDAD" class="java.lang.String"/>
+	<field name="BOD_ID" class="java.math.BigDecimal"/>
+	<field name="BOD_DESCRIPCION" class="java.lang.String"/>
+	<field name="RBODEGA" class="java.lang.String"/>
+	<field name="CTR_TIPO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<field name="TIPO_ARTICULO" class="java.math.BigDecimal"/>
+	<field name="CTR_TOTAL" class="java.lang.Double"/>
+	<field name="CTR_TOTALDESC" class="java.lang.Double"/>
+	<field name="CTR_TOTALIVA" class="java.lang.Double"/>
+	<field name="CTR_TOTAGENERAL" class="java.lang.Double"/>
+	<field name="CTR_NOREF" class="java.lang.String"/>
+	<field name="ARECIBE" class="java.lang.String"/>
+	<field name="RAREA" class="java.lang.String"/>
+	<field name="RTIPO" class="java.lang.String"/>
+	<field name="CTR_OBSERVACION" class="java.lang.String"/>
+	<field name="CTR_JEFE" class="java.lang.String"/>
+	<field name="CTR_ENCARGADO" class="java.lang.String"/>
+	<field name="CTR_ENCARGAREA" class="java.lang.String"/>
+	<field name="CTR_PERSONARETIRA" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="153" splitType="Stretch">
+			<textField>
+				<reportElement uuid="948a5a10-1f4f-40ac-8e8c-df6ed2939401" style="Column header" x="440" y="-2" width="70" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="70490990-482c-4a86-8631-c2f438b24416" style="Column header" x="510" y="-2" width="40" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="cf7b3f69-674b-4877-a331-80e8430226b5" style="Column header" x="440" y="20" width="115" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fb2a92ef-eae4-4a3b-b369-fa7f2f8a4f1e" x="5" y="2" width="435" height="52"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTA ENTREGA-RECEPCIÓN DE ACTIVO FIJO Y BIENES DE CONTROL ADMINISTRATIVO ENTRE ADMINISTRADOR DE BODEGA Y CUSTODIO DEL BIEN.]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="60fbdb30-6aa9-43ce-ba2c-52256e02a1c4" x="5" y="55" width="113" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_CIUDAD}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="d0dfa385-ae6c-46e2-b5e0-9a19062503f5" x="118" y="55" width="127" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="173ac47d-a0f7-4492-9c19-f9947047db99" x="72" y="55" width="9" height="20"/>
+				<textElement>
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bf847934-67b0-44c9-b6d9-51e753cf970a" x="0" y="78" width="556" height="53"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[En cumplimiento al reglamento de Bienes Sector Público conforme al registro oficial 378 del 17-octubre-2006 y el Art 10 Inspección y Recepción se prodece a la Entrega-Recepción de los ACTIVOS  FIJOS Y CONTROL ADMINISTRATIVO entre el Bodeguero]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="94c07658-d458-4b0e-9942-1b2d737eb1dd" x="410" y="131" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ARECIBE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7cd0d23e-e3df-4fdb-a333-c3b9171801fd" x="4" y="131" width="137" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTR_ENCARGADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6ee9b6a5-da2c-48fc-942d-0b6964e73ae9" x="347" y="131" width="63" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[del área de ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6a436e49-f32a-47e3-8a2b-548efaab9b73" x="143" y="131" width="75" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[y El Sr./Sra.]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="56db490f-449a-430a-ad8b-554464ac779f" x="218" y="131" width="129" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTR_PERSONARETIRA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="66" splitType="Stretch">
+			<line>
+				<reportElement uuid="9bc85a98-1653-4e52-b53d-a73760a66530" positionType="FixRelativeToBottom" x="3" y="0" width="552" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<subreport>
+				<reportElement uuid="09bc7802-6dea-4e4b-86c4-69ad6c73ff33" x="4" y="1" width="552" height="65"/>
+				<subreportParameter name="clave">
+					<subreportParameterExpression><![CDATA[$F{CTR_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{direccion} + "reportDetalleACTA.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="87" splitType="Stretch">
+			<line>
+				<reportElement uuid="27b5a7ba-c9e5-450f-a5fc-203af73f0381" x="-2" y="32" width="143" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="7b64a3d8-7c00-4acf-8f6c-82f7c1a48ced" x="326" y="34" width="128" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="e20e8dbf-f4cb-4cc5-a660-aa022f78d471" x="330" y="70" width="110" height="16"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Entrega Conforme]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ec9548cf-846f-4648-a9fb-6e6a2f7ed058" x="6" y="70" width="138" height="16"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recibe Conforme]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="95ac3327-8173-471f-938e-258f8bc6984c" x="3" y="35" width="138" height="15"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTR_PERSONARETIRA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c29e46ec-bce9-429c-9fb2-69c07cdedab5" x="326" y="37" width="128" height="17"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTR_ENCARGADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b4ec0409-3029-43e4-ab5e-171223b8306d" x="4" y="51" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ARECIBE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f90cfd6d-44e5-41d4-bb6a-ac49d4ac1d49" x="326" y="54" width="125" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[GUARDA ALMACEN DEL]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="e395635e-59d6-4688-a0d2-d228a9133588" x="451" y="54" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

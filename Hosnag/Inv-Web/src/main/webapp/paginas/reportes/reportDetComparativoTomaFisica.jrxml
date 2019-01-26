@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetComparativoTomaFisica" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 2/2/2018 21:59:46 (QP5 v5.252.13127.32867) */
+SELECT S.ART_CODIGO CODSUB,
+       S.ART_NOMBGENERICO SUBTIPO,
+       A.ART_CODIGO,
+       A.ART_NOMBGENERICO,
+       G.GEN_DESCRIPCION,
+       DF.CTF_ID,
+       DF.DTF_CANTIDADTOMA,
+       DF.DTF_CANTDIF,
+       DF.DTF_CANTSOB,
+       DF.DTF_EXICOSTO,
+       DF.DTF_SALDOACTUAL,
+       DF.DTF_TOTALSOB,
+       DF.DTF_TOTALFALT,
+       DF.DTF_OBSERVACION,
+       DF.DTF_TOTAL,
+       L.LOT_DESCRIPION,
+       L.LOT_REGSANITARIO,
+       L.LOT_FECHAELAB,
+       L.LOT_FECHACADUC
+  FROM INV_DETTOMAFISICA DF
+       LEFT JOIN INV_EXISTENCIA_BODEGA E ON DF.EXI_ID = E.EXI_ID
+       LEFT JOIN CAT_ARTICULO A ON E.ART_ID = A.ART_ID
+       LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+       LEFT JOIN CAT_GENERAL G ON A.GENID_CONCEN = G.GEN_ID
+       LEFT JOIN INV_LOTE_ARTICULO L ON DF.LOT_ID = L.LOT_ID
+WHERE DF.CTF_ID = $P{clave}]]>
+	</queryString>
+	<field name="CODSUB" class="java.lang.String"/>
+	<field name="SUBTIPO" class="java.lang.String"/>
+	<field name="ART_CODIGO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<field name="GEN_DESCRIPCION" class="java.lang.String"/>
+	<field name="CTF_ID" class="java.math.BigDecimal"/>
+	<field name="DTF_CANTIDADTOMA" class="java.lang.Double"/>
+	<field name="DTF_CANTDIF" class="java.math.BigDecimal"/>
+	<field name="DTF_CANTSOB" class="java.math.BigDecimal"/>
+	<field name="DTF_EXICOSTO" class="java.lang.Double"/>
+	<field name="DTF_SALDOACTUAL" class="java.lang.Double"/>
+	<field name="DTF_TOTALSOB" class="java.lang.Double"/>
+	<field name="DTF_TOTALFALT" class="java.lang.Double"/>
+	<field name="DTF_OBSERVACION" class="java.lang.String"/>
+	<field name="DTF_TOTAL" class="java.lang.Double"/>
+	<field name="LOT_DESCRIPION" class="java.lang.String"/>
+	<field name="LOT_REGSANITARIO" class="java.lang.String"/>
+	<field name="LOT_FECHAELAB" class="java.sql.Timestamp"/>
+	<field name="LOT_FECHACADUC" class="java.sql.Timestamp"/>
+	<variable name="SUBTOTALEX" class="java.lang.Double" resetType="Group" resetGroup="SUBTIPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{DTF_TOTALSOB}]]></variableExpression>
+	</variable>
+	<variable name="SUBTOTALFALT" class="java.lang.Double" resetType="Group" resetGroup="SUBTIPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{DTF_TOTALFALT}]]></variableExpression>
+	</variable>
+	<group name="SUBTIPO">
+		<groupExpression><![CDATA[$F{SUBTIPO}]]></groupExpression>
+		<groupHeader>
+			<band height="19" splitType="Immediate">
+				<textField>
+					<reportElement uuid="9150b396-77cc-438f-a7c9-00bc6cac6ac8" mode="Opaque" x="3" y="2" width="800" height="16" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G1Field"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="47006f90-56b7-430b-8288-ce38791156db" x="3" y="1" width="39" height="17"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{CODSUB}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="0f8c7d3c-4ab1-4969-8083-7a15e4d3ec1a" x="54" y="2" width="199" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{SUBTIPO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="32">
+				<staticText>
+					<reportElement uuid="b0704779-8ddf-4c7a-afb9-35db920a9715" x="493" y="2" width="135" height="15"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SubTotal Excedentes:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="14152fef-cd84-40e6-a8a4-319ac4f6a328" x="494" y="17" width="134" height="15"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SubTotal Faltantes:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="fee37da4-3f6d-4676-af59-19c4db56133f" x="629" y="3" width="100" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{SUBTOTALEX}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="6c7e77b1-6559-4f98-b6c6-a389f676e04c" x="630" y="16" width="100" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{SUBTOTALFALT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="43" y="1" width="148" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="303" y="1" width="62" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pres.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="367" y="1" width="68" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SaldoKardex]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aeccefb4-b62b-449a-8b29-35f7b1a4dd76" x="439" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Físico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e3f5e83-0d69-4c93-a41d-96d52947676e" x="480" y="1" width="43" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e9c3cc12-7462-424d-ad6c-cbcf3656e34a" x="526" y="1" width="52" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sobrante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3dae775-1a65-4022-ae60-07c35a784e6c" x="578" y="1" width="52" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Faltante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4d5ef773-377d-47c5-a99f-006b6be4828f" x="630" y="1" width="60" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[T.Sobrante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6fced3c-c017-47ef-a777-e98f755ef579" x="690" y="1" width="60" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[T.Faltante]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="41a503d9-756b-4519-8044-c890b4adc446" x="0" y="2" width="42" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a482e15e-3815-4f8f-9b35-617717409fbd" x="44" y="2" width="259" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_NOMBGENERICO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="25d25e43-8a17-4813-87a2-c392f9e13794" x="306" y="2" width="62" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GEN_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="239d3c55-196a-4766-9a6b-640985e97f40" x="371" y="2" width="68" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_SALDOACTUAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="042b048a-5652-4d98-9485-e02cc55f2f17" x="440" y="0" width="40" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_CANTIDADTOMA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8dc580ec-97cf-4209-8917-b9b9609a6423" x="482" y="0" width="41" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_EXICOSTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="38985205-1deb-4e9b-bb1a-1487bef55057" x="526" y="2" width="52" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_CANTSOB}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="245c4a9a-559c-467f-9efe-8d1f055bc94f" x="581" y="0" width="49" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_CANTDIF}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6e3191bf-6f40-4a9a-8200-d00f2bedaf45" x="632" y="0" width="58" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_TOTALSOB}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="39d59209-49a0-48ac-b1cb-4117cd86fa10" x="690" y="0" width="102" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTF_TOTALFALT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

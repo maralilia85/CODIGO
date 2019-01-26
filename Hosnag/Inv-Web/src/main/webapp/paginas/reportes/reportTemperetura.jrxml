@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportTemperatura" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d591680c-e64d-4c2e-ad23-fdf2fd2546eb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.callouts" value="##Tue Feb 06 13:44:12 COT 2018"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["G:\\reporte\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 11/2/2018 12:38:18 (QP5 v5.252.13127.32867) */
+SELECT CL.TEM_ID,
+CL.TEM_TIPO,
+CL.TEM_NOTER,
+CL.TEM_ANIO,
+CL.TEM_MES,
+B.BOD_DESCRIPCION,
+E.EMP_DESCRIPCION,
+E.EMP_LOGO,
+E.EMP_NOMBRE
+  FROM REG_CABTEMP CL
+       LEFT JOIN CAT_BODEGA B ON CL.BOD_ID = B.BOD_ID
+       LEFT JOIN CAT_EMPRESA E ON E.EMP_ID = B.EMP_ID
+       WHERE CL.BOD_ID = $P{bodId}
+       AND CL.TEM_ID = $P{clave}]]>
+	</queryString>
+	<field name="TEM_ID" class="java.math.BigDecimal"/>
+	<field name="TEM_TIPO" class="java.lang.String"/>
+	<field name="TEM_NOTER" class="java.math.BigDecimal"/>
+	<field name="TEM_ANIO" class="java.lang.String"/>
+	<field name="TEM_MES" class="java.lang.String"/>
+	<field name="BOD_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_LOGO" class="java.lang.String"/>
+	<field name="EMP_NOMBRE" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="124" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62af3205-a7f8-46b2-88ca-6695537f150d" style="SubTitle" x="105" y="76" width="261" height="22" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[REPORTE REGISTRO TEMPERATURA]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="805f2db4-e602-4f3a-ab09-258647287a0e" x="106" y="1" width="357" height="22"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8ebfb6a2-7cf6-4b2a-9f07-d7fce66eea3b" x="105" y="47" width="357" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BOD_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5e7c88e1-29e8-4a6e-82d9-b1d2bb438776" x="105" y="25" width="357" height="21"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7d520e4b-ca95-43bf-b444-fdb389acb491" style="Column header" x="366" y="103" width="36" height="21" forecolor="#000000"/>
+				<textElement/>
+				<text><![CDATA[MES:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1b5856b8-2211-411a-8dc0-646aa7ec5801" style="Column header" x="0" y="103" width="153" height="21" forecolor="#000000"/>
+				<textElement/>
+				<text><![CDATA[TERMOHIGROMETRO NO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="948a5a10-1f4f-40ac-8e8c-df6ed2939401" style="Column header" x="677" y="3" width="80" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="70490990-482c-4a86-8631-c2f438b24416" style="Column header" x="757" y="3" width="40" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="d3996aa5-bcc2-4b7e-93d1-261599f32c02" x="2" y="2" width="99" height="99"/>
+				<imageExpression><![CDATA[$P{direccion}+$F{EMP_LOGO}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="8a145e12-b351-46a9-a499-ebbcddaf7d69" style="Column header" x="253" y="103" width="39" height="21" forecolor="#000000"/>
+				<textElement/>
+				<text><![CDATA[AÑO:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="cf7b3f69-674b-4877-a331-80e8430226b5" style="Column header" x="677" y="24" width="120" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="62e05452-b48c-4478-b186-051a29ce6b3a" x="366" y="76" width="228" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TEM_TIPO} == 'CF' ? 'CADENA FRIO':
+$F{TEM_TIPO} == 'TE' ? 'TEMPERATURA HAMBIENTE':
+$F{TEM_TIPO} == 'RA' ? 'HUMEDAD AMBIENTE': null]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="489706a8-4614-412c-89a9-bca01c8b5080" x="153" y="104" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TEM_NOTER}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0e404ec1-3d48-438f-b612-bb100c59d583" x="294" y="104" width="72" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TEM_ANIO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b924b0db-5318-428c-9d96-9150fa58bcf4" x="405" y="104" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TEM_MES}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="64" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="d7428690-e70d-44f6-9174-c97bc0e372be" x="2" y="0" width="800" height="64"/>
+				<subreportParameter name="clave">
+					<subreportParameterExpression><![CDATA[$F{TEM_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{direccion} + "reportDetalleTemperatura.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

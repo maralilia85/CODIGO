@@ -1,0 +1,53 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pr="http://primefaces.org/rio"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <div class="Animated05" id="layout-menu-cover">
+        <div class="EmptyBox20"></div>
+       
+        <ul class="layout-menu">
+            <li>
+                <a class="menulink ripplelink">
+                    <i class="icon-round58 Fs40"></i>
+                    <span class="Fs16">Nombre Usuario<i class="icon-downwards Fright Fs16"></i><br /><span class="Fs12 FontRobotoLight">Perfil Usuario</span></span>
+                </a>
+                <ul>
+                    <li><a href="#" class="menulink ripplelink"><i class="icon-user158 Fs16"></i> Perfiles usuarios</a></li>
+                    <li><a href="#" class="menulink ripplelink"><i class="icon-two385 Fs16"></i> Crear usuarios</a></li>
+                    <li><a href="#" class="menulink ripplelink"><i class="icon-thermostat1 Fs16"></i> Cerrar Sesion</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="Separator"></div>
+        <!--Se solicita por el usurio quitar catalogo de Empresa reunion 03-10-2017!-->
+        <h:form>
+               <pr:menu>
+            <c:forEach items="#{inventarioController.getListSubMenu()}" var="sub" >      
+                <p:submenu  label="#{sub.genDescripcion}" icon="#{sub.genObservacion}">
+                    <c:forEach items="#{inventarioController.getListMenuItem(sub.genId)}" var="menu" >                                       
+                        <p:menuitem value="#{menu.genDescripcion}" icon="#{menu.genObservacion}"
+                                    actionListener="#{inventarioController.enviaOpcion(sub.genSiglatipo)}"
+                                    action="#{inventarioController.recibeOpcMenu(menu.genId)}">
+                                </p:menuitem>
+                  </c:forEach>
+                </p:submenu>
+            </c:forEach>
+
+
+
+
+            <p:separator />
+        </pr:menu>
+            
+        </h:form>
+        
+     
+
+    </div>
+
+</ui:composition>

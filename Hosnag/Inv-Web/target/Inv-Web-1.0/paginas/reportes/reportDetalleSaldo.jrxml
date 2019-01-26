@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleSaldo" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 7/2/2018 9:39:43 (QP5 v5.252.13127.32867) */
+SELECT EXIID,
+       SALDO,
+       ARTID,
+       (SELECT S.ART_CODIGO
+          FROM CAT_ARTICULO S
+         WHERE S.ART_ID = (SELECT A.ART_ID_FK
+                             FROM CAT_ARTICULO A
+                            WHERE A.ART_ID = ARTID))
+          CODISUBTIPO,
+       (SELECT S.ART_NOMBGENERICO
+          FROM CAT_ARTICULO S
+         WHERE S.ART_ID = (SELECT A.ART_ID_FK
+                             FROM CAT_ARTICULO A
+                            WHERE A.ART_ID = ARTID))
+          SUBTIPO,
+       (SELECT A.ART_CODIGO
+          FROM CAT_ARTICULO A
+         WHERE A.ART_ID = ARTID)
+          ARTCODIGO,
+       (SELECT A.ART_NOMBGENERICO
+          FROM CAT_ARTICULO A
+         WHERE A.ART_ID = ARTID)
+          ARTNOMBRE,
+       (SELECT G.GEN_DESCRIPCION
+          FROM CAT_GENERAL G
+         WHERE G.GEN_ID = (SELECT A.GENID_CONCEN
+                             FROM CAT_ARTICULO A
+                            WHERE A.ART_ID = ARTID))
+          REF,
+       COSTO,
+       (SALDO * COSTO) TOTAL
+  FROM (  SELECT DT.EXI_ID EXIID,
+                 (SELECT E.ART_ID
+                    FROM INV_EXISTENCIA_BODEGA E
+                   WHERE E.EXI_ID = DT.EXI_ID)
+                    ARTID,
+                 (SELECT E.EXI_COSTOPROM
+                    FROM INV_EXISTENCIA_BODEGA E
+                   WHERE E.EXI_ID = DT.EXI_ID)
+                    COSTO,
+                   NVL ( (SELECT E.EXI_COSTOINICIAL
+                            FROM INV_EXISTENCIA_BODEGA E
+                           WHERE E.EXI_ID = DT.EXI_ID),
+                        0)
+                 + (  NVL ( (SELECT SUM (DI.DTR_CANTINGRESO)
+                               FROM INV_DETTRANSACCION DI
+                              WHERE DI.EXI_ID = DT.EXI_ID),
+                           0)
+                    - (NVL ( (SELECT SUM (DE.DTR_CANTEGRESO)
+                                FROM INV_DETTRANSACCION DE
+                               WHERE DE.EXI_ID = DT.EXI_ID),
+                            0)))
+                    SALDO
+            FROM INV_DETTRANSACCION DT
+                 LEFT JOIN INV_CABTRANSACCION CT ON DT.CTR_ID = CT.CTR_ID
+                 LEFT JOIN INV_EXISTENCIA_BODEGA E ON DT.EXI_ID = E.EXI_ID
+                 LEFT JOIN CAT_ARTICULO A ON A.ART_ID = E.ART_ID
+           WHERE     1 = 1
+                 AND CT.BOD_ID = $P{bodId}
+                 AND CT.TIPO_ARTICULO = $P{tipoId}
+                 AND DT.DTR_ESTADO = 'F'
+                 AND TRUNC (CT.CTR_FECHA) <=
+                        TO_DATE ($P{fecha}, 'dd/mm/yyyy')
+        GROUP BY DT.EXI_ID)
+ WHERE 1=1
+AND SALDO > 0]]>
+	</queryString>
+	<field name="EXIID" class="java.math.BigDecimal"/>
+	<field name="SALDO" class="java.math.BigDecimal"/>
+	<field name="ARTID" class="java.math.BigDecimal"/>
+	<field name="CODISUBTIPO" class="java.lang.String"/>
+	<field name="SUBTIPO" class="java.lang.String"/>
+	<field name="ARTCODIGO" class="java.lang.String"/>
+	<field name="ARTNOMBRE" class="java.lang.String"/>
+	<field name="REF" class="java.lang.String"/>
+	<field name="COSTO" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="43" y="2" width="182" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="225" y="2" width="53" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pres.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="283" y="2" width="52" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aeccefb4-b62b-449a-8b29-35f7b1a4dd76" x="337" y="2" width="57" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e3f5e83-0d69-4c93-a41d-96d52947676e" x="395" y="2" width="47" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="3" width="611" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f5526b27-1994-45f4-acb0-a5226f7ad10d" x="0" y="4" width="43" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ARTCODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="aa0f8828-caf4-45e0-9561-744d006a0142" x="43" y="3" width="182" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ARTNOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e7831a81-3a0d-4a1e-a334-41bb4eacd6dc" x="226" y="3" width="52" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{REF}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="32c209ef-52e3-4d4e-b054-dcefdf7796fb" x="283" y="4" width="52" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{SALDO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0e566d60-8cad-4e5e-9c02-9d8173351c1b" x="336" y="4" width="56" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COSTO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a3dcf27e-3159-4c5d-a936-36279656db81" x="395" y="4" width="47" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

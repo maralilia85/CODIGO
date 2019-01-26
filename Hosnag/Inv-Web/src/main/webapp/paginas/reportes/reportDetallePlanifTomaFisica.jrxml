@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleIngresoFactura" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="64"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CTFID" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 2/2/2018 21:59:46 (QP5 v5.252.13127.32867) */
+SELECT S.ART_CODIGO CODSUB,
+       S.ART_NOMBGENERICO SUBTIPO,
+       A.ART_CODIGO,
+       A.ART_NOMBGENERICO,
+       A.ART_CODBARRA,
+       G.GEN_DESCRIPCION,
+       DF.CTF_ID,
+       DF.DTF_CANTIDADTOMA,
+       DF.DTF_CANTDIF,
+       DF.DTF_CANTSOB,
+       DF.DTF_EXICOSTO,
+       DF.DTF_SALDOACTUAL,
+       DF.DTF_TOTALSOB,
+       DF.DTF_TOTALFALT,
+       L.LOT_DESCRIPION,
+       L.LOT_REGSANITARIO,
+       L.LOT_FECHAELAB,
+       L.LOT_FECHACADUC,
+       C.CTF_IMPETIQUETAS
+  FROM INV_DETTOMAFISICA DF
+       LEFT JOIN INV_CABTOMAFISICA C ON DF.CTF_ID = C.CTF_ID
+       LEFT JOIN INV_EXISTENCIA_BODEGA E ON DF.EXI_ID = E.EXI_ID
+       LEFT JOIN CAT_ARTICULO A ON E.ART_ID = A.ART_ID
+       LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+       LEFT JOIN CAT_GENERAL G ON A.GENID_CONCEN = G.GEN_ID
+       LEFT JOIN INV_LOTE_ARTICULO L ON DF.LOT_ID = L.LOT_ID
+WHERE DF.CTF_ID = $P{CTFID}]]>
+	</queryString>
+	<field name="CODSUB" class="java.lang.String"/>
+	<field name="SUBTIPO" class="java.lang.String"/>
+	<field name="ART_CODIGO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<field name="ART_CODBARRA" class="java.lang.String"/>
+	<field name="GEN_DESCRIPCION" class="java.lang.String"/>
+	<field name="CTF_ID" class="java.math.BigDecimal"/>
+	<field name="DTF_CANTIDADTOMA" class="java.lang.Double"/>
+	<field name="DTF_CANTDIF" class="java.math.BigDecimal"/>
+	<field name="DTF_CANTSOB" class="java.math.BigDecimal"/>
+	<field name="DTF_EXICOSTO" class="java.lang.Double"/>
+	<field name="DTF_SALDOACTUAL" class="java.lang.Double"/>
+	<field name="DTF_TOTALSOB" class="java.lang.Double"/>
+	<field name="DTF_TOTALFALT" class="java.lang.Double"/>
+	<field name="LOT_DESCRIPION" class="java.lang.String"/>
+	<field name="LOT_REGSANITARIO" class="java.lang.String"/>
+	<field name="LOT_FECHAELAB" class="java.sql.Timestamp"/>
+	<field name="LOT_FECHACADUC" class="java.sql.Timestamp"/>
+	<field name="CTF_IMPETIQUETAS" class="java.lang.String"/>
+	<group name="SUBTIPO">
+		<groupExpression><![CDATA[$F{SUBTIPO}]]></groupExpression>
+		<groupHeader>
+			<band height="19" splitType="Immediate">
+				<textField>
+					<reportElement uuid="9150b396-77cc-438f-a7c9-00bc6cac6ac8" mode="Opaque" x="3" y="2" width="800" height="16" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G1Field"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="47006f90-56b7-430b-8288-ce38791156db" x="3" y="1" width="39" height="17"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{CODSUB}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="0f8c7d3c-4ab1-4969-8083-7a15e4d3ec1a" x="54" y="2" width="199" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{SUBTIPO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="44"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="126" y="2" width="148" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="343" y="2" width="62" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pres.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="408" y="3" width="43" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ubic]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aeccefb4-b62b-449a-8b29-35f7b1a4dd76" x="456" y="2" width="65" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantiad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e3f5e83-0d69-4c93-a41d-96d52947676e" x="528" y="2" width="179" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1e2d385d-2045-4983-ac4e-8c6db4fc1227" x="42" y="0" width="84" height="20">
+					<printWhenExpression><![CDATA[$F{CTF_IMPETIQUETAS} == 'S']]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<text><![CDATA[C.Barra]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement uuid="41a503d9-756b-4519-8044-c890b4adc446" x="0" y="2" width="42" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="25d25e43-8a17-4813-87a2-c392f9e13794" x="346" y="0" width="62" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GEN_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="f62f2216-4049-40d8-8dbf-0f7fe131aed7" x="530" y="12" width="257" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="a50cf129-aa31-4619-9ba3-3ce07a220a2a" x="461" y="11" width="62" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="a482e15e-3815-4f8f-9b35-617717409fbd" x="122" y="1" width="208" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_NOMBGENERICO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4c030ad0-2a8c-461d-ad4d-6744bb12fda2" x="42" y="2" width="80" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_CODBARRA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

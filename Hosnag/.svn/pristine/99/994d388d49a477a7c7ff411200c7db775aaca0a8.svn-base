@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formKardex">
+        
+        <p:fieldset legend="Realizar Consultas de Kardex">
+            
+          
+            <p:panel id="pFiltro" visible="true" style="border: hidden">
+                 
+                     
+                    <p:inputText  id="desc" value="#{inventarioController.descripcion}" 
+                                 placeholder="Buscar por código o descripción" style="width: 20%" 
+                                 requiredMessage="Descripción Requerida"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                     
+
+
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarByFiltro('K')}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                   
+     
+             
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                    <p:dataTable id="dtKardex" value="#{inventarioController.listInvDetTransaccion}" var="kardex"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" emptyMessage="No se encontraron resultados">
+                    
+                        <p:column headerText="#{etiquetas['codigo']}" filterBy="#{kardex.invExistenciaBodega.catArticulo.artCodigo}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{kardex.invExistenciaBodega.catArticulo.artCodigo}" />
+                 
+                    </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{kardex.invExistenciaBodega.catArticulo.artNombgenerico}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{kardex.invExistenciaBodega.catArticulo.artNombgenerico}" />
+                       
+                    </p:column>
+                    <p:column headerText="#{etiquetas['fecha']}" filterBy="#{kardex.invCabTransaccion.ctrFecha}" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid10" >
+                        
+                        <h:outputText value="#{kardex.invCabTransaccion.ctrFecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                             
+                    </p:column>
+
+                    <p:column headerText="#{etiquetas['tipoT']}" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{kardex.invCabTransaccion.ctrTipo == 'IF' ? 'Ing. Factura' : null}" />
+                 
+                    </p:column>
+                   
+                    <p:column headerText="#{etiquetas['ingreso']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{kardex.dtrCantingreso}" />
+                     
+                    </p:column>
+                    <p:column headerText="#{etiquetas['egreso']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                         <h:outputText value="#{kardex.dtrCantingreso}" />
+                      
+                    </p:column>
+                      <p:column headerText="#{etiquetas['saldo']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                          <h:outputText value="#{kardex.invExistenciaBodega.exiExistencia}" />
+                      
+                      </p:column>  
+                        <p:column headerText="#{etiquetas['pcosto']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                            <h:outputText value="#{kardex.dtrCostoIngreso}" />
+                      
+                    </p:column>
+                      <p:column headerText="#{etiquetas['pingreso']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                          <h:outputText value="#{kardex.dtrCostoEgreso}" />
+                      
+                    </p:column>
+                    
+
+                
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

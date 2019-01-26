@@ -1,0 +1,138 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
+                this.cfg.grid = {
+                    background: '#f3f5f7',
+                    borderColor: '#e5ebf0',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#9fadb5'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #9fadb5;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="Container100">
+            <div class="ContainerIndent">
+                <div class="EmptyBox20"></div>
+
+                <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-user157 Fs50 Fleft Wid25 Blue TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Wid70"><span class="Blue">Sr.Perfil Usuario,</span><br/></div>
+                           <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                           <div class="Fs14 Fright">
+                                <a href="#" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-briefcase Orange">BIENVENIDO</i></a>
+                            </div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            
+                        </p:panel>
+                    </div>
+                </div>
+                   <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-turn20 Fs40 Fleft Wid25 Red TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Blue Wid70">Alertas</div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                           
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Caducados</span><br/></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Próximos a Caducarse</span><br/></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                             <a href="#" class="DispInlBlock Fs14 Fright MarRight10"><i class="icon-search"> Visualizar Reportes</i></a>
+                        </p:panel>
+                    </div>
+                </div>
+
+                <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-view12 Fs40 Fleft Wid25 Blue TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Blue Wid70">Reporte de saldos</div>
+                           <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                           <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Saldo Cero</span><br/></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Saldo Menor Cero</span><br/></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Saldo Mayor a Cero</span><br/></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <a href="#" class="DispInlBlock Fs14 Fright MarRight10"><i class="icon-search"> Visualizar Reportes</i></a>
+                        </p:panel>
+                    </div>
+                </div>
+
+             
+                      <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-alarm Fs40 Fleft Wid25 Red TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Blue Wid70">Tareas</div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                           
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Despachos Pendientes</span></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive"><span class="Fs18 Orange">Órdenes Pendientes</span></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <a href="#" class="DispInlBlock Fs14 Fright MarRight10"><i class="icon-search"> Visualizar Reportes</i></a>
+                        </p:panel>
+                    </div>
+                </div>
+
+
+               
+
+                <div class="EmptyBox10"></div>
+            </div>
+        </div>
+       
+    </ui:define>
+    
+
+</ui:composition>

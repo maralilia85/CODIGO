@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formStock">
+        <p:fieldset legend="Cálculos Stock">
+          
+             <p:panel id="filtro" visible="true" style="border: hidden">
+                <p:selectOneMenu  value="#{inventarioController.tipoArticulo}"
+                                  filter="true" filterMatchMode="contains"
+                                  required="true" requiredMessage="Tipo Artículo Requerido">
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(inventarioController.objCatBodega.bodId)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                         </p:selectOneMenu>
+                 <div class="Wid1" />
+                    <p:inputText value="#{inventarioController.descripcion}" placeholder="Código o descripción" 
+                                 autocomplete="off" 
+                                 required="true"
+                                 requiredMessage="Descripción es Requerida"
+                                 onblur="value = value.toUpperCase();">
+                    </p:inputText>
+
+
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarByFiltro('C')}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+            
+                   </p:panel>
+                
+              
+              
+            
+                <p:panel id="pResultado" style="border: hidden">
+                    
+ <p:dataTable id="dtExistencia" value="#{inventarioController.listInvExistenciaBodega}" var="stock"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtExistencia"/>
+            <p:columnGroup type="header">
+            <p:row>
+                <p:column colspan="2" headerText="Artículo" />
+               
+                   <p:column colspan="4" headerText="Stock" />
+            </p:row>
+            <p:row>
+                <p:column colspan="1" headerText="Codigo" />
+                <p:column colspan="1" headerText="Nombre" />
+                
+               
+                
+                 <p:column colspan="1" headerText="Stock Min" />
+                <p:column colspan="1" headerText="Stock Max" />
+                <p:column colspan="1" headerText="Stock Segu" />
+                 <p:column colspan="1" headerText="Calcular" />
+                           </p:row>
+               
+          
+        </p:columnGroup>
+                      <p:column headerText="#{etiquetas['codigo']}" filterBy="#{stock.catArticulo.artCodigo}" class="Wid5" >
+                          <h:outputText value="#{stock.catArticulo.artCodigo}" />
+                    </p:column>
+                     <p:column headerText="#{etiquetas['nombreG']}" filterBy="#{stock.catArticulo.artNombgenerico}"
+                              filterMatchMode="contains" class="Wid25" >
+                       
+                         <h:outputText value="#{stock.catArticulo.artNombgenerico}" title="#{stock.catArticulo.artNombgenerico}"/>
+                    </p:column>
+                 
+           
+                    <p:column headerText="Stock Mínimo" 
+                              filterMatchMode="contains" class="Wid5" >
+                        <h:outputText value="#{stock.exiStockmin}" />
+                        
+                    </p:column>
+                    <p:column headerText="Stock Máximo" 
+                              filterMatchMode="contains" class="Wid5" >
+                        <h:outputText value="#{stock.exiStockmax}" />
+                        
+                    </p:column>
+                      <p:column headerText="Stock de Seguridad"
+                              filterMatchMode="contains" class="Wid5" >
+                          <h:outputText value="#{stock.exiStockseg}" />
+                       </p:column>  
+                    <p:column headerText="Calcular Stock" class="Wid8" >
+                          
+                         <p:commandLink  class="icon-calculator"
+                                         action="#{inventarioController.valoresCalculo(null, stock.exiId)}"
+                                        title="Calcular Stock de Seguridad"
+                                   onclick="PF('dlgPeriodo').show();">
+                             <f:setPropertyActionListener value="#{stock}" target="#{inventarioController.objInvExistenciaBodega}" />
+                        </p:commandLink>
+                      
+                      </p:column>
+                  
+                
+                </p:dataTable>             
+                </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+       <p:dialog header="Ingresar período para cálculos de stock" widgetVar="dlgPeriodo"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetalle" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:outputLabel  value="Período Reposición(Meses)" class="Fs16" />
+                    <p:spacer width="5"/>
+                   <p:spinner required="true"                                          
+                              value="#{inventarioController.periodo}">
+                    <p:ajax event="change" update="btnCalcular"  />
+                   </p:spinner> 
+                    <div class="Wid1"></div>
+                    <p:outputLabel  value="Fecha Inicial" class="Fs16" />
+                    <p:spacer width="5"/>
+                    <p:calendar   value="#{inventarioController.fechaIni}" 
+                                   placeholder="Fecha Inicio" 
+                                required="true"  size="12"
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                        <p:ajax event="dateSelect" update="btnCalcular"  />
+                    </p:calendar>
+                     <div class="Wid1"></div>
+                    <p:outputLabel  value="Fecha Final" class="Fs16" />
+                    <p:spacer width="5"/>
+                    <p:calendar   value="#{inventarioController.fechaFin}" 
+                                   placeholder="Fecha Final" 
+                                required="true"  size="12"
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                         <p:ajax event="dateSelect" update="btnCalcular"  />
+                    </p:calendar>
+         
+         
+                   
+               
+                    
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                        <p:commandButton id="btnCalcular" value="#{botones['aceptar']}" 
+                                         icon="#{botones['boton.icongrabar']}"
+                                         action="#{inventarioController.calcularStock()}"
+                                         process="@this"
+                                         update="tabPrincipal:formStock"
+                                         onclick="PF('dlgPeriodo').hide();">
+                        </p:commandButton>
+        
+                        <p:commandButton value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgPeriodo').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+        
+       
+  
+
+</ui:composition>

@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formMovimientos">
+        <p:fieldset legend="Realizar Consultas de Movimeintos">
+          
+                    
+                  <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:selectOneRadio id="mov" value="#{inventarioController.tipoMovimiento}" required="true"
+                                      requiredMessage="Tipo Movimiento Requerido"
+                                      columns="1">
+                        <f:selectItem itemLabel="Ingreso" itemValue="I" />
+                        <f:selectItem itemLabel="Egreso" itemValue="E" />
+                    </p:selectOneRadio>
+                      <p:selectOneMenu  value="#{inventarioController.tipoArticulo}" 
+                                        requiredMessage="Tipo Artículo Requerido"
+                                        filter="true" filterMatchMode="contains" >
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(0)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                       
+                         </p:selectOneMenu>
+                       <div class="EmptyBox5"/>
+            
+                          <p:calendar value="#{inventarioController.fechaIni}" required="true"  
+                                       requiredMessage="Fecha Desde Requerido"
+                                      placeholder="Desde dd/MM/yyyy" 
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+                          <p:spacer width="20"/>
+                   <p:calendar value="#{inventarioController.fechaFin}" required="true"  
+                                requiredMessage="Fecha Hasta Requerido"
+                               placeholder="Hasta dd/MM/yyyy" 
+                                pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+                <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarByFiltro('M')}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                   
+                   
+                   
+                      
+                   
+                    
+
+                   
+                </p:panel> 
+               
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                    <p:dataTable id="dtMovimientos" value="#{inventarioController.listInvDetTransaccion}" var="mov"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" emptyMessage="No se encontraron resultados">
+
+                    
+
+                    <p:column headerText="#{etiquetas['tipoM']}" class="Wid10" >
+                        <h:outputText value="#{mov.invCabTransaccion.ctrTipo}" />
+                         <h:outputText value="#{mov.invCabTransaccion.ctrTipo == 'IF' ? 'Ing.Factura' :
+                                                mov.invCabTransaccion.ctrTipo == 'IT' ? 'Ing.Transf.':
+                                                 mov.invCabTransaccion.ctrTipo == 'ET' ? 'Egreso.Transf.':
+                                                  mov.invCabTransaccion.ctrTipo == 'EV' ? 'Egreso.Venta':
+                                                null}"/>
+                 
+                    </p:column>
+                  
+
+                    <p:column headerText="#{etiquetas['nodoc']}" filterBy="#{mov.invCabTransaccion.ctrNumero}"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{mov.invCabTransaccion.ctrNumero}" />
+                     
+                    </p:column>
+                        
+                        <p:column headerText="#{etiquetas['fecha']}"  class="Wid10" >
+                        <h:outputText value="#{mov.invCabTransaccion.ctrFecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                     </h:outputText>
+                     
+                    </p:column>
+                      
+                               
+                                   
+                  
+                             
+                    <p:column headerText="#{etiquetas['totalIng']}"  class="Wid10" >
+                         <h:outputText value="#{mov.invCabTransaccion.ctrTotal}"  />
+                      
+                    </p:column>
+                   
+                     <p:column headerText="#{etiquetas['iva']}" filterBy="#"
+                              filterMatchMode="0.00" class="Wid5" >
+                      <h:outputText value="" />
+                      
+                    </p:column>
+                    <p:column headerText="#{etiquetas['ProvArea']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                         <h:outputText value="INSTITUTO NAC DE HIG" />
+                      
+                    </p:column>
+                    
+
+                
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

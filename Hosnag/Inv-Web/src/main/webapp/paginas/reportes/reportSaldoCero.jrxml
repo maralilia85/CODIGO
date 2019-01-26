@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportSaldoCero" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d591680c-e64d-4c2e-ad23-fdf2fd2546eb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["G:\\reporte\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 7/2/2018 10:57:49 (QP5 v5.252.13127.32867) */
+SELECT BODID,
+(SELECT B.BOD_DESCRIPCION FROM CAT_BODEGA B WHERE B.BOD_ID = BODID) BOD_DESCRIPCION,
+(SELECT E.EMP_DESCRIPCION FROM CAT_EMPRESA E WHERE E.EMP_ID = (SELECT B.EMP_ID FROM CAT_BODEGA B WHERE B.BOD_ID = BODID)) EMP_DESCRIPCION,
+(SELECT E.EMP_NOMBRE FROM CAT_EMPRESA E WHERE E.EMP_ID = (SELECT B.EMP_ID FROM CAT_BODEGA B WHERE B.BOD_ID = BODID)) EMP_NOMBRE,
+(SELECT E.EMP_LOGO FROM CAT_EMPRESA E WHERE E.EMP_ID = (SELECT B.EMP_ID FROM CAT_BODEGA B WHERE B.BOD_ID = BODID)) EMP_LOGO
+
+
+  FROM (  SELECT CT.BOD_ID BODID
+
+            FROM INV_CABTRANSACCION CT
+            WHERE     1 = 1
+                 AND CT.BOD_ID = $P{bodId}
+                 AND CT.TIPO_ARTICULO = $P{tipoId}
+                 AND TRUNC (CT.CTR_FECHA) <=
+                        TO_DATE ($P{fecha}, 'dd/mm/yyyy')
+        GROUP BY CT.BOD_ID)
+ WHERE 1=1]]>
+	</queryString>
+	<field name="BODID" class="java.math.BigDecimal"/>
+	<field name="BOD_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_NOMBRE" class="java.lang.String"/>
+	<field name="EMP_LOGO" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="102" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="97124924-5f5b-4681-9113-8c472278f533" style="SubTitle" x="112" y="79" width="252" height="22" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE SALDOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c939f3c8-55a1-4e84-ac22-a9165e13c6b7" x="112" y="4" width="285" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="13d28d9e-e964-44d7-aea1-83533e7c1af7" x="3" y="2" width="99" height="99"/>
+				<imageExpression><![CDATA[$P{direccion}+$F{EMP_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="cd5ef947-eb52-4f82-ab43-7ba7dff75755" x="112" y="48" width="285" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BOD_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2fed116c-9833-41d0-8ec1-54d84fc1c743" x="112" y="26" width="285" height="21"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="70490990-482c-4a86-8631-c2f438b24416" style="Column header" x="513" y="4" width="40" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="948a5a10-1f4f-40ac-8e8c-df6ed2939401" style="Column header" x="433" y="4" width="80" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página  "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="cf7b3f69-674b-4877-a331-80e8430226b5" style="Column header" x="397" y="24" width="158" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="72d48000-4d71-497b-9650-3c6e86d80d44" x="367" y="82" width="74" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Con corte al:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="249ad812-51de-4a87-87e3-de47eb7ad3c8" x="441" y="82" width="114" height="20"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="67" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="0ea7dc0c-9ca3-4625-a41d-3f53fdc59e83" x="3" y="0" width="550" height="67"/>
+				<subreportParameter name="bodId">
+					<subreportParameterExpression><![CDATA[$F{BODID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="tipoId">
+					<subreportParameterExpression><![CDATA[$P{tipoId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha">
+					<subreportParameterExpression><![CDATA[$P{fecha}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{direccion} + "reportDetalleSaldoCero.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="ec.mil.armada_Inv-Servicios_ejb_1.0PU" transaction-type="JTA">
+    <jta-data-source>jdbc/prueba</jta-data-source>
+    <class>ec.mil.armada.inv.modelo.catalago.CatArticulo</class>
+    <class>ec.mil.armada.inv.modelo.catalago.CatBodega</class>
+    <class>ec.mil.armada.inv.modelo.catalago.CatDireccion</class>
+    <class>ec.mil.armada.inv.modelo.catalago.CatEmpresa</class>
+    <class>ec.mil.armada.inv.modelo.catalago.CatGeneral</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvCabTransaccion</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvCabsolicitudbod</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvCabtomafisica</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvCostoArticulo</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvDetTransaccion</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvDetsolicitudbod</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvDettomafisica</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvExistenciaBodega</class>
+    <class>ec.mil.armada.inv.modelo.inventario.InvLoteArticulo</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegAdmision</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegAuditoria</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegCabliquidacion</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegCabordencompra</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegDetordencompra</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegEmpleado</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegPaciente</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegUsuario</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegDetliquidacion</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegCabtemp</class>
+    <class>ec.mil.armada.inv.modelo.registro.RegDettemp</class>
+    <class>ec.mil.armada.inv.servicios.catalogo.NewEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+    </properties>
+  </persistence-unit>
+</persistence>

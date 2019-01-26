@@ -1,0 +1,144 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formModelo">
+        <p:fieldset legend="Crear Modelo">
+           <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:inputText placeholder="Buscar por descripción" style="width: 20%" 
+                                 autocomplete="off" 
+                                 value="#{catalogoController.descripcion}"
+                                 onblur="value = value.toUpperCase();" 
+                                 required="false">
+                    </p:inputText>
+
+
+                      <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                      action="#{catalogoController.buscarByDescripcion('N', 'MODE')}"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                </p:panel> 
+                <p:panel id="pResultado" style="border: hidden">
+                    <p:dataTable id="dtPresentacion" value="#{catalogoController.listCatGeneral}" var="pres"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtPresentacion" listener="#{catalogoController.onCellEditCatGeneral}"/>
+
+
+                  <p:column headerText="#{etiquetas['ord']}" width="1%">
+                            <h:outputText value="#{index + 1}" />
+                        </p:column>
+                   
+
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{pres.genDescripcion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['descripcion']}" 
+                                              value="#{pres.genDescripcion}"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                  
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{pres.genEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{pres.genEstado}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Activo" itemValue="A" /> 
+                                     <f:selectItem itemLabel="Inactivo" itemValue="I" />
+                                     <p:ajax event="change" update="dtPresentacion"  listener="#{catalogoController.editCatGeneral(pres)}" ></p:ajax>
+
+                                </h:selectOneMenu> 
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                  
+                 
+                   
+                    
+                    
+                    <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-trash"
+                                        action="#{catalogoController.obtieneObjGeneral(pres.genId)}"
+                                        update="tabPrincipal:formEliminaMode"
+                                        onclick="PF('dlgEliminaGene').show();"
+                                        title="Eliminar Registro">
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                    
+                    
+
+
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Eliminar Registro" widgetVar="dlgEliminaGene" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formEliminaMode">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Está seguro que desea eliminar el registro?" class="Fs14 red"/>
+                        <p:outputLabel value="#{catalogoController.objCatGeneral.genDescripcion}" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          action="#{catalogoController.eliminaCatgeneral()}"
+                                          onclick="PF('dlgEliminaGene').hide();"
+                                          update="tabPrincipal:formModelo">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgEliminaGene').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+  
+
+</ui:composition>

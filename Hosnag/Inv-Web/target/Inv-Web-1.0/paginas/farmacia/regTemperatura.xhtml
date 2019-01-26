@@ -1,0 +1,277 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formTemp">
+        <p:fieldset legend="Crear Registro Temperatura">
+   
+             <p:commandButton id="btnImprimir"  
+                             actionListener="#{inventarioController.imprimirReporte('TM')}"
+                             disabled="#{inventarioController.objRegCabtemp.temId == null}"
+                             icon="#{botones['boton.iconimprimir']}"
+                             title="#{botones['imprimir']}"
+                             style="float: right"
+                             process="@this"
+                             update="formImpReporte"
+                             onclick="PF('dlgImpReporte').show();"/>
+            
+          
+                     
+                       <p:fieldset legend="Datos Registro">
+                                
+                   
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none" columnClasses="ui-grid-col-2,ui-grid-col-10">
+            <p:outputLabel  value="Año"/>
+
+                          <p:inputText value="#{inventarioController.objRegCabtemp.temAnio}"
+                                 placeholder="Año" 
+                                 autocomplete="off" 
+                                  requiredMessage="Ingrese Año" 
+                                 required="true">
+                    </p:inputText>
+            <p:outputLabel  value="Mes"/>
+            <p:inputText value="#{inventarioController.objRegCabtemp.temMes}"
+                                 placeholder="Mes" >
+                    </p:inputText>
+                    
+                    
+
+                       <p:outputLabel  value="No.Termohigrometro"/>   
+                       <p:inputText value="#{inventarioController.objRegCabtemp.temNoter}"
+                                 placeholder="No.Termohigrometro" 
+                                 autocomplete="off"  
+                                 requiredMessage="Ingrese No.Termohigrometro"
+                                 required="true">
+<p:ajax event="blur" update="formTemp"  />
+                    </p:inputText>
+                                              
+                      <p:outputLabel  value="Tipo"/>
+                      <p:selectOneRadio value="#{inventarioController.objRegCabtemp.temTipo}" columns="1"
+                                        required="true" requiredMessage="Tipo es requerido">
+                <f:selectItem itemLabel="Cadena Frío" itemValue="CF" />
+                <f:selectItem itemLabel="Temperatura" itemValue="TE" />
+                 <f:selectItem itemLabel="Humedad Relativa" itemValue="RA" />
+
+                 <p:ajax event="change" listener="#{inventarioController.btnNewRegTemp()}" />
+            </p:selectOneRadio>
+                     
+         
+                </p:panelGrid>
+    
+            </p:fieldset>
+              
+                </p:fieldset>
+                  
+              
+
+    <p:commandButton value="Detalle" icon="#{botones['boton.iconnuevo']}"
+                     disabled="#{inventarioController.objRegCabtemp.temId == null}"
+                     action="#{inventarioController.crearRegTempDet()}"
+                     process="@this"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+</p:commandButton>
+        
+
+            <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dtTemp" value="#{inventarioController.listRegDettemp}" 
+                             var="detalle"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtTemp"  />
+
+
+                      <p:column headerText="Fecha" class="TexAlCenter" width="5%">
+                          <h:outputText value="#{detalle.dtemFecha}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                            </h:outputText>
+                        </p:column>
+                   
+
+                    <p:column headerText="AM"  class="Wid5" >
+                       
+                          <p:cellEditor>
+
+                              <f:facet name="output"> <h:outputText value="#{detalle.dtemAm}"/>   </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="valor" 
+                                              value="#{detalle.dtemAm}"
+                                              requiredMessage="valor pm requerido"
+                                              autocomplete="off" required="true">
+                                    <p:ajax event="blur"  listener="#{inventarioController.editarRegTemp(detalle, 'AM')}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                        
+                        <p:column headerText="PM"  class="Wid5" >
+                        
+                          <p:cellEditor>
+
+                              <f:facet name="output"> <h:outputText value="#{detalle.dtemPm}"/>   </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="valor" 
+                                              value="#{detalle.dtemPm}"
+                                              requiredMessage="valor pm requerido"
+                                              autocomplete="off" required="true">
+                                    <p:ajax event="blur"  listener="#{inventarioController.editarRegTemp(detalle, 'PM')}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+                   
+                   
+                  
+                    <p:column headerText="Promedio"  class="Wid10" >
+                        <h:outputText value="#{detalle.dtemProm}" />
+                    </p:column>
+                        <p:column headerText="Min"  class="Wid10" >
+                            <h:outputText value="#{detalle.regCabtemp.temMin}" />
+                    </p:column>
+                        <p:column headerText="Max"  class="Wid10" >
+                            <h:outputText value="#{detalle.regCabtemp.temMax}" />
+                    </p:column>
+
+                    <p:column headerText="Observación"  class="Wid10" >
+                         
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{detalle.dtemObseracion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Observación" 
+                                              value="#{detalle.dtemObseracion}"
+                                              autocomplete="off" required="false">
+                                    <p:ajax event="blur"   listener="#{inventarioController.editarRegTemp(detalle, 'OB')}" />
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                      
+                    </p:column>
+
+                   
+                   
+                 
+                          
+                    <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-trash"
+                                        update="tabPrincipal:formElimina"
+                                        onclick="PF('dlgElimina').show();"
+                                        process="@this"
+                                        action="#{inventarioController.obtieneDet(detalle.dtemId)}"
+                                        title="Eliminar Registro">
+                            <f:setPropertyActionListener value="#{detalle}" target="#{inventarioController.objRegDettemp}" />
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                     
+                    
+                    
+                     
+
+                </p:dataTable>                      
+            </p:panel>
+
+
+    </h:form>
+    
+    <p:dialog header="Eliminar Registro" widgetVar="dlgElimina" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+            <h:form id="formElimina">
+                <p:outputPanel>
+                    <center>
+                        <h:panelGrid columns="1">                          
+
+                            <p:outputLabel value="¿Está seguro que desea eliminar el registro?" class="Fs14 red"/>
+                            <p:outputLabel value="#{inventarioController.objRegDettemp.dtemFecha}" class="Fs14 red">
+                                 <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                            </p:outputLabel>
+                                
+
+                        </h:panelGrid>
+                    </center>
+                    <p:spacer height="10"></p:spacer>
+                    <h:panelGroup>
+                        <center>
+
+                            <p:spacer class="Wid5px"/>
+                            <p:commandButton  value="#{botones['si']}"
+                                              icon="fa fa-check Fs16 white"
+                                              title="#{botones['title.si']}"
+                                              process="@this"
+                                              action="#{inventarioController.eliminaRegDet()}"
+                                              onclick="PF('dlgElimina').hide();"
+                                              update="tabPrincipal:formTemp">
+                            </p:commandButton>
+                            <p:spacer class="Wid5px"/>
+
+                            <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                             title="#{botones['title.no']}"
+                                             onclick="PF('dlgElimina').hide();">
+                            </p:commandButton>
+
+                        </center>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+    
+    <p:dialog header="Crear Registro" widgetVar="dlgNew" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formNew">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Confirma generar registro mensual?" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          process="@this"
+                                          action="#{inventarioController.crearRegtem()}"
+                                          onclick="PF('dlgNew').hide();"
+                                          update="tabPrincipal:formTemp">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                       <p:commandButton id="btnNo"  value="#{botones['buscar']}" icon="#{botones['boton.iconbuscar']}"
+                                         title="#{botones['title.no']}"
+                                         action="#{inventarioController.cargaRegTemp()}"
+                                          update="msgs,tabPrincipal:formTemp"
+                                         onclick="PF('dlgNew').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+   
+
+
+
+
+
+</ui:composition>

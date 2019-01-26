@@ -1,0 +1,202 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.catalogo;
+
+import ec.mil.armada.inv.servicios.abstractFacade.AbstractFacade;
+import ec.mil.armada.inv.modelo.catalago.CatGeneral;
+import ec.mil.armada.inv.modelo.catalago.CatArticulo;
+import ec.mil.armada.inv.remotos.catalogo.CatArticuloFacadeRemote;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.security.PermitAll;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Stateless
+@PermitAll
+public class CatArticuloFacade extends AbstractFacade<CatArticulo> implements CatArticuloFacadeRemote {
+    @PersistenceContext(unitName = "ec.mil.armada_Inv-Servicios_ejb_1.0PU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public CatArticuloFacade() {
+        super(CatArticulo.class);
+    }
+
+    /**
+     *
+     * @param nivel 0(Tipo) 1(Subtipo) >=2(Articulos)
+     * @param codigoPapa codigo del registro Tipo o Subtipo
+     * @param estado A(Activo) I(Inactivo)
+     * @param descripcion puede ser por codigos o nombres
+     * @return Lista de Articulo
+     */
+    @Override
+     public List<CatArticulo> listArticuloByParam(final BigInteger nivel, final BigInteger codigoPapa, final String estado, final String descripcion) {
+        final StringBuilder SQLNative = new StringBuilder();
+        SQLNative.append("SELECT A.ART_ID,A.ART_CODBARRA, A.ART_CODIGO, A.ART_ESTADO, A.ART_MSP, A.ART_FACTURABLE, A.ART_ID_FK , NVL(A.GENID_FORMA,0) GENID_FORMA, NVL(A.GENID_MODELO,0) GENID_MODELO, NVL(A.GENID_CONCEN,0) GENID_CONCEN, NVL(A.GENID_MARCA,0) GENID_MARCA, A.ART_NOMBCOMERCIAL, A.ART_NOMBGENERICO, A.ART_NIVEL, A.ART_PARTIDA, P.ART_NOMBGENERICO, A.EML_ID, E.EML_NOMBRE,  ");
+        SQLNative.append("   NVL(B.ART_ID,0) ART_ID, B.ART_NOMBGENERICO ");
+        SQLNative.append("   FROM CAT_ARTICULO A");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO P ON A.ART_ID_FK = P.ART_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO B ON P.ART_ID_FK = B.ART_ID ");
+        SQLNative.append("   LEFT JOIN REG_EMPLEADO E ON E.EML_ID = A.EML_ID ");
+        SQLNative.append("   WHERE 1=1 ");
+        boolean isCodigoPapa = codigoPapa != null;
+        boolean isNivel = nivel != null;
+        boolean isEstado = estado != null && estado.trim().length() > 0 && !(estado.trim().toLowerCase().compareTo("null") == 0);
+        boolean isDescripcion = descripcion != null && descripcion.trim().length() > 0 && !(descripcion.trim().toLowerCase().compareTo("null") == 0);
+
+        //validar al menos que se cumpla una condicion para ejecutar el sql
+        if (isDescripcion || isNivel || isCodigoPapa) {
+            if (isDescripcion) {
+                SQLNative.append("       AND  A.ART_NOMBCOMERCIAL || ' '||  A.ART_NOMBGENERICO || ' '|| A.ART_CODIGO  || ' '|| A.ART_CODBARRA ");
+                SQLNative.append("   LIKE '%").append(descripcion.toUpperCase()).append("%'");
+            }
+            
+            if (isNivel) {
+                SQLNative.append("   AND A.ART_NIVEL = ").append(nivel);
+            }
+            if (isCodigoPapa) {
+                SQLNative.append("   AND A.ART_ID_FK = ").append(codigoPapa);
+            }
+
+            if (isEstado) {
+                SQLNative.append(" AND A.ART_ESTADO =  '").append(estado).append("' ");
+            }
+
+            SQLNative.append("   ORDER BY A.ART_ID ASC  ");
+        } else {
+            SQLNative.append(" AND 1=2   ");
+
+        }
+
+        final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<CatArticulo> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final CatArticulo cat = new CatArticulo();
+            cat.setArtId(new BigInteger(obj[a].toString()));
+            a++;
+            cat.setArtCodbarra((String) obj[a]);
+            a++;
+            cat.setArtCodigo((String) obj[a]);
+            a++;
+            cat.setArtEstado((String) obj[a]);
+            a++;
+            cat.setArtMsp((String) obj[a]);
+            a++;
+            cat.setArtFacturable((String) obj[a]);
+            a++;
+            cat.setCatArtPapa(new CatArticulo());
+             if(obj[a] != null){
+            cat.getCatArtPapa().setArtId(new BigInteger(obj[a].toString()));}
+            a++;
+             if(obj[a] != null){
+            cat.setCatGenForma(new CatGeneral());
+            cat.getCatGenForma().setGenId(new BigInteger(obj[a].toString()));}
+            a++;
+             if(obj[a] != null){
+            cat.setCatGenModelo(new CatGeneral());
+            cat.getCatGenModelo().setGenId(new BigInteger(obj[a].toString()));}
+            a++;
+            cat.setCatGenConcen(new CatGeneral());
+              if(obj[a] != null){
+            cat.getCatGenConcen().setGenId(new BigInteger(obj[a].toString()));}
+            a++;
+            cat.setCatGenMarca(new CatGeneral());
+            if(obj[a] != null){
+            cat.getCatGenMarca().setGenId(new BigInteger(obj[a].toString()));}
+            a++;
+            cat.setArtNombcomercial((String) obj[a]);
+            a++;
+            cat.setArtNombgenerico((String) obj[a]);
+            a++;
+             if(obj[a] != null){
+            cat.setArtNivel(new BigInteger(obj[a].toString()));}
+            a++;
+            cat.setArtPartida((String) obj[a]);
+            a++;
+            cat.getCatArtPapa().setArtNombgenerico((String) obj[a]);
+            a++;
+            if(obj[a] != null){
+            cat.setEmlId(new BigInteger(obj[a].toString()));}
+            a++;
+            cat.setNombreEmpleado((String) obj[a]);
+            a++;
+            cat.getCatArtPapa().setCatArtPapa(new CatArticulo());
+              if(obj[a] != null){
+            cat.getCatArtPapa().getCatArtPapa().setArtId(new BigInteger(obj[a].toString()));}
+            a++;
+            cat.getCatArtPapa().getCatArtPapa().setArtNombgenerico((String) obj[a]);
+            datosRetorno.add(cat);
+        }
+        return datosRetorno;
+    }
+     
+    /**
+     *
+     * @param codigoPapa clave del padre para obteer los hijos si clave es null trae los padres
+     * @param nivel 0 para los padres 1 subttipos y 2 para los articulos
+     * @return descripcion por nivel y tipo
+     */
+    @Override
+     public List<CatArticulo> listByTipoNivel(final BigInteger codigoPapa, final BigInteger nivel) {
+        final StringBuilder SQLNative = new StringBuilder();
+        SQLNative.append("SELECT A.ART_ID, A.ART_NOMBGENERICO  ");
+        SQLNative.append("   FROM CAT_ARTICULO A");
+        SQLNative.append("   WHERE 1=1 ");
+       
+        boolean isNivel = nivel != null;
+         boolean isCodigoPapa = codigoPapa != null;
+
+        //validar al menos que se cumpla una condicion para ejecutar el sql
+        if (isNivel || isCodigoPapa) {
+          
+            if (isCodigoPapa) {
+                SQLNative.append("  AND A.ART_ID_FK = ").append(codigoPapa);
+            }
+            
+            if (isNivel) {
+                SQLNative.append("   AND A.ART_NIVEL = ").append(nivel);
+            }
+      
+            SQLNative.append(" AND A.ART_ESTADO =  'A' ");
+           
+            SQLNative.append("   ORDER BY A.ART_CODIGO  ");
+        } else {
+            //traer los registros padres nivel 0
+            SQLNative.append(" AND A.ART_ID_FK IS NULL   ");
+
+        }
+
+        final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<CatArticulo> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final CatArticulo cat = new CatArticulo();
+            cat.setArtId(new BigInteger(obj[a].toString()));
+            a++;
+            cat.setArtNombgenerico((String) obj[a]);
+            datosRetorno.add(cat);
+        }
+        return datosRetorno;
+    }
+
+    
+     
+}

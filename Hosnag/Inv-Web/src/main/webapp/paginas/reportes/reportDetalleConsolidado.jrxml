@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleConsolidado" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 9/2/2018 8:35:49 (QP5 v5.252.13127.32867) */
+SELECT IDTIPO,
+
+(SELECT TI.ART_CODIGO FROM CAT_ARTICULO TI WHERE TI.ART_ID = IDTIPO) CODTIPO,
+(SELECT TI.ART_NOMBGENERICO FROM CAT_ARTICULO TI WHERE TI.ART_ID = IDTIPO) NAMETIPO,
+ (SELECT SUM( E.EXI_EXISTENCIA) FROM INV_EXISTENCIA_BODEGA E
+  LEFT JOIN CAT_ARTICULO A ON E.ART_ID = A.ART_ID
+                 LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+                 LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK
+                 WHERE T.ART_ID = IDTIPO )
+                 *
+                  (SELECT SUM( EXI_PRECIOCOSTO) FROM INV_EXISTENCIA_BODEGA E
+  LEFT JOIN CAT_ARTICULO A ON E.ART_ID = A.ART_ID
+                 LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+                 LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK
+                 WHERE T.ART_ID = IDTIPO ) TOTAL
+
+
+
+
+
+  FROM (  SELECT T.ART_ID IDTIPO
+            FROM INV_EXISTENCIA_BODEGA EB
+                 LEFT JOIN CAT_ARTICULO A ON EB.ART_ID = A.ART_ID
+                 LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+                 LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK
+           WHERE EB.BOD_ID = $P{bodId}
+        GROUP BY T.ART_ID)
+ WHERE 1 = 1]]>
+	</queryString>
+	<field name="IDTIPO" class="java.math.BigDecimal"/>
+	<field name="CODTIPO" class="java.lang.String"/>
+	<field name="NAMETIPO" class="java.lang.String"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<variable name="TOTAL" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="5" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="46" y="1" width="248" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e389a7ea-00ea-4800-8ac4-960dceafbd9a" x="294" y="0" width="100" height="17"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="3" width="611" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="3ddcf15b-50d8-4c7d-ae6b-608395832cc7" x="7" y="4" width="37" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CODTIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fe718289-d94a-4557-80fa-11770cd6bea5" x="44" y="4" width="248" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NAMETIPO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="8c22ced7-73e2-4320-8897-ef685261d24d" x="294" y="2" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1329107a-7af8-48c0-8447-d0203beee375" x="237" y="0" width="50" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="654a30c8-95cf-47ff-8cbe-b9b0f98a89a0" x="287" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{TOTAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

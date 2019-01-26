@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formTomaFis">
+        <p:fieldset legend="Ingresar Toma Física">
+          
+   <p:panel id="pEncabezado" style="background-color: #EAF4FD">   
+            
+                     <p:outputLabel  value="No.Inventario: 2"/>
+                    <p:spacer width="20"/>
+                     
+                    <p:outputLabel  value="Fecha:16/09/2016" />
+                    <p:spacer width="20"/>
+                    <p:outputLabel  value="Tipo:Insumos Médicos"/>
+           
+                    
+ </p:panel>
+             <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dttomafis" value="#" var="art"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dttomafis"/>
+
+
+                    <p:column headerText="Codigo">
+                <h:outputText value="4040" />
+            </p:column>
+                    <p:column headerText="Descripción">
+                <h:outputText value="999" />
+            </p:column>
+                    <p:column headerText="Unidad">
+                <h:outputText value="ampolla" />
+            </p:column>
+                               <p:column headerText="Lote">
+                <h:outputText value="20-xyza" />
+            </p:column>
+                    <p:column headerText="Cantidad">
+              
+                 <p:cellEditor>
+                            <f:facet name="output">
+                               <h:outputText value="8" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+            </p:column>
+                    <p:column headerText="Observación">
+               
+                  <p:cellEditor >
+                            <f:facet name="output">
+                             <h:outputText value="Dar baja" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Observación" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+            </p:column>
+           
+                </p:dataTable>                     
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

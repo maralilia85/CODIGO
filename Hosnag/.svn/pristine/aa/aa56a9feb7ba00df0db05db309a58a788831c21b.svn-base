@@ -1,0 +1,43 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.inventario;
+
+import ec.mil.armada.inv.modelo.catalago.CatBodega;
+import ec.mil.armada.inv.modelo.inventario.InvCabTransaccion;
+import java.math.BigInteger;
+import java.util.List;
+import javax.ejb.Remote;
+
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Remote
+public interface InvCabTransaccionFacadeRemote {
+
+    void create(InvCabTransaccion invCabTransaccion);
+
+    void edit(InvCabTransaccion invCabTransaccion);
+
+    void remove(InvCabTransaccion invCabTransaccion);
+
+    InvCabTransaccion find(Object id);
+
+    List<InvCabTransaccion> findAll();
+
+    List<InvCabTransaccion> findRange(int[] range);
+
+    int count();
+
+    List<InvCabTransaccion> listAllByParam(BigInteger bodId, String estado, String tipo, String fechaIni, String fechaFin, String operador);
+
+    CatBodega objCatBodega(BigInteger bodId);
+
+    int numeroDoc(String aFiscal);
+
+   InvCabTransaccion crearObjeto(CatBodega bodega, BigInteger claveTabla, String siglasTabla, String estado, String retira, String tipo, BigInteger artId);
+    
+}

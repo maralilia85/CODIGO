@@ -1,0 +1,215 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formSolicitudes">
+     <p:fieldset legend="Visualizar Solicitudes Bodega">
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                <p:selectOneRadio value="#{inventarioController.tipoFiltro}" columns="1" 
+                                  required="false" requiredMessage="Tipo filtro es requerido">
+                <f:selectItem itemLabel="Pendiente" itemValue="S" />
+            </p:selectOneRadio>
+            
+                   <p:outputLabel  value="Número:" class="Fs16" />
+                   <p:spacer width="5"/>
+               <p:inputText onblur="value = value.toUpperCase();" 
+                                              placeholder="Número Solicitud" 
+                                              value="#{inventarioController.descripcion}"
+                                              autocomplete="off" required="true" requiredMessage="Numero requerido">
+                 </p:inputText>
+                   <div class="EmptyBox5"/>
+                    <p:outputLabel  value="Fecha:" class="Fs16" />
+                    <p:spacer width="5"/>
+                    <p:inputText  onblur="value = value.toUpperCase();" 
+                                  placeholder="dd/MM/yyyy"
+                                  value="#{inventarioController.fecha}"
+                                              autocomplete="off" 
+                                              required="true" requiredMessage="Fecha es Requerido">
+                 </p:inputText>
+                    
+                        
+                    
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarSoliBodega('CS')}"
+                                     update="msgs,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                           
+       
+                   </p:panel>
+         
+         
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                    <p:dataTable id="dtSolBodega" value="#{inventarioController.listCabSolBodega}" var="sb"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                  
+                    
+                    <p:column headerText="F.Solicitud" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                        <h:outputText value="#{sb.csbFecha}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil" />
+                     </h:outputText>
+                      
+                    </p:column>
+           
+                      <p:column headerText="No.Solicitud" filterBy="#" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid8" >
+                          <h:outputText value="#{sb.csbNumero}" />
+                    </p:column>
+                     <p:column headerText="Tipo Solicitud" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                       
+                         <h:outputText value="#{sb.csbTipo  == '1' ? 'Sismac' :
+                                               sb.csbTipo  == '2' ? 'Tecnica' : 
+                                                sb.csbTipo  == '3' ? 'Operativa' : 
+                                                sb.csbTipo  == '4' ? 'mantenimiento del Parque Autom' : null}"/>
+                    </p:column>
+                 
+                
+                    <p:column headerText="Tipo" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid15" >
+                        <h:outputText value="#{sb.catArticulo.artNombgenerico}" />
+                       
+                    </p:column>
+                    
+             
+            
+
+                    <p:column headerText="Motivo" filterBy="#"
+                              filterMatchMode="contains" class="Wid20" >
+                        <h:outputText value="#{sb.csbMotivo}" />
+                     
+                    </p:column>
+                    
+                   
+                    <p:column headerText="Estado" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                        <h:outputText value="#{sb.csbEstado == 'S' ? 'Pendientes' :
+                                                 sb.csbEstado == 'D' ? 'Descomprometido' :
+                                                 sb.csbEstado == 'I' ? 'Inaciva' : null}" />
+                    </p:column>
+                          <p:column headerText="Subdirección" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                              <h:outputText value="#{sb.csbSubDireccion == 'C' ? 'Creado' :
+                                                      sb.csbSubDireccion == 'A' ? 'Aceptado' :
+                                                       sb.csbSubDireccion == 'R' ? 'Rechazado' : null}" />
+                           </p:column>
+                        <p:column headerText="MotivoSub" filterBy="#"
+                              filterMatchMode="contains" class="Wid15" >
+                            <h:outputText value="#{sb.csbMotivoSda}" />
+                     
+                    </p:column>
+                         <p:column headerText="Días" filterBy="#"
+                              filterMatchMode="contains" class="Wid5" >
+                             <h:outputText value="#{sb.csbDias}" />
+                     
+                    </p:column>
+                    
+                     
+                     
+                  
+                      <p:column headerText="Detalle" class="Wid8 TexAlCenter">
+                          <p:commandLink class="#{botones.lnkDetalle}"
+                                   title="#{botones['title.detalle']}"  
+                                   update="tabPrincipal:fmDetalle"
+                                   action="#{inventarioController.buscarSoliBodega('DS')}"
+                                   onclick="PF('dlgDetalle').show();">
+                              <f:setPropertyActionListener value="#{sb}" target="#{inventarioController.objCabSolBodega}" />
+                    </p:commandLink>
+                      </p:column>
+                     <p:column headerText="Egreso" class="Wid8 TexAlCenter">
+                         <p:commandLink  class="#{botones.lnkEgreso}"
+                                         action="#{inventarioController.generaEgreso(sb.csbId, 'ET')}"
+                                         update="tabPrincipal"
+                                        title="Realizar Ingreso">
+                             <f:setPropertyActionListener value="#{sb}" target="#{inventarioController.objCabSolBodega}" />
+                        </p:commandLink>
+                      </p:column>
+
+                
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Detalle Solicitud Bodega" widgetVar="dlgDetalle"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetalle" enctype="multipart/form-data" >
+                <p:outputPanel>
+                   
+               
+                    <p:dataTable id="dtSolicDetalle" value="#{inventarioController.listDetSolBodega}" var="detalle" 
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index"  editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                     <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                     
+                        <p:column headerText="#{etiquetas['codigo']}" class="TexAlCenter" width="5%">
+                            <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artCodigo}"/>
+                        </p:column>
+                      <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                          <h:outputText value="#{detalle.invExistenciaBodega.catArticulo.artNombgenerico}"/>
+                  
+                    </p:column>
+                          <p:column headerText="Cantidad" class="TexAlCenter" width="5%">
+                              <h:outputText value="#{detalle.dsbCantsolicitada}"/>
+               
+                        </p:column>
+                           <p:column headerText="C.Promedio" class="TexAlCenter" width="5%">
+                               <h:outputText value="#{detalle.invExistenciaBodega.exiCostoprom}"/>
+               
+                        </p:column>
+                       
+                       
+                 
+                        <p:column headerText="Estado" class="TexAlCenter" width="5%">
+                             <h:outputText value="#{detalle.dsbEstado == 'S' ? 'Pendientes' :
+                                                 detalle.dsbEstado == 'D' ? 'Descomprometido' :
+                                                 detalle.dsbEstado == 'I' ? 'Inaciva' : null}" />
+                       
+                           
+                        </p:column>
+                         
+               
+
+
+
+                    </p:dataTable> 
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+        
+                        <p:commandButton id="btnCancelar" value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgDetalle').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+       
+  
+
+</ui:composition>

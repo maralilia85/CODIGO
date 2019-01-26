@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                 template="/WEB-INF/template.xhtml">
+  <ui:define name="content">
+     
+
+      <p:growl id="msg" class="Fs10"/>  
+      
+        
+    
+        <p:tabView  id="tabPrincipal" 
+                    orientation="top" activeIndex="#{inventarioController.inxTab}"   cache="false" style="border: hidden"
+                    dynamic="true" tabindex="true">
+            <p:ajax event="tabChange" listener="#{inventarioController.cambiaTabConsultas}"/>
+            
+           
+            <p:tab id="tab0" title="Kardex">
+                <p:outputPanel>
+                   <ui:include src="/paginas/consultas/1kardex.xhtml"/>
+                </p:outputPanel>
+            </p:tab>
+           
+
+            <p:tab id="tab1" title="Saldos" >
+                <p:outputPanel>
+                     <ui:include src="/paginas/consultas/2saldos.xhtml"/>
+
+                </p:outputPanel>
+            </p:tab>
+             <p:tab id="tab2" title="Movimientos" >
+                <p:outputPanel>
+                     <ui:include src="/paginas/consultas/3movimiento.xhtml"/>
+                  
+                </p:outputPanel>
+            </p:tab>
+            <p:tab id="tab3" title="Lote" >
+                <p:outputPanel>
+                      <ui:include src="/paginas/consultas/4items.xhtml"/>
+
+                </p:outputPanel>
+            </p:tab>
+            <p:tab id="tab4" title="Consolidado" >
+                <p:outputPanel>
+                      <ui:include src="/paginas/consultas/8consolidado.xhtml"/>
+
+                </p:outputPanel>
+            </p:tab>
+           
+           
+           
+ 
+             
+
+        </p:tabView>
+      
+     
+        
+    </ui:define>
+
+   
+        
+       
+  
+
+</ui:composition>

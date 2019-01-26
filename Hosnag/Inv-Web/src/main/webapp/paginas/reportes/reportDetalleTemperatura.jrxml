@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleTemperatura" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DT.DTEM_FECHA,
+DT.DTEM_AM,
+DT.DTEM_PM,
+DT.DTEM_PROM,
+CT.TEM_MIN,
+CT.TEM_MAX,
+DT.DTEM_OBSERACION
+  FROM REG_DETTEMP DT
+  LEFT JOIN REG_CABTEMP CT ON CT.TEM_ID = DT.TEM_ID
+  WHERE DT.TEM_ID = $P{clave}
+]]>
+	</queryString>
+	<field name="DTEM_FECHA" class="java.sql.Timestamp"/>
+	<field name="DTEM_AM" class="java.math.BigDecimal"/>
+	<field name="DTEM_PM" class="java.math.BigDecimal"/>
+	<field name="DTEM_PROM" class="java.lang.Double"/>
+	<field name="TEM_MIN" class="java.math.BigDecimal"/>
+	<field name="TEM_MAX" class="java.math.BigDecimal"/>
+	<field name="DTEM_OBSERACION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="18">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="65" y="1" width="48" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mañana]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="113" y="1" width="45" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tarde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="158" y="1" width="50" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Promedio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29a1d821-84c5-4337-b1e7-f3f0a6d19ab8" x="2" y="1" width="63" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5a79ff89-44a5-4509-8cc8-0d8bd4acfc65" x="236" y="1" width="32" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MAX]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0a71d18f-cd92-4ca2-9b75-677f4ed99a6d" x="268" y="1" width="225" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e68fbd3-b7fd-4b81-a57a-ea074aa13fd6" x="208" y="1" width="28" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MIN]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="1" width="791" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2117b54b-8f2e-4c66-abac-c34f13b49ad4" x="65" y="3" width="48" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTEM_AM}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1b67aac1-f00b-4acc-aa30-be1074919af7" x="113" y="3" width="45" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTEM_PM}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="89e838c0-0f71-47ae-9fc6-8dda51ba300d" x="158" y="3" width="50" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTEM_PROM}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3d319161-88b6-4cef-b7d2-f0e6a47824a0" x="208" y="3" width="28" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TEM_MIN}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c3352694-5449-41d2-8e3e-9dc3c6ae0afb" x="236" y="3" width="32" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{TEM_MAX}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="43fb1745-7fbf-421c-9ea1-08f6b42fa7d7" x="268" y="2" width="225" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTEM_OBSERACION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="57a95463-3bd0-40df-afe6-99d4d2a6bb4a" x="3" y="3" width="62" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTEM_FECHA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

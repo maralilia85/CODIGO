@@ -1,0 +1,250 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formSolicitudes">
+        <p:fieldset legend="Solicitudes de Pedidos">
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                 <p:selectOneRadio value="#" columns="1">
+                <f:selectItem itemLabel="Pendientes" itemValue="P" />
+               <f:selectItem itemLabel="Número" itemValue="N" />
+            </p:selectOneRadio>
+                
+              
+                            <p:outputLabel  value="Número:" class="Fs16" />
+                   <p:spacer width="5"/>
+               <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Número" 
+                                              value="2550"
+                                              autocomplete="off" required="true">
+                 </p:inputText>
+                   <div class="EmptyBox5"/>
+                    <p:outputLabel  value="Fecha:" class="Fs16" />
+                    <p:spacer width="5"/>
+                    <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Número" 
+                                              value="2017"
+                                              autocomplete="off" required="true">
+                 </p:inputText>
+                        
+                    
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                            <p:commandButton icon="#{botones['boton.iconnuevo']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+                    </p:commandButton>
+                   
+      
+                   </p:panel>
+                
+              
+              
+         
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                <p:dataTable id="dtSolicitudes" value="#" var="solic"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicitudes"/>
+           
+                      <p:column headerText="No.Solicitud" filterBy="#" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid8" >
+                        <h:outputText value="2550" />
+                    </p:column>
+                     <p:column headerText="Tipo Solicitud" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                     <h:outputText value=""/>
+                    </p:column>
+                       <p:column headerText="Área Solic" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                     <h:outputText value="Quirofanos"/>
+                    </p:column>
+                 
+                
+                    <p:column headerText="Tipo" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="Insumos" />
+                       
+                    </p:column>
+                     <p:column headerText="Sub-Tipo" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                         <h:outputText value="Insumos Médicos" />
+                       
+                    </p:column>
+                      <p:column headerText="Sección" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                         <h:outputText value="Insumos para Procedimientos" />
+                       
+                    </p:column>
+            
+
+                    <p:column headerText="Motivo" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="" />
+                     
+                    </p:column>
+                    <p:column headerText="Fecha Solicitud" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="06/09/2017" />
+                      
+                    </p:column>
+                    <p:column headerText="Empleado Solic" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="Empleado Ejemplo" />
+                      
+                    </p:column>
+                    <p:column headerText="Estado" filterBy="#"
+                              filterMatchMode="contains" class="Wid5" >
+                         <h:outputText value="Pendiente" />
+                      
+                    </p:column>
+                     
+                     
+                  
+                      <p:column headerText="Detalle" class="Wid5 TexAlCenter">
+                          <p:commandLink class="#{botones.lnkDetalle}"
+                                   title="#{botones['title.detalle']}"  
+                                   update="tabPrincipal:fmDetalle"
+                                   action="#"
+                                   onclick="PF('dlgDetalle').show();">
+                        <f:setPropertyActionListener value="#{solic}" target="#" />
+                    </p:commandLink>
+                      </p:column>
+                     <p:column headerText="Despachar" class="Wid5 TexAlCenter">
+                         <p:commandLink  class="#{botones.lnkDespacho}"
+                                        title="Realizar Egreso">
+                             <f:setPropertyActionListener value="#{solic}" target="#" />
+                        </p:commandLink>
+                      </p:column>
+
+                
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Detalle Solicitud Despacho" widgetVar="dlgDetalle"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetalle" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:commandButton value="Detalle"  icon="#{botones['boton.iconnuevo']}"
+                             action="#"
+                             update="dtSolicDetalle"
+                             title="#{botones['title.nuevo']}">
+            </p:commandButton>
+                    <div class="EmptyBox5"></div>
+               
+                    <p:dataTable id="dtSolicDetalle" value="#" var="detalle" 
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index"  editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicDetalle"/>
+
+
+                       
+                        <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                        <p:column headerText="Nro.Solic." class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+
+                        <p:column headerText="#{etiquetas['codigo']}" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                          <p:column headerText="Cantidad Solicitada" class="TexAlCenter" width="5%">
+                            <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="6"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+                          <p:column headerText="Stock Satisface" class="TexAlCenter" width="5%">
+                            <h:outputText value="Si"/>
+                        </p:column>
+                         <p:column headerText="Demanda Requerida" class="TexAlCenter" width="5%">
+                            <h:outputText value="8"/>
+                        </p:column>
+                       
+                       
+                        <p:column headerText="Estado" class="TexAlCenter" width="5%">
+                            <h:outputText value="Pendiente" />
+                        </p:column>
+                        <p:column headerText="#{etiquetas['opciones']}" class="Wid5 TexAlCenter">
+                         <p:commandLink id="dynaButton" class="icon-compose-1"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{art}" target="#" />
+                        </p:commandLink>
+                         <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
+                            <p:submenu label="Mantenimiento">
+                                
+                               <p:menuitem value="#{botones['inactivar']}"  icon="#{botones['boton.iconinactiva']}" action="#"
+                                            title="#{botones['title.inactiva']}" />
+                                <p:menuitem value="Eliminar"  icon="#{botones['boton.iconeliminar']}" action="#"
+                                            title="#{botones['title.eliminar']}" />
+                            </p:submenu>
+                            
+                           
+                           
+
+                        </p:menu>
+                       
+
+                    </p:column>
+                
+               
+
+
+
+                    </p:dataTable> 
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                     
+                        <a href="../inventario/1planificacion.xhtml"></a>
+                        <p:commandButton id="btnCancelar" value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgDetalle').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+        
+       
+  
+
+</ui:composition>

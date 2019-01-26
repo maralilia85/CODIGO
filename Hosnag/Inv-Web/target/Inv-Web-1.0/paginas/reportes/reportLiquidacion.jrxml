@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportLiquidacion" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d591680c-e64d-4c2e-ad23-fdf2fd2546eb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.callouts" value="##Tue Feb 06 13:44:12 COT 2018"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["G:\\reporte\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 11/2/2018 12:38:18 (QP5 v5.252.13127.32867) */
+SELECT CL.CLI_ID,
+S.GEN_DESCRIPCION,
+CL.CLI_OBSERVACION,
+CL.CLI_FECHA,
+CL.CLI_FECHAHASTA,
+B.BOD_DESCRIPCION,
+E.EMP_DESCRIPCION,
+E.EMP_LOGO,
+E.EMP_NOMBRE,
+P.PAC_CEDULA,
+P.PAC_NOMBREAPELLIDOS,
+P.PAC_HC,
+P.PAC_CODIGOISSFA
+  FROM REG_CABLIQUIDACION CL
+  LEFT JOIN CAT_GENERAL S ON S.GEN_ID = CL.CLI_SERVID
+       LEFT JOIN CAT_BODEGA B ON CL.CLI_BODID = B.BOD_ID
+       LEFT JOIN CAT_EMPRESA E ON E.EMP_ID = B.EMP_ID
+       LEFT JOIN REG_PACIENTE P ON P.PAC_ID = CL.CLI_CLAVETABLA
+       LEFT JOIN REG_ADMISION A ON A.ADM_ID = CL.CLI_CLAVETABLA
+       LEFT JOIN REG_PACIENTE P ON P.PAC_ID = A.PAC_ID
+WHERE B.BOD_ID = $P{bodId}
+AND CL.CLI_ID = $P{clave}
+AND CL.CLI_ESTADO = 'P']]>
+	</queryString>
+	<field name="CLI_ID" class="java.math.BigDecimal"/>
+	<field name="GEN_DESCRIPCION" class="java.lang.String"/>
+	<field name="CLI_OBSERVACION" class="java.lang.String"/>
+	<field name="CLI_FECHA" class="java.sql.Timestamp"/>
+	<field name="CLI_FECHAHASTA" class="java.sql.Timestamp"/>
+	<field name="BOD_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_LOGO" class="java.lang.String"/>
+	<field name="EMP_NOMBRE" class="java.lang.String"/>
+	<field name="PAC_CEDULA" class="java.lang.String"/>
+	<field name="PAC_NOMBREAPELLIDOS" class="java.lang.String"/>
+	<field name="PAC_HC" class="java.lang.String"/>
+	<field name="PAC_CODIGOISSFA" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="124" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62af3205-a7f8-46b2-88ca-6695537f150d" style="SubTitle" x="105" y="76" width="357" height="22" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[REPORTE LIQUIDACIÓN PACIENTES]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="805f2db4-e602-4f3a-ab09-258647287a0e" x="106" y="1" width="357" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8ebfb6a2-7cf6-4b2a-9f07-d7fce66eea3b" x="105" y="44" width="357" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BOD_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5e7c88e1-29e8-4a6e-82d9-b1d2bb438776" x="105" y="22" width="357" height="21"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7d520e4b-ca95-43bf-b444-fdb389acb491" style="Column header" x="465" y="21" width="67" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Hasta:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1b5856b8-2211-411a-8dc0-646aa7ec5801" style="Column header" x="464" y="0" width="69" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Desde:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="948a5a10-1f4f-40ac-8e8c-df6ed2939401" style="Column header" x="677" y="3" width="80" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="70490990-482c-4a86-8631-c2f438b24416" style="Column header" x="757" y="3" width="40" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="d3996aa5-bcc2-4b7e-93d1-261599f32c02" x="2" y="2" width="99" height="99"/>
+				<imageExpression><![CDATA[$P{direccion}+$F{EMP_LOGO}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="8a145e12-b351-46a9-a499-ebbcddaf7d69" style="Column header" x="475" y="43" width="57" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Paciente:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="cf7b3f69-674b-4877-a331-80e8430226b5" style="Column header" x="677" y="24" width="120" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="acc57873-06cc-4a59-abdb-23d24cfd8498" style="Column header" x="3" y="102" width="66" height="22" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Servicio:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a509aa7f-e50d-47b5-9702-2a8dc6875891" x="69" y="104" width="393" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GEN_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6ba79f43-2290-4986-ac1f-6622915ea495" style="Column header" x="474" y="63" width="57" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Cédula:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="74bd87e3-dbd1-4970-bf4a-8f9584c9050b" style="Column header" x="485" y="84" width="44" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[ISSFA:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="4861e8d3-ea7e-48f5-844a-c8f7251eb99a" x="533" y="2" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CLI_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="0a66d3a9-2e7c-495a-9295-ec8fc26a8411" x="532" y="24" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CLI_FECHAHASTA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3bdd6a7c-faa1-4b6f-aba2-7b47263f779d" x="533" y="42" width="264" height="20"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAC_NOMBREAPELLIDOS}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ffde100d-fc80-4dad-82d5-3273b2ca46fe" x="532" y="64" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAC_CEDULA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="af5bd3f9-0acf-4f98-9726-af29c7a0c5ad" x="530" y="85" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAC_CODIGOISSFA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="64" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ea2f148-71d1-410d-921d-2bcee4c16a21" x="3" y="0" width="799" height="64"/>
+				<subreportParameter name="clave">
+					<subreportParameterExpression><![CDATA[$F{CLI_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{direccion} + "reportDetalleLiquidacion.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

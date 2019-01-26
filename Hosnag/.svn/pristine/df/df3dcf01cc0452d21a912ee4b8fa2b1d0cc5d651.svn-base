@@ -1,0 +1,319 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formBodega">
+        <p:fieldset legend="Crear Bodega">
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:inputText placeholder="Buscar bodega por descripción " style="width: 20%" 
+                                 autocomplete="off" 
+                                 value="#{catalogoController.descripcion}"
+                                 onblur="value = value.toUpperCase();" >
+                    </p:inputText>
+
+
+                     <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                      action="#{catalogoController.buscarByDescripcion('N', 'B')}"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                    <p:commandButton icon="#{botones['boton.iconnuevo']}"
+                                     action="#{catalogoController.crearBodega('B', null, 0)}"
+                                     rendered="false"
+                                     process="@this"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+                    </p:commandButton>
+                </p:panel> 
+                <p:panel id="pResultado" style="border: hidden">
+                    <p:dataTable id="dtBodega" value="#{catalogoController.listBodega}" var="bodega"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtBodega" listener="#{catalogoController.onCellEditBodega}"/>
+
+                        <p:column headerText="#{etiquetas['codigo']}" filterBy="#{bodega.bodId}"
+                                          filterMatchMode="contains" class="Wid3" >
+                                  
+                              
+
+                                            <h:outputText value="#{bodega.bodId}"/>
+
+                                </p:column>
+
+                  
+                   
+
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{bodega.bodDescripcion}"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{bodega.bodDescripcion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['descripcion']}" 
+                                              value="#{bodega.bodDescripcion}"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                        <p:column headerText="Jefe de Bodega" 
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                                <h:outputText value="#{bodega.nombreEmpleado}"/>
+                           
+                    </p:column>
+     
+                  
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{bodega.bodEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                 <h:selectOneMenu value="#{bodega.bodEstado}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Activo" itemValue="A" /> 
+                                     <f:selectItem itemLabel="Inactivo" itemValue="I" />
+
+                                </h:selectOneMenu> 
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                  
+                 
+                   
+                    
+                    
+                     <p:column headerText="#{etiquetas['opciones']}" class="Wid10 TexAlCenter">
+                         <p:commandLink id="dynaButton" class="icon-compose-1"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{bodega}" target="#{catalogoController.objBodega}" />
+                        </p:commandLink>
+                         <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
+                            <p:submenu label="Mantenimiento">
+                                
+                         
+                                <p:menuitem value="#{botones['eliminar']}"  icon="#{botones['boton.iconeliminar']}" 
+                                            action="#{catalogoController.obtieneBodega(bodega.bodId)}"
+                                            actionListener="#{catalogoController.validaDep(bodega.bodId, 'B')}"
+                                            process="@this"
+                                            update="tabPrincipal:formEliminaBo"
+                                            onclick="PF('dlgEliminaBo').show();"
+                                            title="Eliminar Registro" />
+                               
+                            </p:submenu>
+                              <p:submenu label="Asignar Jefe">
+                                
+                                  <p:menuitem value="#{botones['asignar']}"  icon="#{botones['boton.iconaceptar']}" 
+                                              action="#{catalogoController.btnAsignaEmp(bodega.bodId,'B' )}"
+                                              update="tabPrincipal:fmJefe"
+                                              onclick="PF('dlgJefe').show();"/>
+                         
+                            </p:submenu>
+                           
+                           
+
+                        </p:menu>
+                       
+
+                    </p:column>
+                    
+                    
+
+
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Crear Nuevo Registro" widgetVar="dlgNewBode" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formNewArt">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="Verifique.No existe registro para la descrpción :#{catalogoController.descripcion}" class="Fs14 red" />
+                        <p:outputLabel value="¿Esta seguro de crear un nuevo artículo?" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          process="@this"
+                                          action="#{catalogoController.crearArticulo(2,null)}"
+                                          onclick="PF('dlgNewArt').hide();"
+                                          update="tabPrincipal:formArticulos">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgNewArt').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+     <p:dialog header="Asignar Jefe de Bodega" widgetVar="dlgJefe"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmJefe" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:outputLabel  value="Existe empleado asignado #{catalogoController.objBodega.bodDescripcion} Confirma asignar nuevo empleado." class="Fs16" rendered="#{catalogoController.objBodega.emlId gt 0}" />
+                    
+                    <p:spacer width="5"/>
+                    <p:inputText  onblur="value = value.toUpperCase();" class="Wid80"
+                                              placeholder="Buscar por Nombre o Cédula" 
+                                              value="#{catalogoController.descripcion}"
+                                              autocomplete="off" required="true">
+                 </p:inputText>
+                     <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                      action="#{catalogoController.buscarEmpleado()}"
+                                      update="dtEmpleado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                    <p:dataTable id="dtEmpleado" value="#{catalogoController.listaRegEmpleado}" var="empleado"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                  
+                       
+
+                    <p:column headerText="Empleado" filterBy="#{empleado.emlNombre}"
+                              filterMatchMode="contains" class="Wid10" >
+                      
+                                <h:outputText value="#{empleado.emlNombre}"/>
+                    </p:column>
+                        <p:column headerText="Dni" filterBy="#{empleado.emlCedula}"
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                                <h:outputText value="#{empleado.emlCedula}"/>
+                            
+                            
+                    
+                    </p:column>
+     
+                  
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                                <h:outputText value="#{empleado.emlEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                           
+                    </p:column>
+                         <p:column headerText="Asignar" class="Wid5 TexAlCenter">
+                             <p:commandLink  class="#{botones.lnkConfirma}"
+                                                 action="#{catalogoController.asignaEmpleado('B' , empleado.emlId)}"
+                                        update="tabPrincipal:formBodega,tabPrincipal:fmJefe"
+                                        onclick="PF('dlgJefe').hide();"
+                                        title="Asignar empleado jefe.">
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                  
+                 
+                   
+                    
+                   
+                    
+
+
+                </p:dataTable> 
+                        
+                   
+               
+                    
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                    
+                        <p:commandButton value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         action="#{catalogoController.enceraListas('C')}"
+                                         update="fmJefe"
+                                         process="@this"
+                                         onclick="PF('dlgJefe').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog> 
+     <p:dialog header="Eliminar Registro" widgetVar="dlgEliminaBo" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formEliminaBo">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Está seguro que desea eliminar el registro?" class="Fs14 red"/>
+                        <p:outputLabel value="#{catalogoController.objBodegaNivel.bodDescripcion}" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          action="#{catalogoController.eliminaBodega()}"
+                                          process="@this"
+                                          onclick="PF('dlgEliminaBo').hide();"
+                                          update="tabPrincipal:formBodega">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgEliminaBo').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+   
+        
+       
+  
+
+</ui:composition>

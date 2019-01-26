@@ -1,0 +1,281 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.modelo.registro;
+
+import ec.mil.armada.inv.modelo.catalago.CatArticulo;
+import ec.mil.armada.inv.modelo.catalago.CatBodega;
+import ec.mil.armada.inv.modelo.catalago.CatEmpresa;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+/**
+ *
+ * @author DET-PC
+ */
+@Entity
+@Table(name = "REG_CABORDENCOMPRA")
+
+public class RegCabordencompra implements Serializable {
+    private static final long serialVersionUID = 1L;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "COC_ID")
+    private BigInteger cocId;
+    @Column(name = "BOD_ID")
+    private BigInteger bodId;
+    @Column(name = "EMP_ID")
+    private BigInteger empId;
+    @Column(name = "COC_NUMERO")
+    private BigInteger cocNumero;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 1)
+    @Column(name = "COC_ESTADO")
+    private String cocEstado;
+    @Column(name = "COC_FECHA")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date cocFecha;
+    @Size(max = 1)
+    @Column(name = "COC_TIPOORDEN")
+    private String cocTipoorden;
+    @Size(max = 250)
+    @Column(name = "COC_OBSERVACION")
+    private String cocObservacion;
+    @Size(max = 1)
+    @Column(name = "COC_TIPO")
+    private BigInteger cocTipo;
+    @Size(max = 50)
+    @Column(name = "COC_NOFACTURA")
+    private String cocNofactura;
+    @Column(name = "COC_FECHAFACTURA")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date cocFechaFactura;
+    @Column(name = "COC_TOTALFACTURA")
+    private Double cocTotalFactura;
+    @Column(name = "COC_DESC")
+    private Double cocDesc;
+    @Column(name = "COC_IVA")
+    private Double cocIva;
+    @Column(name = "COC_TOTAL")
+    private Double cocTotal;
+    @Column(name = "COC_NUMSOLCOMPRA")
+    private BigInteger cocNumSolCompra;
+
+
+    
+    @Transient
+      private CatBodega catBodega;
+     @Transient
+      private CatEmpresa catEmpresa;
+      @Transient
+      private CatArticulo catArticulo;
+
+    public RegCabordencompra() {
+    }
+
+    public RegCabordencompra(BigInteger cocId) {
+        this.cocId = cocId;
+    }
+
+    public RegCabordencompra(BigInteger cocId, String cocEstado) {
+        this.cocId = cocId;
+        this.cocEstado = cocEstado;
+    }
+
+    public BigInteger getCocId() {
+        return cocId;
+    }
+
+    public void setCocId(BigInteger cocId) {
+        this.cocId = cocId;
+    }
+
+    public BigInteger getBodId() {
+        return bodId;
+    }
+
+    public void setBodId(BigInteger bodId) {
+        this.bodId = bodId;
+    }
+
+    public BigInteger getEmpId() {
+        return empId;
+    }
+
+    public void setEmpId(BigInteger empId) {
+        this.empId = empId;
+    }
+
+    public BigInteger getCocNumero() {
+        return cocNumero;
+    }
+
+    public void setCocNumero(BigInteger cocNumero) {
+        this.cocNumero = cocNumero;
+    }
+
+    public String getCocEstado() {
+        return cocEstado;
+    }
+
+    public void setCocEstado(String cocEstado) {
+        this.cocEstado = cocEstado;
+    }
+
+    public Date getCocFecha() {
+        return cocFecha;
+    }
+
+    public void setCocFecha(Date cocFecha) {
+        this.cocFecha = cocFecha;
+    }
+
+    public String getCocTipoorden() {
+        return cocTipoorden;
+    }
+
+    public void setCocTipoorden(String cocTipoorden) {
+        this.cocTipoorden = cocTipoorden;
+    }
+
+    public String getCocObservacion() {
+        return cocObservacion;
+    }
+
+    public void setCocObservacion(String cocObservacion) {
+        this.cocObservacion = cocObservacion;
+    }
+
+    public BigInteger getCocTipo() {
+        return cocTipo;
+    }
+
+    public void setCocTipo(BigInteger cocTipo) {
+        this.cocTipo = cocTipo;
+    }
+
+    public String getCocNofactura() {
+        return cocNofactura;
+    }
+
+    public void setCocNofactura(String cocNofactura) {
+        this.cocNofactura = cocNofactura;
+    }
+
+    public CatBodega getCatBodega() {
+        return catBodega;
+    }
+
+    public void setCatBodega(CatBodega catBodega) {
+        this.catBodega = catBodega;
+    }
+
+    public CatEmpresa getCatEmpresa() {
+        return catEmpresa;
+    }
+
+    public void setCatEmpresa(CatEmpresa catEmpresa) {
+        this.catEmpresa = catEmpresa;
+    }
+
+    public CatArticulo getCatArticulo() {
+        return catArticulo;
+    }
+
+    public void setCatArticulo(CatArticulo catArticulo) {
+        this.catArticulo = catArticulo;
+    }
+
+    public Date getCocFechaFactura() {
+        return cocFechaFactura;
+    }
+
+    public void setCocFechaFactura(Date cocFechaFactura) {
+        this.cocFechaFactura = cocFechaFactura;
+    }
+
+    public Double getCocTotalFactura() {
+        return cocTotalFactura;
+    }
+
+    public void setCocTotalFactura(Double cocTotalFactura) {
+        this.cocTotalFactura = cocTotalFactura;
+    }
+
+    public Double getCocDesc() {
+        return cocDesc;
+    }
+
+    public void setCocDesc(Double cocDesc) {
+        this.cocDesc = cocDesc;
+    }
+
+    public BigInteger getCocNumSolCompra() {
+        return cocNumSolCompra;
+    }
+
+    public void setCocNumSolCompra(BigInteger cocNumSolCompra) {
+        this.cocNumSolCompra = cocNumSolCompra;
+    }
+
+
+    
+    public Double getCocIva() {
+        return cocIva;
+    }
+
+    public void setCocIva(Double cocIva) {
+        this.cocIva = cocIva;
+    }
+
+    public Double getCocTotal() {
+        return cocTotal;
+    }
+
+    public void setCocTotal(Double cocTotal) {
+        this.cocTotal = cocTotal;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (cocId != null ? cocId.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof RegCabordencompra)) {
+            return false;
+        }
+        RegCabordencompra other = (RegCabordencompra) object;
+        if ((this.cocId == null && other.cocId != null) || (this.cocId != null && !this.cocId.equals(other.cocId))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ec.mil.armada.inv.modelo.inventario.RegCabordencompra[ cocId=" + cocId + " ]";
+    }
+    
+}

@@ -1,0 +1,214 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.inventario;
+
+import ec.mil.armada.inv.modelo.catalago.CatArticulo;
+import ec.mil.armada.inv.modelo.catalago.CatBodega;
+import ec.mil.armada.inv.modelo.inventario.InvCabTransaccion;
+import ec.mil.armada.inv.modelo.registro.RegEmpleado;
+import ec.mil.armada.inv.remotos.catalogo.CatArticuloFacadeRemote;
+import ec.mil.armada.inv.remotos.registro.RegEmpleadoFacadeRemote;
+import ec.mil.armada.inv.servicios.abstractFacade.AbstractFacade;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Stateless
+public class InvCabTransaccionFacade extends AbstractFacade<InvCabTransaccion> implements ec.mil.armada.inv.servicios.inventario.InvCabTransaccionFacadeRemote {
+    @EJB
+    transient private CatArticuloFacadeRemote catArticuloFacade;
+    @EJB
+    transient private RegEmpleadoFacadeRemote regEmpleadoFacade;
+    
+    @PersistenceContext(unitName = "ec.mil.armada_Inv-Servicios_ejb_1.0PU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public InvCabTransaccionFacade() {
+        super(InvCabTransaccion.class);
+    }
+    
+    @Override
+    public CatBodega objCatBodega(BigInteger bodId){
+    
+        CatBodega objeto = null;
+
+        final Query query = em.createQuery("Select object (b) from CatBodega b where b.bodId = :bodId  ");
+        query.setParameter("bodId", bodId);
+        query.setHint("eclipselink.refresh", true);
+        final List<CatBodega> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+    
+    @Override
+   public List<InvCabTransaccion> listAllByParam(BigInteger bodId,String estado, String tipo, String fechaIni, String fechaFin, String operador) {
+        final StringBuilder SQLNative = new StringBuilder();
+        boolean isBodega = bodId != null;
+        boolean isEstado = estado != null && estado.trim().length() > 0 && !(estado.trim().toLowerCase().compareTo("null") == 0);
+        boolean isTipo = tipo != null && tipo.trim().length() > 0 && !(tipo.trim().toLowerCase().compareTo("null") == 0);
+        boolean isfechaIni = fechaIni  != null && fechaIni.trim().length() > 0 && !(fechaIni.trim().toLowerCase().compareTo("null") == 0);
+        boolean isfechaFin = fechaFin  != null && fechaFin.trim().length() > 0 && !(fechaFin.trim().toLowerCase().compareTo("null") == 0);
+        boolean isOperador = operador != null && operador.trim().length() > 0 && !(operador.trim().toLowerCase().compareTo("null") == 0);
+
+        SQLNative.append("SELECT CTR_ID,CTR_TIPO,CTR_NUMERO,CTR_CLAVETABLA,CTR_SIGLASTABLA,CTR_ESTADO,CTR_FECHA,CTR_TOTAL, BOD_ID ");
+        SQLNative.append("   FROM INV_CABTRANSACCION CT ");
+        SQLNative.append("   WHERE 1=1 ");
+        if (isBodega && isTipo) {
+            if (isBodega) {
+                SQLNative.append("   AND CT.BOD_ID = ").append(bodId);
+
+            }
+            
+            if (isEstado) {
+                SQLNative.append(" AND CT.CTR_ESTADO =  '").append(estado).append("' ");
+                
+
+            }
+            if (isTipo) {
+                SQLNative.append(" AND CT.CTR_TIPO IN  (").append(tipo).append(") ");  
+
+            }
+            if (isfechaIni && isOperador) {
+                //Buscar por existencia
+                if (operador.equalsIgnoreCase("=")) {
+                     SQLNative.append(" AND TRUNC (CT.CTR_FECHA) = to_date('").append(fechaIni).append("','dd/mm/yyyy')");
+                }
+                if (operador.equalsIgnoreCase(">=")) {
+                     SQLNative.append(" AND TRUNC (CT.CTR_FECHA) >= to_date('").append(fechaIni).append("','dd/mm/yyyy')");
+                }
+                if (operador.equalsIgnoreCase("<=")) {
+                     SQLNative.append(" AND TRUNC (CT.CTR_FECHA) <= to_date('").append(fechaIni).append("','dd/mm/yyyy')");
+                }
+                if (isfechaFin && operador.equalsIgnoreCase("ENTRE")) {
+                     SQLNative.append("  AND TRUNC (CT.CTR_FECHA) BETWEEN to_date('").append(fechaIni).append("','dd/mm/yyyy') and to_date('").append(fechaFin).append("','dd/mm/yyyy')");
+                }
+
+            }
+
+        } else {
+            SQLNative.append(" AND 1=2   ");
+
+        }
+final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<InvCabTransaccion> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final InvCabTransaccion inv = new InvCabTransaccion();
+            inv.setCtrId(new BigInteger(obj[a].toString()));
+            a++;
+              if(obj[a] != null){
+            inv.setCtrTipo(((String) obj[a]));}
+            a++;
+              if(obj[a] != null){
+            inv.setCtrNumero(new BigInteger(obj[a].toString()));}
+            a++;
+            if(obj[a] != null){
+            inv.setCtrClavetabla(new BigInteger(obj[a].toString()));}
+            a++;
+             if(obj[a] != null){
+            inv.setCtrSiglastabla(((String) obj[a]));}
+            a++;
+            if(obj[a] != null){
+            inv.setCtrEstado(((String) obj[a]));}
+            a++;
+            if(obj[a] != null){
+            inv.setCtrFecha(((Date) obj[a]));}
+            a++;
+            if(obj[a] != null){
+            inv.setCtrTotal(((BigDecimal) obj[a]).doubleValue());}
+            a++;
+            inv.setCatBodega(new CatBodega());
+             if(obj[a] != null){
+            inv.setCatBodega(objCatBodega(new BigInteger(obj[a].toString())));}
+           
+            datosRetorno.add(inv);
+        }
+
+        return datosRetorno;
+    }
+
+    @Override
+    public InvCabTransaccion crearObjeto(CatBodega bodega, BigInteger claveTabla, String siglasTabla, String estado, String retira, String tipo, BigInteger artId) {
+        InvCabTransaccion objetoNew = new InvCabTransaccion();
+        objetoNew.setCatBodega(bodega);
+        if (bodega.getEmlId() != null) {
+            //obtiene el feje de bodega
+            String jefe = regEmpleadoFacade.nombreEmpleado(bodega.getEmlId());
+            objetoNew.setCtrJefe(jefe);
+        }
+        objetoNew.setCtrClavetabla(claveTabla);
+        objetoNew.setCtrSiglastabla(siglasTabla);
+        objetoNew.setCtrEstado(estado);
+        objetoNew.setCtrFecha(new Date());
+        //Genera numero por año fiscal
+        //obtiene anio actual
+        final Calendar now = Calendar.getInstance();
+        String pFiscal = String.valueOf(now.get(Calendar.YEAR));
+        
+        int numeroDoc = numeroDoc(pFiscal);
+        if (numeroDoc != 0) {
+
+            objetoNew.setCtrNumero(BigInteger.ONE);
+        }
+
+        //si es egreso se graba persona que retira
+        if (retira != null) {
+            objetoNew.setCtrPersonaRetira(retira);
+        }
+
+        //tipo transaccion
+        objetoNew.setCtrTipo(tipo);
+        //tipo de articulo
+        if (artId != null) {
+            objetoNew.setTipoArticulo(artId);
+            //obtiene el encargado de cada tipo de articulo
+            CatArticulo objArt = catArticuloFacade.find(artId);
+            if (objArt != null) {
+                String encargado = regEmpleadoFacade.nombreEmpleado(objArt.getEmlId());
+                objetoNew.setCtrEncargado(encargado);
+            }
+        }
+
+        return objetoNew;
+    }
+    @Override
+    public int numeroDoc(String aFiscal) {
+        int numero = 0;
+        final StringBuilder SQLNative = new StringBuilder();
+        SQLNative.append(" SELECT COUNT(*) FROM INV_CABTRANSACCION C  ");
+        SQLNative.append("   FROM INV_CABTRANSACCION CT ");
+        SQLNative.append("   TO_CHAR (C.CTR_FECHA,'YYYY') = '").append(aFiscal).append("' ");
+        final Query query = getEntityManager().createNativeQuery(SQLNative.toString());
+        final Object obj = query.getSingleResult();
+        final BigDecimal valor = (BigDecimal) (obj);
+        if (valor != null) {
+            numero = valor.intValue() + 1;
+        }
+
+        return numero;
+
+    }
+}

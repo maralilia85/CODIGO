@@ -1,0 +1,228 @@
+# To change this license header, choose License Headers in Project Properties.
+# To change this template file, choose Tools | Templates
+# and open the template in the editor.
+
+
+# General
+siglasSsistema=HOSNAG
+nombreSistema=Sistema de Inventario Hospital General HOSNAG
+bienvenido=Bienvenido al Sistema de Inventario Hospital General HOSNAG
+ingresoSistema=Ingreso al SISTEMA
+copyright=HOSNAG-Centro de Tecnolog\u00eda de Informaci\u00f3n
+copyrightSimbolo=\u00a9
+inicio=P\u00e1gina de Inicio
+contrasenia=CONTRASE\u00d1A
+usuario=USUARIO
+usuarioCconectado=Usuario conectado
+infoGeneral=Informaci\u00f3n General
+unidadSalud=Unidad de Salud
+modulo=M\u00f3dulo
+cerrarSesion=Cerrar Sesi\u00f3n
+ayuda=Ayuda del Sistema
+salir=Salir del Sistema
+opcionesUsuario=Opciones de Usuario
+opciones=Opciones
+
+#meses
+enero=Enero
+febrero=Febrero
+marzo=Marzo
+abril=Abril
+mayo=Mayo
+junio=Junio
+julio=Julio
+agosto=Agosto
+septiembre=Septiembre
+octubre=Octubre
+noviembre=Noviembre
+diciembre=Diciembre
+
+#Modulos
+moduloBodega=Bodega
+moduloFarmacia=Farmacia
+
+#Tablas
+tabla.editar=Editar
+tabla.crear=Agregar
+tabla.eliminar=Eliminar
+tabla.seleccione=Seleccione
+tabla.inactiva=Inactivar
+
+#Acciones
+agregar=Agregar
+editar=Editar
+eliminar=Eliminar
+cancelar=Cancelar
+consultar=Consultar
+inactiva=Inactivar
+
+#Dialogos
+dialogo.nuevo=Nuevo Registro
+dialogo.eliminar=Eliminar Registro 
+
+#Titles
+
+title.GrabarInformacion=Guardar informaci\u00f3n
+
+
+#Inventario
+codigo=C\u00f3digo 
+codigoB=Cod.Barra
+tipo=Tipo
+subtipo=Sub-Tipo
+nombreG=Nomb.G\u00e9nerico
+nombreC=Nomb.Comercial
+formaFa=Forma.Farmac
+concentraci\u00f3n=Concentraci\u00f3n
+present=Presentaci\u00f3n
+marca=Marca
+modelo=Modelo
+ingreso=Ingreso
+egreso=Egreso
+saldo=Saldo
+pcosto=Precio Costo
+pingreso=Precio Ingreso
+punitario=Precio Unitario
+pTotal=Precio Total
+seccion=Secci\u00f3n
+proveedor=Proveedor
+total=Total
+tipoM=Tipo Mov
+area=Area
+nodoc=No.Doc
+noOfi=No.Oficio/Referencia
+totalIng=TotalIng
+totalEg=Total Egreso
+totalpro=Total Prom
+iva=Iva
+ProvArea=Proeevor/Area
+lote=Lote
+regSani=Registro Sanitario
+fechaElab=Fecha Elaboraci\u00f3n
+fechaCaduc=Fecha Caducidad
+noFact=No.Factura
+fechaFact=Fecha Factura
+noOrdenComp=No.Orden Compra
+fechaIng=Fecha Ingreso
+noIngreso=No.Ingreso
+desc=Descuento
+cant=Cantidad
+porDesc=% Desc 
+cantIngreso=Cant Ingreso
+cIngreso=Costo Ingreso
+cPromedio=Costo Promedio
+vliq=Valor Liquidado
+vFact=Valor Facturado
+difC=Diferencia de Costeo
+valortarif=Valor Tarifa 12%
+valortarif0=Valor Tarifa 0%
+totalCanc=Total Cancelar
+recibPor=Recibido por
+totalEgreso=Total Egreso
+noEgreso=No.Egreso
+fechaEgreso=Fecha Egreso
+totalFact=Total Factura
+stockMin=Stock Minimo
+stockMax=Stock M\u00e1ximo
+stockSs=Stock de Seguridad
+tipoInv=Tipo Inventario
+medida=Medida
+
+
+
+#Seguridades
+contraseniaAnterior=Contrase\u00f1a anterior
+ingreseContraseniaAnterior=Ingrese contrase\u00f1a anterior
+contraseniaNueva=Contrase\u00f1a nueva
+recuperaContrasenia=Recupera Contrase\u00f1a
+ingreseContraseniaNueva=Ingrese contrase\u00f1a nueva
+cambioContrasenia= CAMBIO DE CONTRASE\u00d1A
+repetirContrasenia=Repetir Contrase\u00f1a
+
+verificacionInformacion=Verificaci\u00f3n de informaci\u00f3n
+cambiarContrasenia=Cambiar Contrase\u00f1a
+ingreseCorreoElectronico=Ingrese su correo electr\u00f3nico
+nombreUsuario=Nombre de usuario
+
+#Campos
+seleccione=Seleccione
+noRegistros=No. registros
+fecha=Fecha
+ord=Ord.
+anios=A\u00f1o
+mes=Mes
+hora=Hora
+requerido=Requerido
+enviar=Enviar
+fecha.desde=Fecha desde
+fecha.hasta=Fecha hasta
+valor.user=Usuario
+perfil=Perfil
+descripcionM=DESCRIPCI\u00d3N
+descripcion=Descripci\u00f3n
+icon=Icon
+icon.nombre=Nombre Icon
+resumen=Resumen
+opcMenu=Opci\u00f3n Men\u00fa
+estado=Estado
+pres=Pres.
+ultimoNivel=\u00daltimo Nivel
+perfil.usuario=Perfil Usuario
+user=Usuario
+nombreApellidos= Nombre y Apellidos
+sistemas=Sistemas
+verDetalle=Ver Detalle 
+detalle=Detalle
+
+
+
+tipo.bsq=Tipo B\u00fasqueda
+nroDni=No. Documento Identificaci\u00f3n
+noHc=No.Hc
+apellidosNombres=Apellidos y Nombres
+tipoSeguro=Tipo de Seguro
+seguro=Seguro
+tipoT=Tipo Transacci\u00f3n
+
+
+apellidoPaterno=Primer Apellido
+apellidoMaterno=Segundo Apellido
+primerNombre=Primer Nombre
+segundoNombre=Segundo Nombre
+tipoDNI=Tipo de Identificaci\u00f3n
+estadoCivil=Estado Civil
+paciente=Paciente
+msp=MSP
+
+
+ruc=RUC
+valor=Valor
+nivel= Nivel
+valormin=Valor M\u00ednimo
+valormax=Valor M\u00e1ximo
+siglas=Siglas
+porcenjateInicial=Porcentaje Inicial
+porcentajeFinal=Porcentaje Final
+fInicio=Fecha Inicial
+fFinal=Fecha Final
+porcentajeDescuento=Porcentaje de Descuento
+porcentajeSRI=Porcentaje a Aplicar
+fraccionBasica=Fracci\u00f3n B\u00e1sica
+exceso=Exceso
+impuesto=Impuesto
+ctacontable=Cta. Contable
+ctapresupuesto=Cta. Presupuetaria
+cargo=Cargo
+cargoE=Cargo del Empleado
+dependencia=Dependencia
+nombres=Nombres
+apellidos=Apellidos
+apellidoM=APELLIDOS
+numdni=No. DNI
+dniRep=No. DNI Representante Legal
+cuenta=Tipo de Cuenta
+numcuenta=N\u00famero de Cta.
+ctacontrapuesta=Cta. Contrapuesta
+responsable=Responsable
+
+

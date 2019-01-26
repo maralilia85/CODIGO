@@ -1,0 +1,214 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formSExistencia">
+        <p:fieldset legend="Ubicación">
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                <p:selectOneMenu  value="#{inventarioController.tipoArticulo}" 
+                                  filter="true" filterMatchMode="contains"
+                                  required="true" requiredMessage="Tipo Artículo Requerido">
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(inventarioController.objCatBodega.bodId)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                        <p:ajax event="change" update="descrip,pResultado" listener="#{inventarioController.enceraValores()}"  />
+                         </p:selectOneMenu>
+                 <div class="Wid1" />
+                    <p:inputText id="descrip" value="#{inventarioController.descripcion}" placeholder="Código o descripción" 
+                                 autocomplete="off" 
+                                 required="true"
+                                 requiredMessage="Descripción es Requerida"
+                                 onblur="value = value.toUpperCase();">
+                    </p:inputText>
+
+
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarByFiltro('U')}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+            
+                   </p:panel>
+                
+
+                   
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                    <p:dataTable id="dtUbicacion" value="#{inventarioController.listInvExistenciaBodega}" var="ubi"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            emptyMessage="No se encontraron resultados">
+            <p:columnGroup type="header">
+            <p:row>
+                 <p:column colspan="2" headerText="Artículo" />
+                <p:column colspan="4" headerText="Ubicación" />
+                 <p:column colspan="5" headerText="Saldo" />
+            </p:row>
+            <p:row>
+                 <p:column colspan="1" headerText="Código" />
+                <p:column colspan="1" headerText="Descripción" />
+                
+                <p:column colspan="1" headerText="Sección" />
+                <p:column colspan="1" headerText="Percha" />
+                <p:column colspan="1" headerText="Columna" />
+                <p:column colspan="1" headerText="Nivel" />
+                
+                <p:column colspan="1" headerText="Existencia " />
+                <p:column colspan="1" headerText="Precio" />
+                <p:column colspan="1" headerText="E.Inicial" />
+                <p:column colspan="1" headerText="P.Inicial" />
+                 <p:column colspan="1" headerText="Crear Ubi." />
+                
+                
+            </p:row>
+               
+          
+        </p:columnGroup>
+                     <p:column headerText="#{etiquetas['codigo']}" filterBy="#{ubi.catArticulo.artCodigo}" filterStyle="width: 85%" filterMatchMode="contains"  
+                              class="Wid3" >
+                         <h:outputText value="#{ubi.catArticulo.artCodigo}" />
+                      
+                        
+                    </p:column>
+
+                  
+
+                    <p:column headerText="#{etiquetas['nombreG']}" filterBy="#{ubi.catArticulo.artNombgenerico}"
+                              filterMatchMode="contains" class="Wid25 TexAlCenter" >
+                        <h:outputText value="#{ubi.catArticulo.artNombgenerico}" title="#{ubi.catArticulo.artNombgenerico}"/>
+                       
+                    </p:column>
+                    
+                    
+                      <p:column   class="Wid8" >
+                                <h:outputText value="#{ubi.catBodegaUbi.bodPapa.bodPapa.bodPapa.bodDescripcion}"/>
+                                                 
+                    </p:column>
+                      <p:column   class="Wid8" >
+                                <h:outputText value="#{ubi.catBodegaUbi.bodPapa.bodPapa.bodDescripcion}"/>
+                      
+                    </p:column>
+                     <p:column    class="Wid8" >
+                                <h:outputText value="#{ubi.catBodegaUbi.bodPapa.bodDescripcion}"/>
+                    </p:column>
+                         <p:column   class="Wid8" >
+                                <h:outputText value="#{ubi.catBodegaUbi.bodDescripcion}"/>
+                    </p:column>
+                    
+                                
+                      
+                    <p:column headerText="Existencia"  class="Wid5" >
+                        <h:outputText value="#{ubi.exiExistencia}" />
+                 
+                    </p:column>
+                    <p:column headerText="Precio"  class="Wid5" >
+                        <h:outputText value="#{ubi.exiPrecioventa}" />
+                       
+                    </p:column>
+                    <p:column headerText="S.Inicial" class="Wid5" >
+                        <h:outputText value="#{ubi.exiCantidadinicial}" />
+                 
+                    </p:column>
+                     <p:column headerText="P.Inicial" class="Wid5" >
+                         <h:outputText value="#{ubi.exiCostoinicial}" />
+                       
+                    </p:column>
+                     <p:column headerText="Ubi." class="Wid5 TexAlCenter">
+                         <p:commandLink  class="icon-download162"
+                                        title="Asignar Ubicacion por articulo"
+                                        action="#{inventarioController.enceraValoresdeUbi('T')}"
+                                        update="tabPrincipal:fmUbi"
+                                   onclick="PF('dlgUbi').show();">
+                             <f:setPropertyActionListener value="#{ubi}" target="#{inventarioController.objInvExistenciaBodega}" />
+                        </p:commandLink>
+                      </p:column>
+                    
+
+                  
+                  
+                   
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+        <p:dialog header="Crear Ubicacion por Articulo en Bodega" widgetVar="dlgUbi"  resizable="false" minHeight="40" width="25%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmUbi" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                        
+                   <p:outputLabel  value="Seccion" class="Fs16" />
+                   <p:selectOneMenu value="#{inventarioController.seccionId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Seccion" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemSeccion(inventarioController.objBodega.bodId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+                                    <p:ajax event="change" update="percha" listener="#{inventarioController.enceraValoresdeUbi('P')}" />
+                                </p:selectOneMenu> 
+                     <p:outputLabel  value="Percha" class="Fs16" />
+                               <p:selectOneMenu id="percha" value="#{inventarioController.perchaId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Percha" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemPercha(inventarioController.seccionId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+                                     <p:ajax event="change" update="columna" listener="#{inventarioController.enceraValoresdeUbi('C')}"  />
+
+                                </p:selectOneMenu> 
+                         <p:outputLabel  value="Columna" class="Fs16" />
+                                    <p:selectOneMenu id="columna" value="#{inventarioController.columnaId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Columna" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemColumna(inventarioController.perchaId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+                                     <p:ajax event="change" update="nivel" listener="#{inventarioController.enceraValoresdeUbi('N')}"  />
+
+                                </p:selectOneMenu> 
+                           <p:outputLabel  value="Nivel" class="Fs16" />
+                           <p:selectOneMenu id="nivel" value="#{inventarioController.nivelId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Nivel" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemNivel(inventarioController.columnaId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+                                      <p:ajax event="change"  update="btnAsig" />
+
+                                </p:selectOneMenu> 
+                           </p:panelGrid>
+
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                        <p:commandButton id="btnAsig" value="#{botones['aceptar']}" 
+                                         icon="#{botones['boton.icongrabar']}"
+                                         process="@this"
+                                         action="#{inventarioController.asignaUbicacion(inventarioController.objInvExistenciaBodega.exiId)}"
+                                         update="tabPrincipal:formSExistencia"
+                                         onclick="PF('dlgUbi').hide();">
+                        </p:commandButton>
+        
+                        <p:commandButton value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgUbi').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+        
+       
+  
+
+</ui:composition>

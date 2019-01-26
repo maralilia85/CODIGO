@@ -1,0 +1,182 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.inventario;
+
+import ec.mil.armada.inv.modelo.catalago.CatArticulo;
+import ec.mil.armada.inv.modelo.catalago.CatBodega;
+import ec.mil.armada.inv.modelo.inventario.InvExistenciaBodega;
+import ec.mil.armada.inv.servicios.abstractFacade.AbstractFacade;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Stateless
+public class InvExistenciaBodegaFacade extends AbstractFacade<InvExistenciaBodega> implements InvExistenciaBodegaFacadeRemote {
+    @PersistenceContext(unitName = "ec.mil.armada_Inv-Servicios_ejb_1.0PU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public InvExistenciaBodegaFacade() {
+        super(InvExistenciaBodega.class);
+    }
+    @Override
+    public CatArticulo objCatArticulo(BigInteger artId){
+    
+        CatArticulo objeto = null;
+
+        final Query query = em.createQuery("Select object (a) from CatArticulo a where a.artId = :artId ");
+        query.setParameter("artId", artId);
+        query.setHint("eclipselink.refresh", true);
+        final List<CatArticulo> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+    public CatBodega objCatBodega(BigInteger bodId){
+    
+        CatBodega objeto = null;
+
+        final Query query = em.createQuery("Select object (b) from CatBodega b where b.bodId = :bodId  ");
+        query.setParameter("bodId", bodId);
+        query.setHint("eclipselink.refresh", true);
+        final List<CatBodega> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+  
+    @Override
+    public List<InvExistenciaBodega> listAllByParam(BigInteger bodId, BigInteger artId, BigInteger artIdTipo, String estado, String descripcion, BigInteger existencia, String operador) {
+        final StringBuilder SQLNative = new StringBuilder();
+        boolean isBodega = bodId != null;
+        boolean isArticulo = artId != null;
+        boolean isArtTipo = artIdTipo != null;
+        boolean isEstado = estado != null && estado.trim().length() > 0 && !(estado.trim().toLowerCase().compareTo("null") == 0);
+        boolean isDescripcion = descripcion != null && descripcion.trim().length() > 0 && !(descripcion.trim().toLowerCase().compareTo("null") == 0);
+        boolean isExistencia = existencia != null;
+        boolean isOperador = operador != null && operador.trim().length() > 0 && !(operador.trim().toLowerCase().compareTo("null") == 0);
+
+        SQLNative.append(" SELECT EB.EXI_ID ,EB.EXI_EXISTENCIA ,  ");
+        SQLNative.append("   EB.EXI_COMPROMETIDO , EB.EXI_STOCKMIN  ,EB.EXI_STOCKMAX  , ");
+        SQLNative.append("   EB.EXI_PRECIOCOSTO , EB.EXI_PRECIOVENTA ,EB.EXI_COSTOPROM  , ");
+        SQLNative.append("   EB.EXI_ESTADO , EB.EXI_STOCKSEG , EB.EXI_COSTOINICIAL ,EB.EXI_CANTIDADINICIAL, ");
+        SQLNative.append("   EB.ART_ID , EB.BOD_ID, EB.BOD_ID_UBI ");
+        SQLNative.append("   FROM INV_EXISTENCIA_BODEGA EB ");
+        SQLNative.append("  LEFT JOIN CAT_BODEGA B ON EB.BOD_ID = B.BOD_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO A ON EB.ART_ID = A.ART_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK ");
+        SQLNative.append("   WHERE 1=1 ");
+        if (isBodega || isArticulo || isArtTipo || isDescripcion ) {
+            if (isBodega) {
+                SQLNative.append("   AND EB.BOD_ID = ").append(bodId);
+
+            }
+            if (isArticulo) {
+                SQLNative.append("   AND EB.ART_ID = ").append(artId);
+
+            }
+            if(isArtTipo){
+             SQLNative.append("   AND  T.ART_ID = ").append(artIdTipo);
+            }
+            if (isEstado) {
+                SQLNative.append(" AND EB.EXI_ESTADO =  '").append(estado).append("' ");
+
+            }
+            if (isDescripcion) {
+                SQLNative.append("       AND  A.ART_NOMBCOMERCIAL || ' '||  A.ART_NOMBGENERICO || ' '|| A.ART_CODIGO  || ' '|| A.ART_CODBARRA ");
+                SQLNative.append("   LIKE '%").append(descripcion.toUpperCase()).append("%'");
+
+            }
+            if (isExistencia && isOperador) {
+                //Buscar por existencia
+                if (operador.equalsIgnoreCase("IG")) {
+                    SQLNative.append(" AND EB.EXI_EXISTENCIA =  ").append(existencia);
+                }
+                if (operador.equalsIgnoreCase("MA")) {
+                    SQLNative.append(" AND EB.EXI_EXISTENCIA >  ").append(existencia);
+                }
+                if (operador.equalsIgnoreCase("ME")) {
+                    SQLNative.append(" AND EB.EXI_EXISTENCIA <   ").append(existencia);
+                }
+
+            }
+
+        } else {
+            SQLNative.append(" AND 1=2   ");
+
+        }
+        final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<InvExistenciaBodega> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final InvExistenciaBodega inv = new InvExistenciaBodega();
+            inv.setExiId(new BigInteger(obj[a].toString()));
+            a++;
+            inv.setExiExistencia(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiComprometido(((BigDecimal) obj[a]).doubleValue());
+            a++;
+             inv.setExiStockmin(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiStockmax(((BigDecimal) obj[a]).doubleValue());
+            a++;
+             inv.setExiPreciocosto(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiPrecioventa(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiCostoprom(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiEstado((String) obj[a]);
+            a++;
+            inv.setExiStockseg(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiCostoinicial(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setExiCantidadinicial(((BigDecimal) obj[a]).doubleValue());
+            a++;
+            inv.setCatArticulo(new CatArticulo());
+            inv.setCatArticulo(objCatArticulo(new BigInteger(obj[a].toString())));
+            a++;
+//            inv.getCatArticulo().setArtCodigo((String) obj[a]);
+//            a++;
+//            inv.getCatArticulo().setArtNombcomercial((String) obj[a]);
+//            a++;
+//            inv.getCatArticulo().setArtNombgenerico((String) obj[a]);
+//            a++;
+//            inv.getCatArticulo().setArtCodbarra((String) obj[a]);
+//            a++;
+            inv.setCatBodega(new CatBodega());
+            inv.setCatBodega(objCatBodega(new BigInteger(obj[a].toString())));
+            a++;
+            inv.setCatBodegaUbi(new CatBodega());
+            if(obj[a] != null){
+            inv.setCatBodegaUbi(objCatBodega(new BigInteger(obj[a].toString())));
+            }
+            datosRetorno.add(inv);
+        }
+
+        return datosRetorno;
+    }
+
+   
+}

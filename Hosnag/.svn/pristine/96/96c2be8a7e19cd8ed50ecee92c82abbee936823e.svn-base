@@ -1,0 +1,229 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.inventario;
+
+import ec.mil.armada.inv.modelo.inventario.InvCabTransaccion;
+import ec.mil.armada.inv.modelo.inventario.InvDetTransaccion;
+import ec.mil.armada.inv.modelo.inventario.InvExistenciaBodega;
+import ec.mil.armada.inv.modelo.inventario.InvLoteArticulo;
+import ec.mil.armada.inv.modelo.registro.RegCabordencompra;
+import ec.mil.armada.inv.modelo.registro.RegDetordencompra;
+import ec.mil.armada.inv.servicios.abstractFacade.AbstractFacade;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+/**
+ *
+ * @author maria_rodriguez
+ */
+@Stateless
+public class InvDetTransaccionFacade extends AbstractFacade<InvDetTransaccion> implements ec.mil.armada.inv.servicios.inventario.InvDetTransaccionFacadeRemote {
+    @PersistenceContext(unitName = "ec.mil.armada_Inv-Servicios_ejb_1.0PU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public InvDetTransaccionFacade() {
+        super(InvDetTransaccion.class);
+    }
+    public InvCabTransaccion objInvCabTransaccion(BigInteger ctrId){
+    
+        InvCabTransaccion objeto = null;
+
+        final Query query = em.createQuery("Select object (c) from InvCabTransaccion c where c.ctrId = :ctrId  ");
+        query.setParameter("ctrId", ctrId);
+        query.setHint("eclipselink.refresh", true);
+        final List<InvCabTransaccion> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+    @Override
+    public InvExistenciaBodega objInvExistenciaBodega(BigInteger exiId){
+    
+        InvExistenciaBodega objeto = null;
+
+        final Query query = em.createQuery("Select object (e) from InvExistenciaBodega e where e.exiId = :exiId  ");
+        query.setParameter("exiId", exiId);
+        query.setHint("eclipselink.refresh", true);
+        final List<InvExistenciaBodega> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+    @Override
+    public InvLoteArticulo objInvLoteArticulo(BigInteger loteId){
+    
+        InvLoteArticulo objeto = null;
+
+        final Query query = em.createQuery("Select object (l) from InvLoteArticulo l where l.lotId = :loteId  ");
+        query.setParameter("loteId", loteId);
+        query.setHint("eclipselink.refresh", true);
+        final List<InvLoteArticulo> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+    @Override
+    public List<InvDetTransaccion> listAllByParam(BigInteger bodId, BigInteger artId,BigInteger tipoArt, String descripcion, String estado, String tipo, String fechaIni, String fechaFin, String operador) {
+        final StringBuilder SQLNative = new StringBuilder();
+        boolean isBodega = bodId != null;
+        boolean isArticulo = artId != null;
+        boolean isTipoArt = tipoArt != null;
+        boolean isDescripcion = descripcion != null && descripcion.trim().length() > 0 && !(descripcion.trim().toLowerCase().compareTo("null") == 0);
+        boolean isEstado = estado != null && estado.trim().length() > 0 && !(estado.trim().toLowerCase().compareTo("null") == 0);
+        boolean isTipo = tipo != null && tipo.trim().length() > 0 && !(tipo.trim().toLowerCase().compareTo("null") == 0);
+        boolean isfechaIni = fechaIni  != null && fechaIni.trim().length() > 0 && !(fechaIni.trim().toLowerCase().compareTo("null") == 0);
+        boolean isfechaFin = fechaFin  != null && fechaFin.trim().length() > 0 && !(fechaFin.trim().toLowerCase().compareTo("null") == 0);
+        boolean isOperador = operador != null && operador.trim().length() > 0 && !(operador.trim().toLowerCase().compareTo("null") == 0);
+
+        SQLNative.append(" SELECT DT.DTR_ID ,DT.DTR_CANTINGRESO , DT.DTR_CANTEGRESO ,DT.DTR_ESTADO, DT.DTR_COSTOINGRESO, DT.DTR_COSTROEGRESO,  ");
+        SQLNative.append("   DT.EXI_ID, DT.LOT_ID, DT.CTR_ID ");
+        SQLNative.append("   FROM INV_DETTRANSACCION DT ");
+        SQLNative.append("   LEFT JOIN INV_CABTRANSACCION CT ON DT.CTR_ID = CT.CTR_ID ");
+        SQLNative.append("   LEFT JOIN INV_EXISTENCIA_BODEGA EB ON DT.EXI_ID = EB.EXI_ID ");
+        SQLNative.append("   LEFT JOIN CAT_ARTICULO A ON EB.ART_ID = A.ART_ID ");
+        SQLNative.append("  LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID ");
+        SQLNative.append("  LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK");
+        
+        SQLNative.append("   WHERE 1=1 ");
+        if (isBodega || isTipo || isDescripcion) {
+            if (isBodega) {
+                SQLNative.append("   AND CT.BOD_ID = ").append(bodId);
+
+            }
+            
+            if (isEstado) {
+                SQLNative.append(" AND DT.DTR_ESTADO =  '").append(estado).append("' ");
+
+            }
+            if (isTipo) {
+                 SQLNative.append(" AND CT.CTR_TIPO IN  (").append(tipo).append(") ");  
+
+            }
+            if (isArticulo) {
+                SQLNative.append(" AND EB.ART_ID =  '").append(artId);
+
+            }
+            if(isTipoArt){
+                 SQLNative.append("   AND T.ART_ID = ").append(tipoArt);
+            
+            }
+            if (isDescripcion) {
+                SQLNative.append("       AND  A.ART_NOMBCOMERCIAL || ' '||  A.ART_NOMBGENERICO || ' '|| A.ART_CODIGO  || ' '|| A.ART_CODBARRA ");
+                SQLNative.append("   LIKE '%").append(descripcion.toUpperCase()).append("%'");
+
+            }
+            if (isfechaIni && isOperador) {
+                //Buscar por existencia
+                if (operador.equalsIgnoreCase("=")) {
+                     SQLNative.append(" AND TRUNC (CT.CTR_FECHA) = to_date('").append(fechaIni).append("','dd/mm/yyyy')");
+                }
+                if (operador.equalsIgnoreCase(">=")) {
+                     SQLNative.append(" AND TRUNC (CT.CTR_FECHA) >= to_date('").append(fechaIni).append("','dd/mm/yyyy')");
+                }
+                if (operador.equalsIgnoreCase("<=")) {
+                     SQLNative.append(" AND TRUNC (CT.CTR_FECHA) <= to_date('").append(fechaIni).append("','dd/mm/yyyy')");
+                }
+                if (isfechaFin && operador.equalsIgnoreCase("ENTRE")) {
+                     SQLNative.append("  AND TRUNC (CT.CTR_FECHA) BETWEEN to_date('").append(fechaIni).append("','dd/mm/yyyy') and to_date('").append(fechaFin).append("','dd/mm/yyyy')");
+                }
+
+            }
+
+        } else {
+            SQLNative.append(" AND 1=2   ");
+
+        }
+final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<InvDetTransaccion> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final InvDetTransaccion inv = new InvDetTransaccion();
+            inv.setDtrId(new BigInteger(obj[a].toString()));
+            a++;
+              if(obj[a] != null){
+            inv.setDtrCantingreso(((BigDecimal) obj[a]).doubleValue());}
+            a++;
+              if(obj[a] != null){
+            inv.setDtrCantegreso(((BigDecimal) obj[a]).doubleValue());}
+            a++;
+            inv.setDtrEstado((String) obj[a]);
+            a++;
+            if(obj[a] != null){
+            inv.setDtrCantingreso(((BigDecimal) obj[a]).doubleValue());}
+            a++;
+            if(obj[a] != null){
+            inv.setDtrCostoEgreso(((BigDecimal) obj[a]).doubleValue());}
+            a++;
+            inv.setInvExistenciaBodega(new InvExistenciaBodega());
+             if(obj[a] != null){
+            inv.setInvExistenciaBodega(objInvExistenciaBodega(new BigInteger(obj[a].toString())));}
+            a++;
+            inv.setInvLoteArticulo(new InvLoteArticulo());
+             if(obj[a] != null){
+            inv.setInvLoteArticulo(objInvLoteArticulo(new BigInteger(obj[a].toString())));}
+            a++;
+            inv.setInvCabTransaccion(new InvCabTransaccion());
+             if(obj[a] != null){
+            inv.setInvCabTransaccion(objInvCabTransaccion(new BigInteger(obj[a].toString())));}
+            datosRetorno.add(inv);
+        }
+
+        return datosRetorno;
+    }
+
+    public void crearDetalle(InvCabTransaccion objCabecera, List<RegDetordencompra> listExiCantidad, String estado){
+        InvDetTransaccion objNew = new InvDetTransaccion();
+        if(objCabecera != null){
+        //Obtiene tipo de la cabecera Ingreso o Egreso
+        if(listExiCantidad.size() > 0 ){
+        //Crear detalle por lista de existencia
+            for (RegDetordencompra item : listExiCantidad) {
+            objNew.setCtrId(objCabecera.getCtrId());
+            if(objCabecera.getCtrTipo().equalsIgnoreCase("IF")){
+            objNew.setDtrCantingreso(item.getDocCantidadsol());
+            objNew.setDtrCostoIngreso(item.getDocPreciocompra());
+            }
+            if(objCabecera.getCtrTipo().equalsIgnoreCase("ET")){
+            objNew.setDtrCantegreso(Double.NaN);
+            objNew.setDtrCostoEgreso(Double.MAX_VALUE);
+            }
+            objNew.setDtrEstado(estado);
+            objNew.setExiId(item.getExiId()); 
+            create(objNew);
+           
+            }
+            
+        }
+        else{
+        //Crear un solo registro
+            objNew.setCtrId(objCabecera.getCtrId());
+            objNew.setDtrEstado(estado);
+            create(objNew);
+        
+        }
+        }
+        
+    
+    }
+    
+    
+   
+}

@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
+                this.cfg.grid = {
+                    background: '#f3f5f7',
+                    borderColor: '#e5ebf0',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#9fadb5'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #9fadb5;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="Container100">
+            <div class="ContainerIndent">
+                <div class="EmptyBox20"></div>
+
+                <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-user157 Fs50 Fleft Wid25 Blue TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Wid70"><span class="Blue">Sr.Administrador,</span><br/><span class="Blue">Bienvenido</span></div>
+                            <div class="Fs12 Fright leaden Wid70">Usted tiene<span class="Red">3 Mensages</span> and <span class="Red"> 5</span><span class="Red">Tareas pendientes!</span> </div>
+                           <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                            <div class="Fs14 Fright">
+                                <a href="#" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-briefcase Blue"> Tareas (5)</i></a>
+                                <a href="#" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt Blue"> Mensages (3)</i></a>
+                            </div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                            <i class="icon-key softgray MarRight10 Fs14 Fright"> Ultimo acceso- 24.09.2017, 18:30</i>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+
+                        </p:panel>
+                    </div>
+                </div>
+                   <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-turn20 Fs40 Fleft Wid25 Red TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Blue Wid70">Alertas</div>
+                            <div class="Fs12 Fright leaden Wid70">Hoy<span class="Red">25 Alertas</span></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                           
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Caducados<br/><span class="Fs20 Red">50</span></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Proximos a Caducarse<br/><span class="Fs20 Red">100</span></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                             <a href="#" class="DispInlBlock Fs14 Fright MarRight10"><i class="icon-search"> Visualizar Reportes</i></a>
+                        </p:panel>
+                    </div>
+                </div>
+
+                <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-view12 Fs40 Fleft Wid25 Blue TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Blue Wid70">Reporte de saldos</div>
+                            <div class="Fs12 Fright leaden Wid70">Hoy <span class="Red">8674 Saldo Total</span><span class="Red">$ 132.875,45</span></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Saldo Cero<br/><span class="Fs24 Red">150</span></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Saldo Menor Cero<br/><span class="Fs24 Red">20</span></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Total Ingreso<br/><span class="Fs24 Orange">400</span></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Total Egreso<br/><span class="Fs24 Orange">300</span><br/></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <a href="#" class="DispInlBlock Fs14 Fright MarRight10"><i class="icon-search"> Visualizar Reportes</i></a>
+                        </p:panel>
+                    </div>
+                </div>
+
+             
+                      <div class="Container25 Responsive">
+                    <div class="ContainerIndent">
+                        <p:panel style="min-height: 300px;">
+                            <i class="icon-alarm Fs40 Fleft Wid25 Red TexAlCenter"></i>
+                            <div class="Fs18 Fright MarTop10 leaden Blue Wid70">Tareas</div>
+                            <div class="Fs12 Fright leaden Wid70">Hoy<span class="Red">50 Tareas pendientes</span></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                            <div class="EmptyBox10"></div>
+                           
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Despachos Pendientes<br/><span class="Fs20 Orange">50</span></div>
+                            <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Facturas por Ingresar<br/><span class="Fs20 Orange">4</span></div>
+                            <div class="EmptyBox10"></div>
+                            <p:separator styleClass="Wid100"></p:separator>
+                             <a href="#" class="DispInlBlock Fs14 Fright MarRight10"><i class="icon-search"> Visualizar Reportes</i></a>
+                        </p:panel>
+                    </div>
+                </div>
+
+
+               
+
+                <div class="EmptyBox10"></div>
+            </div>
+        </div>
+
+       
+    </ui:define>
+
+</ui:composition>

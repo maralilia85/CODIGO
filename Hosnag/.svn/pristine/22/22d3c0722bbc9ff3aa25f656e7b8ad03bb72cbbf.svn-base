@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formBodega">
+        <p:fieldset legend="Realizar Consultas de Existencia por Bodega">
+              <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                 
+                  
+                    <p:inputText value="#{inventarioController.descripcion}" placeholder="Buscar por código o descripción" 
+                                autocomplete="off"  style="width: 20%" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true"
+                                 requiredMessage="Codigo o descripcion requerido">
+                    </p:inputText>
+                           <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                            action="#{inventarioController.buscarByFiltro('B')}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+
+                 
+               
+              
+                  
+                   
+                    
+
+                   
+                </p:panel> 
+              
+             <p:panel id="pResultado" style="border: hidden">
+               
+                     <p:dataTable id="dtSaldos" value="#{inventarioController.listInvExistenciaBodega}" var="exi"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" emptyMessage="No se encontraron resultados">
+ <p:column headerText="Bodega" filterBy="#{exi.catBodega.bodDescripcion}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+     <h:outputText value="#{exi.catBodega.bodDescripcion}" />
+                 
+                    </p:column>
+                    
+
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#{exi.catArticulo.artCodigo}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{exi.catArticulo.artCodigo}" />
+                 
+                    </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{exi.catArticulo.artNombgenerico}" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{exi.catArticulo.artNombgenerico}" />
+                       
+                    </p:column>
+
+                  
+                    <p:column headerText="#{etiquetas['saldo']}" class="Wid10" >
+                        <h:outputText value="#{exi.exiExistencia}" />
+                      
+                    </p:column>
+                        <p:column headerText="Precio"  class="Wid10" >
+                            <h:outputText value="#{exi.exiPrecioventa}" />
+                    </p:column>
+                   
+                    
+
+                
+                </p:dataTable>      
+             
+                    
+                  
+                  
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

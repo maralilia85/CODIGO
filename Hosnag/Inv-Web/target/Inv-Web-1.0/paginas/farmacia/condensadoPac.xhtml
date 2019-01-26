@@ -1,0 +1,129 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formCondensadopac">
+        <p:fieldset legend="Realizar Consultas de Consumo de Pacientes">
+          
+            <p:panel  style="border: hidden">
+              
+              
+                       <p:panel id="filtro" visible="true" style="border: hidden">
+        <p:selectOneRadio value="#" columns="1">
+            <f:selectItem itemLabel="Todos" itemValue="T" />
+            <f:selectItem itemLabel="Medicamentos" itemValue="M" />
+            <f:selectItem itemLabel="Insumos" itemValue="I" />
+        </p:selectOneRadio>
+
+
+
+
+        <p:panelGrid columns="5" layout="grid" style="border: none; background: none">
+
+            <p:outputLabel  value="No.DNI"/>
+            <p:inputText placeholder="NoDNI" 
+                         autocomplete="off" 
+                         onblur="value = value.toUpperCase();" 
+                         required="true">
+            </p:inputText>
+
+            <p:outputLabel  value="Paciente"/>
+            <p:inputText placeholder="Nombre del Paciente" 
+                         autocomplete="off" 
+                         onblur="value = value.toUpperCase();" 
+                         required="true">
+            </p:inputText>
+            <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                             action="#"
+                             update="pResultado"
+                             title="#{botones['title.bsq']}">
+            </p:commandButton>
+        </p:panelGrid>
+                   
+                </p:panel> 
+                <p:panel id="pEncabezado" style="background-color: #EAF4FD"> 
+                      <p:outputLabel  value="#{etiquetas['nombreApellidos']} : "/>
+                       <p:spacer width="20"/>
+            <p:outputLabel  value="#{etiquetas['nroDni']} : " />
+             <p:spacer width="20"/>
+            <p:outputLabel  value="#{etiquetas['seguro']} : ISSFA " />
+             <p:spacer width="20"/>
+            <p:outputLabel  value="#{etiquetas['fecha.desde']} : "/>
+             <p:spacer width="20"/>
+            <p:outputLabel  value="#{etiquetas['fecha.hasta']} : " />
+             <p:spacer width="20"/>
+            <p:outputLabel  value="Servicio : Emergencia " />
+
+            <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                             style="float: right"
+                             action="#"
+                             update="pResultado"
+                             title="#{botones['title.imprimir']}">
+            </p:commandButton>
+
+               
+                 
+            </p:panel>
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                <p:dataTable id="dtPacConsumo" value="#" var="dev"
+                         paginatorPosition="top"
+                         reflow="true"
+                         paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                         paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                         editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+
+                <p:ajax event="cellEdit" update="dtPacConsumo"/>
+                <p:column headerText="Fecha" filterBy="#" filterStyle="width: 80%" class="Wid10  TexAlCenter">
+                    <h:outputText value="16/12/2016" style="color: #000000"/>
+                </p:column>
+
+                <p:column headerText="#{etiquetas['codigo']}" filterBy="#" filterStyle="width: 80%" class="Wid10 ">
+                    <h:outputText value="20400" style="color: #000000" />
+                </p:column>
+                <p:column headerText="#{etiquetas.nombreG}" class="Wid10  TexAlCenter">
+                    <h:outputText value="Ampicillina" style="color: #000000" />
+                </p:column>
+
+                <p:column headerText="#{etiquetas.cant}" class="Wid10  TexAlCenter">
+                    <h:outputText value="2" style="color: #000000" />
+                </p:column>
+               
+                <p:column headerText="#{etiquetas.precio}" class="Wid10  TexAlCenter">
+                    <h:outputText value="1.11" style="color: #000000" />
+                </p:column>
+                <p:column headerText="#{etiquetas.total}" class="Wid10  TexAlCenter">
+                    <h:outputText value="2.22" style="color: #000000" />
+                </p:column>
+                <f:facet name="footer" class="TexAlRight">
+                    <h:outputText value="Subtotal Medicina-18.16" style="color: #000000" />
+                    <div class="EmptyBox5"/>
+                    <h:outputText value="IVA" style="color: #000000" />
+                    <div class="EmptyBox5"/>
+                    <h:outputText value="Total-1816" style="color: #000000" />
+                </f:facet>
+
+
+
+
+
+
+
+
+
+
+            </p:dataTable>                                   
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

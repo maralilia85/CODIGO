@@ -1,0 +1,424 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formTipo">
+        <p:fieldset legend="Crear Tipo/SubTipo">
+            <p:panel id="pFiltro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:inputText id="desc" placeholder="Buscar por descripción" style="width: 20%" 
+                                 autocomplete="off" 
+                                 value="#{catalogoController.descripcion}"
+                                 onblur="value = value.toUpperCase();" >
+                    </p:inputText>
+                  
+
+
+                     <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                      action="#{catalogoController.buscarByDescripcion('N', catalogoController.tipo)}"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                   
+                </p:panel> 
+                <p:panel id="pResultado" style="border: hidden">
+                    <p:dataTable id="dtTipo" value="#{catalogoController.listCatTipo}" var="tipo"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                        <p:ajax event="cellEdit" update="dtTipo" listener="#{catalogoController.onCellEditTipo}"/>
+                    <p:ajax event="rowToggle" listener="#{catalogoController.onRowToggleTipo}" update="dtTipo" />
+                    <p:column class="Wid3" >
+            <p:rowToggler />
+        </p:column>
+
+
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#{tipo.artId}"
+                              filterMatchMode="contains" class="Wid5" >
+                     
+                                <h:outputText value="#{tipo.artId}"/>
+                    
+                    </p:column>
+                  
+                   
+
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#{tipo.artNombgenerico}"
+                              filterMatchMode="contains" class="Wid15" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{tipo.artNombgenerico}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['descripcion']}" 
+                                              value="#{tipo.artNombgenerico}"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    
+                    <p:column headerText="Partida"  class="Wid15" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{tipo.artPartida}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['descripcion']}" 
+                                              value="#{tipo.artPartida}"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                     <p:column headerText="Responsable de Bodega" 
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                                <h:outputText value="#{tipo.nombreEmpleado}"/>
+                           
+                    </p:column>
+                  
+                  
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}"  class="Wid5" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{tipo.artEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                 <h:selectOneMenu value="#{tipo.artEstado}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Activo" itemValue="A" /> 
+                                     <f:selectItem itemLabel="Inactivo" itemValue="I" />
+
+                                </h:selectOneMenu> 
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Subtipo" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-plus80 Fs15"
+                                       action="#{catalogoController.crearArticulo(1, tipo)}"
+                                       process="@this"
+                                       update="dtSubtipo"
+                                        title="Crear nuevo Subtipo">
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                   <p:column headerText="#{etiquetas['opciones']}" class="Wid5 TexAlCenter">
+                         <p:commandLink id="dynaButton1" class="icon-compose-1"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{tipo}" target="#{catalogoController.objArticulo}" />
+                        </p:commandLink>
+                         <p:menu overlay="true" trigger="dynaButton1" my="left top" at="left bottom">
+                            <p:submenu label="Mantenimiento">
+                                
+                               <p:menuitem value="Eliminar"  icon="#{botones['boton.iconeliminar']}" 
+                                           action="#{catalogoController.obtieneArticulo(tipo.artId)}"
+                                        update="tabPrincipal:formEliminaTipo"
+                                        onclick="PF('dlgEliminaTipo').show();"
+                                        process="@this"
+                                        title="Eliminar Registro"/>
+                            </p:submenu>
+                                <p:submenu label="Asignar Responsable">
+                                
+                                 <p:menuitem value="#{botones['asignar']}"  icon="#{botones['boton.iconaceptar']}" 
+                                             action="#{catalogoController.btnAsignaEmp(tipo.artId,'T' )}"
+                                              update="tabPrincipal:fmResponsable"
+                                              onclick="PF('dlgAResp').show();"/>
+                                
+                            </p:submenu>
+                             
+                           
+                           
+
+                        </p:menu>
+                       
+
+                    </p:column>
+                  
+                 
+                   
+                    
+                    
+                    
+                     <p:rowExpansion>
+                      <p:spacer width="10px"></p:spacer>
+                         <p:dataTable id="dtSubtipo" value="#{catalogoController.listCatSubTipo}" var="subt" 
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                             <p:ajax event="cellEdit" update="dtSubtipo" listener="#{catalogoController.onCellEditSubTipo}"/>
+                    
+
+                   
+                             <p:column headerText="#{etiquetas['codigo']}" filterBy="#{subt.artId}"
+                              filterMatchMode="contains" class="Wid5" >
+                     
+                                 <h:outputText value="#{subt.artId}"/>
+                         
+                       
+                    </p:column>
+                  
+                   
+
+                    <p:column  class="Wid15" filterBy="#{subt.artNombgenerico}"
+                              filterMatchMode="contains" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{subt.artNombgenerico}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Descripcion" 
+                                              value="#{subt.artNombgenerico}"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                            
+                    <p:column class="Wid5" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{subt.artEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                 <h:selectOneMenu value="#{subt.artEstado}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Activo" itemValue="A" /> 
+                                     <f:selectItem itemLabel="Inactivo" itemValue="I" />
+
+                                </h:selectOneMenu> 
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                              <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                        <p:commandLink  class="icon-trash"
+                                        action="#{catalogoController.obtieneArticulo(subt.artId)}"
+                                        update="tabPrincipal:formEliminaTipo"
+                                        onclick="PF('dlgEliminaTipo').show();"
+                                        process="@this"
+                                        title="Eliminar Registro">
+                        </p:commandLink>
+                        
+
+                    </p:column>
+                   
+                 
+              
+                   
+                    
+
+
+                </p:dataTable>   
+        </p:rowExpansion>
+                    
+                    
+                    
+
+
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Asignar Partida Presupuestaria" widgetVar="dlgPartida"  resizable="false" minHeight="40" width="25%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmPartida" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:outputLabel  value="Partida" class="Fs16" />
+                    <p:spacer width="5"/>
+                    <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Ingresar" 
+                                              value="5567yu"
+                                              autocomplete="off" required="true">
+                 </p:inputText>
+                        
+                   
+               
+                    
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                        <p:commandButton value="#{botones['aceptar']}" 
+                                         icon="#{botones['boton.icongrabar']}"
+                                         process="@this"
+                                         onclick="PF('dlgPartida').hide();">
+                        </p:commandButton>
+        
+                        <p:commandButton value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgPartida').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+    
+
+     <p:dialog header="Eliminar Registro" widgetVar="dlgEliminaTipo" resizable="false" width="500" closable="false" modal="true" appendTo="@(body)" style="font-size: 12px; text-align: left; font-weight: bold" >
+        <h:form id="formEliminaTipo">
+            <p:outputPanel>
+                <center>
+                    <h:panelGrid columns="1">                          
+
+                        <p:outputLabel value="¿Está seguro que desea eliminar el registro?" class="Fs14 red"/>
+                        <p:outputLabel value="#{catalogoController.objArticulo.artNombgenerico}" class="Fs14 red"/>
+
+                    </h:panelGrid>
+                </center>
+                <p:spacer height="10"></p:spacer>
+                <h:panelGroup>
+                    <center>
+
+                        <p:spacer class="Wid5px"/>
+                        <p:commandButton  value="#{botones['si']}"
+                                          icon="fa fa-check Fs16 white"
+                                          title="#{botones['title.si']}"
+                                          process="@this"
+                                          action="#{catalogoController.eliminaTipo()}"
+                                          onclick="PF('dlgEliminaTipo').hide();"
+                                          update="tabPrincipal:formTipo">
+                        </p:commandButton>
+                        <p:spacer class="Wid5px"/>
+
+                        <p:commandButton id="btnNo"  value="#{botones['no']}" icon="fa fa-times Fs16 white"
+                                         title="#{botones['title.no']}"
+                                         onclick="PF('dlgEliminaTipo').hide();">
+                        </p:commandButton>
+
+                    </center>
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    <p:dialog header="Asignar Responsable de Bodegaok" widgetVar="dlgAResp"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmResponsable" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:outputLabel  value="Existe empleado asignado #{catalogoController.objArticulo.artNombgenerico} Confirma asignar nuevo empleado." class="Fs16" rendered="#{catalogoController.objArticulo.emlId gt 0}" />
+                    
+                    <p:spacer width="5"/>
+                    <p:inputText  onblur="value = value.toUpperCase();" class="Wid80"
+                                              placeholder="Buscar por Nombre o Cédula" 
+                                              value="#{catalogoController.descripcion}"
+                                              autocomplete="off" >
+                 </p:inputText>
+                     <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                      action="#{catalogoController.buscarEmpleado()}"
+                                      update="dtEmpleado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                    <p:dataTable id="dtEmpleado" value="#{catalogoController.listaRegEmpleado}" var="empleado"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                  
+                       
+
+                    <p:column headerText="Empleado" filterBy="#{empleado.emlNombre}"
+                              filterMatchMode="contains" class="Wid10" >
+                      
+                                <h:outputText value="#{empleado.emlNombre}"/>
+                    </p:column>
+                        <p:column headerText="Dni" filterBy="#{empleado.emlCedula}"
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                                <h:outputText value="#{empleado.emlCedula}"/>
+                            
+                            
+                    
+                    </p:column>
+     
+                  
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid10" >
+                       
+                                <h:outputText value="#{empleado.emlEstado == 'A' ? 'Activo' : 'Inactivo'}"/>
+                           
+                    </p:column>
+                         <p:column headerText="Asignar" class="Wid5 TexAlCenter">
+                             <p:commandLink  class="#{botones.lnkConfirma}"
+                                             process="@this"
+                                             action="#{catalogoController.asignaEmpleado('T' , empleado.emlId)}"
+                                             update="tabPrincipal:formTipo,tabPrincipal:fmResponsable"
+                                             onclick="PF('dlgAResp').hide();"
+                                             title="Asignar empleado responsable.">
+                             </p:commandLink>
+
+
+                    </p:column>
+                  
+                 
+                   
+                    
+                   
+                    
+
+
+                </p:dataTable> 
+                        
+                   
+               
+                    
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                    
+                        <p:commandButton value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         update="fmResponsable"
+                                         action="#{catalogoController.enceraListas('T')}"
+                                         onclick="PF('dlgAResp').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog> 
+       
+  
+
+</ui:composition>

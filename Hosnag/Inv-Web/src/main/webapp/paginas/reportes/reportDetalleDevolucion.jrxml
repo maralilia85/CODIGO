@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleDevolucion" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 29/1/2018 21:08:25 (QP5 v5.252.13127.32867) */
+SELECT
+S.ART_CODIGO CODSUB,
+S.ART_NOMBGENERICO SUBTIPO,
+A.ART_CODIGO,
+A.ART_NOMBGENERICO,
+G.GEN_DESCRIPCION,
+R.GEN_DESCRIPCION FORMA,
+DT.DTR_CANTINGRESO,
+DT.DTR_MOTIVDEVOLUCION
+
+
+  FROM INV_DETTRANSACCION DT
+       LEFT JOIN INV_EXISTENCIA_BODEGA E ON DT.EXI_ID = E.EXI_ID
+       LEFT JOIN CAT_ARTICULO A ON E.ART_ID = A.ART_ID
+       LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+       LEFT JOIN CAT_GENERAL G ON A.GENID_CONCEN = G.GEN_ID
+       LEFT JOIN CAT_GENERAL R ON A.GENID_FORMA = R.GEN_ID
+ WHERE DT.CTR_ID = $P{clave}]]>
+	</queryString>
+	<field name="CODSUB" class="java.lang.String"/>
+	<field name="SUBTIPO" class="java.lang.String"/>
+	<field name="ART_CODIGO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<field name="GEN_DESCRIPCION" class="java.lang.String"/>
+	<field name="FORMA" class="java.lang.String"/>
+	<field name="DTR_CANTINGRESO" class="java.math.BigDecimal"/>
+	<field name="DTR_MOTIVDEVOLUCION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="45" y="1" width="163" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="208" y="1" width="72" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Forma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="356" y="1" width="29" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d1eea00b-dad0-467e-9656-e8b2f4484306" x="280" y="1" width="76" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Concentración]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="216582f0-b038-4d59-b814-cb7367d21def" x="385" y="1" width="135" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Causa]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="02264f12-905d-41ad-8713-0fd43c01f440" x="0" y="6" width="39" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f09856ed-4558-4ddc-a22b-fb9d6ad2e23f" x="39" y="5" width="170" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_NOMBGENERICO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="de61e834-296c-4649-b342-12f5bcb4c1e0" x="210" y="4" width="69" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GEN_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="3" width="791" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="bd52aea5-6d21-4284-a9fd-ebb7991651e3" x="279" y="3" width="69" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FORMA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1a75f009-d344-4709-b7a5-6b1f43913f0a" x="349" y="2" width="36" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTR_CANTINGRESO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e74f42b2-19c3-469f-8c99-c5c19cd77bdb" x="385" y="2" width="135" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DTR_MOTIVDEVOLUCION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

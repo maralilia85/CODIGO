@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+          <p:growl id="msgs" class="Fs10"/> 
+        
+    
+        <p:tabView  id="tabPrincipal" orientation="top"   cache="false" style="border: hidden"   dynamic="true" tabindex="true">
+             <p:tab id="tab0" title="Orden de Comprakk">
+                <p:outputPanel>
+                  <ui:include src="/paginas/transacciones/solicitudesCompra.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+
+            <p:tab id="tab1" title="Ingreso por Factura">
+                <p:outputPanel>
+                   <ui:include src="/paginas/transacciones/ingresoCompra.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+             <p:tab id="tab3" title="Ingreso por Referencia" >
+                <p:outputPanel>
+  <ui:include src="/paginas/transacciones/ingresoReferencia.xhtml"/> 
+                </p:outputPanel>
+            </p:tab>
+            
+   
+          
+
+
+        </p:tabView>
+     
+        
+    </ui:define>
+
+</ui:composition>

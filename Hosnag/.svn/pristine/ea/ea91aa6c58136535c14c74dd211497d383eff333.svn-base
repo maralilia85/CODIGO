@@ -1,0 +1,232 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formReceta">
+        <p:fieldset legend="Despacho de Medicamentos/Egreso">
+              <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+            <p:commandButton  icon="#{botones['boton.iconinactiva']}"
+                                     action="#"
+                                     style="float: right"
+                                     update="pResultado"
+                                     title="#{botones['title.inactiva']}">
+                    </p:commandButton>
+          
+            <p:commandButton  icon="#{botones['boton.egreso']}"
+                                     action="#"
+                                     style="float: right"
+                                     update="pResultado"
+                                     title="#{botones['title.egreso']}">
+                    </p:commandButton>
+          
+      
+            <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                       <p:fieldset legend="Datos de Egreso">
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                      <p:outputLabel  value="Tipo"/>
+                    <p:selectOneMenu  value="#" 
+                                      required="true">
+                        <f:selectItem itemLabel="Medicamentos" itemValue="" noSelectionOption="true"/>
+                        <f:selectItem  itemLabel="Suministro" itemValue="S" />  
+
+                    </p:selectOneMenu>
+     
+                     
+
+ <p:outputLabel  value="No.Egreso"/>
+
+                    <p:inputText placeholder="No.Egreso" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+  <p:outputLabel  value="Fecha Egreso"/>
+
+
+                    <p:calendar  placeholder="Fecha Egreso" 
+                                 required="true"  size="12"
+                                 pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+         <p:outputLabel  value="Servicio"/>
+
+                      <p:inputText value="Consulta Externa" placeholder="Servicio" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+    
+       
+
+
+
+
+
+                </p:panelGrid>
+    
+            </p:fieldset>
+                <p:fieldset legend="Datos del Paciente">
+                <p:panelGrid columns="2" layout="grid" style="border: none; background: none">
+                    <p:outputLabel  value="HC"/>
+
+                      <p:inputText value="2550" placeholder="Hc" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                       <p:outputLabel  value="Nombre y Apellidos"/>
+
+                      <p:inputText value="2550" placeholder="Nombre y Apellidos" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                       <p:outputLabel  value="Edad"/>
+
+                      <p:inputText value="2550" placeholder="Edad" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                 
+
+                    
+                 </p:panelGrid>
+                </p:fieldset>
+            </p:panelGrid>
+            <p:commandButton value="Detalle" icon="#{botones['boton.iconnuevo']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+                    </p:commandButton>
+                
+              
+              
+         
+                <p:panel id="pResultado" style="border: hidden">
+                    
+               <p:dataTable id="dtSolicDetallePres" value="#" var="detalle" 
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index"  editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicDetallePres"/>
+
+
+                       
+                        <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                     
+
+                        <p:column headerText="#{etiquetas['codigo']}" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                  
+                          <p:column headerText="Cantidad Solicitada" class="TexAlCenter" width="5%">
+                            <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="6"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+                    <p:column headerText="Observaciones" class="TexAlCenter" width="10%">
+                            <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="Modificar via"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Observaciones" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+                        
+                       
+                        <p:column headerText="Estado" class="TexAlCenter" width="5%">
+                            <h:outputText value="Pendiente" />
+                        </p:column>
+                   
+                  
+                        <p:column headerText="Eliminar" class="Wid5 TexAlCenter">
+                            <p:commandLink class="#{botones.lnkEliminar}"
+                                           title="#{botones['title.eliminar']}">
+                        </p:commandLink>
+                 
+                       
+
+                    </p:column>
+                
+               
+
+
+
+                    </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Detalle Prescripción Médica" widgetVar="dlgDetallePres"  resizable="false" minHeight="40" width="60%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetalleRec" enctype="multipart/form-data" >
+                <p:outputPanel>
+      
+                    <div class="EmptyBox5"></div>
+               
+                    
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                     
+                         <p:commandButton  value="#{botones['aceptar']}" 
+                                         icon="#{botones['boton.icongrabar']}"
+                                         action="#">
+                        </p:commandButton>
+                        <p:commandButton id="btnCancelar" value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgDetallePres').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+    
+   
+        
+       
+  
+
+</ui:composition>

@@ -1,0 +1,206 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formExistencia">
+        <p:fieldset legend="Ubicación">
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                <p:selectOneMenu  value="#{inventarioController.tipoArticulo}" 
+                                  filter="true" filterMatchMode="contains"
+                                  required="true" requiredMessage="Tipo Artículo Requerido">
+                        <f:selectItem itemLabel="Seleccione Tipo" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{listasController.getListItemTipo(0)}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.value}" />
+                        <p:ajax event="change" update="descrip,pResultado" listener="#{inventarioController.enceraValores()}"  />
+                         </p:selectOneMenu>
+                 <div class="Wid1" />
+                    <p:inputText id="descrip" value="#{inventarioController.descripcion}" placeholder="Código o descripción" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();">
+                    </p:inputText>
+
+
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#{inventarioController.buscarByFiltro('U')}"
+                                     update="msg,pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+            
+                   </p:panel>
+                
+
+                   
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                    <p:dataTable id="dtUbicacion" value="#{inventarioController.listInvExistenciaBodega}" var="ubi"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtUbicacion"/>
+            <p:columnGroup type="header">
+            <p:row>
+                 <p:column colspan="2" headerText="Artículo" />
+                <p:column colspan="4" headerText="Ubicación" />
+                 <p:column colspan="4" headerText="Saldo" />
+            </p:row>
+            <p:row>
+                 <p:column colspan="1" headerText="Código" />
+                <p:column colspan="1" headerText="Nombre.Gene" />
+                
+                <p:column colspan="1" headerText="Sección" />
+                <p:column colspan="1" headerText="Percha" />
+                <p:column colspan="1" headerText="Columna" />
+                <p:column colspan="1" headerText="Nivel" />
+                
+                <p:column colspan="1" headerText="Existencia " />
+                <p:column colspan="1" headerText="Precio" />
+                <p:column colspan="1" headerText="Existencia Inicial" />
+                <p:column colspan="1" headerText="Precio Inicial" />
+                
+                
+            </p:row>
+               
+          
+        </p:columnGroup>
+                     <p:column headerText="#{etiquetas['codigo']}" filterBy="#{ubi.catArticulo.artCodigo}" filterStyle="width: 85%" filterMatchMode="contains"  
+                              class="Wid5" >
+                         <h:outputText value="#{ubi.catArticulo.artCodigo}" />
+                      
+                        
+                    </p:column>
+
+                  
+
+                    <p:column headerText="#{etiquetas['nombreG']}" filterBy="#{ubi.catArticulo.artNombgenerico}"
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{ubi.catArticulo.artNombgenerico}"/>
+                       
+                    </p:column>
+                    
+                    
+                      <p:column  filterMatchMode="contains" class="Wid20" >
+                         <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{ubi.catBodegaUbi.bodPapa.bodPapa.bodPapa.bodDescripcion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{inventarioController.seccionId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Seccion" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemSeccion(inventarioController.objBodega.bodId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+                                 <p:ajax event="change" update="percha" />
+                                </h:selectOneMenu> 
+                                </f:facet>
+                                         
+                        </p:cellEditor>
+                         
+                      
+                    </p:column>
+                      <p:column  filterMatchMode="contains" class="Wid20" >
+                         <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{ubi.catBodegaUbi.bodPapa.bodPapa.bodDescripcion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu id="percha" value="#{inventarioController.perchaId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Percha" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemPercha(inventarioController.seccionId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+
+                                </h:selectOneMenu> 
+                                </f:facet>
+                                         
+                        </p:cellEditor>
+                         
+                      
+                    </p:column>
+                     <p:column   filterMatchMode="contains" class="Wid20" >
+                         <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{ubi.catBodegaUbi.bodPapa.bodDescripcion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{inventarioController.columnaId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Columna" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemColumna(inventarioController.perchaId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+
+                                </h:selectOneMenu> 
+                                </f:facet>
+                                         
+                        </p:cellEditor>
+                         
+                      
+                    </p:column>
+                     <p:column   filterMatchMode="contains" class="Wid20" >
+                         <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="#{ubi.catBodegaUbi.bodDescripcion}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{inventarioController.nivelId}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Selec.Nivel" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{listasController.getListItemNivel(inventarioController.columnaId, inventarioController.objEmpresa.empId)}"
+                                                   var="se" itemLabel="#{se.label}" itemValue="#{se.value}" />
+
+                                </h:selectOneMenu> 
+                                </f:facet>
+                                         
+                        </p:cellEditor>
+                         
+                      
+                    </p:column>
+                               
+                              
+               
+
+                    <p:column headerText="Existencia" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{ubi.exiExistencia}" />
+                 
+                    </p:column>
+                    <p:column headerText="Precio" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{ubi.exiPrecioventa}" />
+                       
+                    </p:column>
+                    <p:column headerText="#{etiquetas['saldo']}Inicial" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                        <h:outputText value="#{ubi.exiCantidadinicial}" />
+                 
+                    </p:column>
+                     <p:column headerText="Precio Inicial" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid10" >
+                         <h:outputText value="#{ubi.exiCostoinicial}" />
+                       
+                    </p:column>
+                    
+
+                  
+                  
+                   
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

@@ -1,0 +1,288 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formSolicitudes">
+        <p:fieldset legend="Solicitudes de Pedidos">
+             <p:commandButton icon="#{botones['boton.iconimprimir']}"
+                                   style="float: right"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.imprimir']}">
+                    </p:commandButton>
+            <p:commandButton  icon="#{botones['boton.iconinactiva']}"
+                                     action="#"
+                                     style="float: right"
+                                     update="pResultado"
+                                     title="#{botones['title.inactiva']}">
+                    </p:commandButton>
+          
+            <p:commandButton  icon="#{botones['boton.icondespachar']}"
+                                     action="#"
+                                     style="float: right"
+                                     update="pResultado"
+                                     title="Realizar Despacho">
+                    </p:commandButton>
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                 <p:selectOneRadio value="P" columns="1">
+                <f:selectItem itemLabel="Pendientes" itemValue="T" />
+                <f:selectItem itemLabel="Número" itemValue="N" />
+                 <f:selectItem itemLabel="Pacientes" itemValue="P" />
+            </p:selectOneRadio>
+                <p:inputText placeholder="No" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                 <p:spacer width="20"/>
+                
+              <p:calendar  placeholder="Fecha Solic" 
+                                 required="true"  size="14"
+                                 pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+                <div class="EmptyBox5"/>
+                <p:inputText placeholder="NoDNI"  value="0926638867"
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                        
+                    
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+     
+                   
+      
+                   </p:panel>
+            <p:panel id="pEncabezado" style="background-color: #EAF4FD"> 
+                <p:outputLabel  value="Secuencia :2351 " />
+                  <p:spacer width="20"/>
+                   <p:outputLabel  value="#{etiquetas['nodoc']} :001-002-0052896 " />
+                    <p:spacer width="20"/>
+                    <p:outputLabel  value="#{etiquetas['fecha']} :20/06/2016 " />
+                     <p:spacer width="20"/>
+                    <p:outputLabel  value="%Desc :0.00 " />
+                     <p:spacer width="20"/>
+                    <p:outputLabel  value="Estado :Pendiente " />
+                     <div class="EmptyBox5"/>
+                      
+            <p:outputLabel  value="#{etiquetas['nroDni']} :0926638867 " />
+             <p:spacer width="20"/>
+             <p:outputLabel  value="#{etiquetas['nombreApellidos']} : GOMEZ VAZQUEZ BRYAN " />
+            
+
+           
+               
+                 
+            </p:panel>
+                
+              
+              
+         
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                <p:dataTable id="dtSolicitudes" value="#" var="solic"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicitudes"/>
+           
+                    <p:column headerText="#{etiquetas['codigo']}" filterBy="#" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid8" >
+                        <h:outputText value="1000060" />
+                    </p:column>
+                    <p:column headerText="#{etiquetas['nombreG']}" filterBy="#"
+                              filterMatchMode="CEFALEXINA" class="Wid10" >
+                     <h:outputText value=""/>
+                    </p:column>
+                 
+                
+                    <p:column headerText="#{etiquetas['formaFa']}" filterBy="#" filterStyle="width: 85%" 
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="AMPOLLA" />
+                       
+                    </p:column>
+            
+
+                    <p:column headerText="#{etiquetas['concentración']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="1G" />
+                     
+                    </p:column>
+                    <p:column headerText="#{etiquetas['cant']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="1" />
+                     
+                    </p:column>
+                    <p:column headerText="PVP" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="0.32" />
+                      
+                    </p:column>
+                     <p:column headerText="%Desc" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="0.00" />
+                      
+                    </p:column>
+                     <p:column headerText="Desc" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="0.00" />
+                      
+                    </p:column>
+                     <p:column headerText="Subtotal" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="0.32" />
+                      
+                    </p:column>
+                    <p:column headerText="Estado" filterBy="#"
+                              filterMatchMode="contains" class="Wid8" >
+                         <h:outputText value="Validada" />
+                      
+                    </p:column>
+                     
+              
+                     <f:facet name="footer">
+         
+                
+                   <p:outputLabel  value="SubTotal:0.32" style="color: #000000" />
+                    <div class="EmptyBox5"/>
+                     <p:outputLabel  value="SubTotalIva :0.00 " style="color: #000000" />
+                      <div class="EmptyBox5"/>
+                    <p:outputLabel  value="Desc :0.00 " style="color: #000000" />
+                     <div class="EmptyBox5"/>
+                        <p:outputLabel  value="Iva :0.00 " style="color: #000000" />
+                         <div class="EmptyBox5"/>
+                          <p:outputLabel  value="Servicios :0.3 " style="color: #000000" />
+                           <div class="EmptyBox5"/>
+                            <p:outputLabel  value="Total :0.35 " style="color: #000000" />
+        </f:facet>
+
+                
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Detalle Solicitud Pedidos" widgetVar="dlgDetalle"  resizable="false" minHeight="40" width="50%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetalle" enctype="multipart/form-data" >
+                <p:outputPanel>
+                    <p:commandButton value="Detalle"  icon="#{botones['boton.iconnuevo']}"
+                             action="#"
+                             update="dtSolicDetalle"
+                             title="#{botones['title.nuevo']}">
+            </p:commandButton>
+                    <div class="EmptyBox5"></div>
+               
+                    <p:dataTable id="dtSolicDetalle" value="#" var="detalle" 
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index"  editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicDetalle"/>
+
+
+                       
+                        <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                        <p:column headerText="Nro.Solic." class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+
+                        <p:column headerText="#{etiquetas['codigo']}" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                          <p:column headerText="Cantidad Solicitada" class="TexAlCenter" width="5%">
+                            <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="6"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+                          <p:column headerText="Stock Satisface" class="TexAlCenter" width="5%">
+                            <h:outputText value="Si"/>
+                        </p:column>
+                         <p:column headerText="Demanda Requerida" class="TexAlCenter" width="5%">
+                            <h:outputText value="8"/>
+                        </p:column>
+                       
+                       
+                        <p:column headerText="Estado" class="TexAlCenter" width="5%">
+                            <h:outputText value="Pendiente" />
+                        </p:column>
+                        <p:column headerText="#{etiquetas['opciones']}" class="Wid5 TexAlCenter">
+                         <p:commandLink id="dynaButton" class="icon-compose-1"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{art}" target="#" />
+                        </p:commandLink>
+                         <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
+                            <p:submenu label="Mantenimiento">
+                                
+                                <p:menuitem value="#{botones['nuevo']}"  icon="#{botones['boton.iconnuevo']}" action="#"
+                                            title="#{botones['title.nuevo']}" />
+                                <p:menuitem value="Eliminar"  icon="#{botones['boton.iconeliminar']}" action="#"
+                                            title="#{botones['title.eliminar']}" />
+                            </p:submenu>
+                            
+                           
+                           
+
+                        </p:menu>
+                       
+
+                    </p:column>
+                
+               
+
+
+
+                    </p:dataTable> 
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                     
+                         <p:commandButton  value="#{botones['aceptar']}" 
+                                         icon="#{botones['boton.icongrabar']}"
+                                         action="#">
+                        </p:commandButton>
+                        <p:commandButton id="btnCancelar" value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgDetalle').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+        
+       
+  
+
+</ui:composition>

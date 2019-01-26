@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleLoteCaducado" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaIni" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 8/2/2018 10:58:09 (QP5 v5.252.13127.32867) */
+SELECT LA.LOT_ID,
+A.ART_CODIGO,
+A.ART_NOMBGENERICO,
+G.GEN_DESCRIPCION,
+       LA.LOT_DESCRIPION,
+       LA.LOT_ESTADO,
+       LA.LOT_FECHAELAB,
+       LA.LOT_FECHACADUC,
+       LA.LOT_REGSANITARIO,
+       LA.LOT_CANTIDAD,
+       LA.LOT_CANTINGRESO,
+       LA.LOT_CANTEGRESO,
+       LA.BOD_ID,
+       LA.ART_ID
+  FROM INV_LOTE_ARTICULO LA
+       LEFT JOIN CAT_ARTICULO A ON LA.ART_ID = A.ART_ID
+       LEFT JOIN CAT_ARTICULO S ON A.ART_ID_FK = S.ART_ID
+       LEFT JOIN CAT_ARTICULO T ON T.ART_ID = S.ART_ID_FK
+       LEFT JOIN CAT_GENERAL G ON A.GENID_CONCEN = G.GEN_ID
+ WHERE LA.BOD_ID = $P{bodId}
+ AND T.ART_ID = $P{tipoId}
+AND TRUNC (LA.LOT_FECHACADUC) <= to_date($P{fechaIni},'dd/mm/yyyy')]]>
+	</queryString>
+	<field name="LOT_ID" class="java.math.BigDecimal"/>
+	<field name="ART_CODIGO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<field name="GEN_DESCRIPCION" class="java.lang.String"/>
+	<field name="LOT_DESCRIPION" class="java.lang.String"/>
+	<field name="LOT_ESTADO" class="java.lang.String"/>
+	<field name="LOT_FECHAELAB" class="java.sql.Timestamp"/>
+	<field name="LOT_FECHACADUC" class="java.sql.Timestamp"/>
+	<field name="LOT_REGSANITARIO" class="java.lang.String"/>
+	<field name="LOT_CANTIDAD" class="java.lang.Double"/>
+	<field name="LOT_CANTINGRESO" class="java.lang.Double"/>
+	<field name="LOT_CANTEGRESO" class="java.lang.Double"/>
+	<field name="BOD_ID" class="java.math.BigDecimal"/>
+	<field name="ART_ID" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="43" y="2" width="148" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="191" y="2" width="68" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pres.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="539" y="2" width="53" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Existen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b654c10-32ed-434b-bbb9-36b9d539942f" x="259" y="2" width="65" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e68affa7-8063-44d5-a5a9-feaeb538841f" x="324" y="2" width="70" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reg.Sanitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="987d281f-9c71-40e2-a28a-5a353387c6f2" x="394" y="2" width="75" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F.Elaboración]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dff7d85b-7fd2-4bb5-a573-de63f60eab27" x="469" y="2" width="70" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F.Caducidad]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement uuid="02264f12-905d-41ad-8713-0fd43c01f440" x="0" y="6" width="39" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_CODIGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f09856ed-4558-4ddc-a22b-fb9d6ad2e23f" x="39" y="6" width="152" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ART_NOMBGENERICO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="58690f85-6cf3-4e22-8436-48357dee88cd" x="260" y="5" width="68" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOT_DESCRIPION}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="3" width="791" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="48d61d0c-6301-4f63-8909-f0f5423a2a6b" x="326" y="5" width="68" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOT_REGSANITARIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a570c12b-7366-49a9-9a6e-e93c99dcfd8d" x="394" y="5" width="74" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOT_FECHAELAB}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="996f0cb6-489d-489a-bf7f-6b082736b6dd" x="469" y="5" width="70" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOT_FECHACADUC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="45f587dd-e773-4c65-8e06-ced807bc35de" x="192" y="5" width="67" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{GEN_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="418b6e46-393d-4859-8af5-e83cc9f6d296" x="540" y="5" width="52" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{LOT_CANTIDAD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="33" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

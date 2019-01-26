@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportDetalleMovEgreso" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="c92f8fb3-a240-429a-8e08-40e3269e70ae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaIni" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaFin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="direccion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 7/2/2018 10:57:49 (QP5 v5.252.13127.32867) */
+SELECT CT.CTR_TIPO,
+CT.TIPO_ARTICULO,
+TI.ART_CODIGO CODTIPO,
+TI.ART_NOMBGENERICO TIPO,
+       CT.CTR_NUMERO,
+       CT.CTR_FECHA,
+       CT.CTR_TOTAL,
+       CT.CTR_TOTALIVA,
+       CT.CTR_TOTAGENERAL,
+       A.BOD_DESCRIPCION AREA
+
+            FROM INV_CABTRANSACCION CT
+            LEFT JOIN CAT_BODEGA A ON A.BOD_ID = CT.CTR_AREA
+LEFT JOIN CAT_ARTICULO TI ON CT.TIPO_ARTICULO = TI.ART_ID
+            WHERE     1 = 1
+                 AND CT.BOD_ID = $P{bodId}
+                 AND CT.TIPO_ARTICULO = $P{tipoId}
+AND TRUNC (CT.CTR_FECHA) BETWEEN
+                        TO_DATE ($P{fechaIni}, 'dd/mm/yyyy') AND
+TO_DATE ($P{fechaFin}, 'dd/mm/yyyy')
+AND CT.CTR_TIPO IN ('ET','EV')]]>
+	</queryString>
+	<field name="CTR_TIPO" class="java.lang.String"/>
+	<field name="TIPO_ARTICULO" class="java.math.BigDecimal"/>
+	<field name="CODTIPO" class="java.lang.String"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="CTR_NUMERO" class="java.math.BigDecimal"/>
+	<field name="CTR_FECHA" class="java.sql.Timestamp"/>
+	<field name="CTR_TOTAL" class="java.lang.Double"/>
+	<field name="CTR_TOTALIVA" class="java.lang.Double"/>
+	<field name="CTR_TOTAGENERAL" class="java.lang.Double"/>
+	<field name="AREA" class="java.lang.String"/>
+	<variable name="TOTALGEN" class="java.lang.Double" resetType="None" calculation="Sum">
+		<variableExpression><![CDATA[$F{CTR_TOTAGENERAL}]]></variableExpression>
+	</variable>
+	<variable name="TOTALING" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{CTR_TOTAL}]]></variableExpression>
+	</variable>
+	<group name="TIPO">
+		<groupExpression><![CDATA[$F{CODTIPO}]]></groupExpression>
+		<groupHeader>
+			<band height="17">
+				<textField>
+					<reportElement uuid="a145978c-2b25-48da-86ac-96a64a0e5e64" mode="Opaque" x="3" y="2" width="608" height="13" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G1Field"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="3ef140bc-2163-4f29-bf5a-58c76b8852d9" x="3" y="1" width="22" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{CODTIPO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="949f3a7a-decd-424e-a4a6-cae3b344f9c9" x="27" y="1" width="221" height="15"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="22">
+				<staticText>
+					<reportElement uuid="62ef199b-1a6b-47b7-814c-059f40821a98" x="81" y="0" width="152" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Totales de Movimientos:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="04ce4c16-857d-47bd-8cfe-c2dc04dd41b6" x="231" y="2" width="63" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{TOTALING}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="34ba4a64-56e4-4fcf-bca8-4440f34316bd" x="296" y="2" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{TOTALGEN}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement uuid="c420b344-142f-4b9f-8f57-ff53778d9dff" x="2" y="1" width="85" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Mov]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dca3f2c-38e4-4f57-820a-95bf026c233d" x="103" y="2" width="41" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Doc.No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7db958c3-72fc-4788-bc60-cebde0a93080" x="148" y="2" width="63" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6e789c7-b655-4438-84d8-9fa51197f7af" x="209" y="2" width="62" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Egreso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd36d708-107e-4b64-a8de-7cda17ef353a" x="275" y="2" width="64" height="17"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Prom.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd0f56fc-48ba-43f2-ad90-933e728b66de" x="342" y="2" width="80" height="17"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prov/Área]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<line>
+				<reportElement uuid="ffc1c4db-789b-4e24-973a-b81fd75b7071" x="1" y="3" width="611" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4b69f655-02b0-4539-8e27-b59eeb973f7e" x="2" y="5" width="99" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CTR_TIPO} == 'IF' ? 'Ing.Factuta':
+$F{CTR_TIPO} == 'ID' ? 'Ing.Donación':
+$F{CTR_TIPO} == 'IR' ? 'Ing.Rerencia':
+$F{CTR_TIPO} == 'IT' ? 'Ing.Transferencia':
+$F{CTR_TIPO} == 'ET' ? 'Egreso.Transferencia':
+$F{CTR_TIPO} == 'EV' ? 'Egreso.Venta':
+$F{CTR_TIPO} == 'IV' ? 'Ing.Devolución':null]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="37933070-07b2-46a7-b3b7-89f1332236ed" x="101" y="5" width="45" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CTR_NUMERO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="3c59b24e-b79a-4d09-adaa-1fd3ded98827" x="147" y="5" width="58" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CTR_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b0d84596-06a4-45ba-9025-c5397f86ec76" x="208" y="6" width="63" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CTR_TOTAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a8f47d34-45c0-4074-a819-cbd9fe2f2985" x="271" y="6" width="64" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CTR_TOTAGENERAL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="37c2d52d-27ba-49ec-8a19-e2776b886891" x="338" y="5" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{AREA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="33" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

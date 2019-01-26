@@ -1,0 +1,166 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formAreas">
+        <p:fieldset legend="Crear Áreas">
+            <p:panel id="filtro" visible="true" style="border: hidden">
+              
+                <p:panel  style="border: hidden">
+                    <p:inputText placeholder="Buscar por descripción " style="width: 20%" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+
+
+                     <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                    <p:commandButton icon="#{botones['boton.iconnuevo']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.nuevo']}">
+                    </p:commandButton>
+                </p:panel> 
+                <p:panel id="pResultado" style="border: hidden">
+                <p:dataTable id="dtAreas" value="#" var="area"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                             editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtAreas"/>
+
+
+                    <p:column headerText="Código" filterBy="#" filterStyle="width: 85%" filterMatchMode="contains"  class="Wid5" >
+                        <h:outputText value="01" />
+                    </p:column>
+
+                   
+
+                    <p:column headerText="#{etiquetas['descripcion']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid20" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="Patologia"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['descripcion']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Jefe" filterBy="#"
+                              filterMatchMode="contains" class="Wid20" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="TNFG-AB SILVANA RODRIGUEZ P."/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['responsable']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="#{etiquetas['responsable']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid20" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="SGOP-SN VICTOR VELIZ"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['responsable']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                   
+                    
+                   
+                    <p:column headerText="#{etiquetas['estado']}" filterBy="#"
+                              filterMatchMode="contains" class="Wid5" >
+                        <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="Activo"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                 <h:selectOneMenu value="#"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="Activo" itemValue="C" /> 
+                                     <f:selectItem itemLabel="Inactivo" itemValue="C" />
+
+                                </h:selectOneMenu> 
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                  
+                 
+                   
+                    
+                    
+                     <p:column headerText="#{etiquetas['opciones']}" class="Wid5 TexAlCenter">
+                         <p:commandLink id="dynaButton" class="icon-compose-1"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{area}" target="#" />
+                        </p:commandLink>
+                         <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
+                            <p:submenu label="Mantenimiento">
+                                
+                                <p:menuitem value="#{botones['inactivar']}"  icon="#{botones['boton.iconinactiva']}" action="#"
+                                            title="#{botones['title.inactiva']}" />
+                                <p:menuitem value="#{botones['eliminar']}"  icon="#{botones['boton.iconeliminar']}" action="#"
+                                            title="#{botones['title.eliminar']}" />
+                            </p:submenu>
+                              <p:submenu label="Asignar">
+                                
+                                  <p:menuitem value="Jefe"  icon="#{botones['boton.iconaceptar']}" action="#"
+                                              title="#{botones['title.asignae']}" />
+                                  <p:menuitem value="Responsable" icon="#{botones['boton.iconaceptar']}" action="#"
+                                              title="#{botones['title.asignae']}" />
+                            </p:submenu>
+                           
+                           
+
+                        </p:menu>
+                       
+
+                    </p:column>
+                    
+                    
+
+
+                </p:dataTable>                     
+            </p:panel>
+            </p:panel>
+            
+        </p:fieldset>
+        
+    </h:form>
+        
+       
+  
+
+</ui:composition>

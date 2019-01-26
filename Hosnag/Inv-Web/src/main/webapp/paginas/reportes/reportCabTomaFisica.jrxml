@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportCabTomaFisica" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d591680c-e64d-4c2e-ad23-fdf2fd2546eb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bodId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="direccion" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["G:\\reporte\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="clave" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[/* Formatted on 2/2/2018 19:45:57 (QP5 v5.252.13127.32867) */
+SELECT TM.CTF_ID,
+       TM.BOD_ID,
+       B.BOD_DESCRIPCION,
+       E.EMP_LOGO,
+       E.EMP_DESCRIPCION,
+       E.EMP_NOMBRE,
+       TM.CTF_FECHA,
+       TM.CTF_NUMERO,
+       TM.CTF_ANOFISCAL,
+       TM.CTF_TIPOART,
+       TM.CTF_JEFEBODEGA,
+       TA.ART_CODIGO,
+       TA.ART_NOMBGENERICO
+
+  FROM INV_CABTOMAFISICA TM
+  LEFT JOIN CAT_BODEGA B ON B.BOD_ID = TM.BOD_ID
+  LEFT JOIN CAT_EMPRESA E ON E.EMP_ID = B.EMP_ID
+  LEFT JOIN CAT_ARTICULO TA ON TA.ART_ID = TM.CTF_TIPOART
+
+  WHERE TM.BOD_ID = $P{bodId}
+  AND TM.CTF_ID = $P{clave}]]>
+	</queryString>
+	<field name="CTF_ID" class="java.math.BigDecimal"/>
+	<field name="BOD_ID" class="java.math.BigDecimal"/>
+	<field name="BOD_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_LOGO" class="java.lang.String"/>
+	<field name="EMP_DESCRIPCION" class="java.lang.String"/>
+	<field name="EMP_NOMBRE" class="java.lang.String"/>
+	<field name="CTF_FECHA" class="java.sql.Timestamp"/>
+	<field name="CTF_NUMERO" class="java.math.BigDecimal"/>
+	<field name="CTF_ANOFISCAL" class="java.lang.String"/>
+	<field name="CTF_TIPOART" class="java.math.BigDecimal"/>
+	<field name="CTF_JEFEBODEGA" class="java.lang.String"/>
+	<field name="ART_CODIGO" class="java.lang.String"/>
+	<field name="ART_NOMBGENERICO" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="124" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62af3205-a7f8-46b2-88ca-6695537f150d" style="SubTitle" x="105" y="76" width="357" height="22" forecolor="#000000"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[TOMA FÍSICA DEL INVENTARIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="805f2db4-e602-4f3a-ab09-258647287a0e" x="106" y="1" width="357" height="23"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8ebfb6a2-7cf6-4b2a-9f07-d7fce66eea3b" x="105" y="47" width="357" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BOD_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5e7c88e1-29e8-4a6e-82d9-b1d2bb438776" x="105" y="25" width="357" height="21"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="d3996aa5-bcc2-4b7e-93d1-261599f32c02" x="2" y="2" width="99" height="99"/>
+				<imageExpression><![CDATA[$P{direccion}+$F{EMP_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="2897c2f2-0f82-4ebd-9f2f-23ced7d85ee8" x="33" y="103" width="425" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ART_NOMBGENERICO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3dab9309-9617-432f-b443-6f2c2b08284b" x="5" y="103" width="28" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ART_CODIGO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9a1194e5-e7fc-4b36-bbb4-d9c12669aad5" style="Column header" x="468" y="47" width="66" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c893aa3d-18ad-4d47-bedb-1f8e2bd07aaa" style="Column header" x="466" y="3" width="69" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="495a3eac-e0e3-4c86-96b6-347849121781" x="537" y="47" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTF_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50b80d4a-d7f9-4edc-a862-6a8210786b1c" x="537" y="25" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTF_ANOFISCAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5ecce8ff-3bb3-4d35-b577-bfb402bfa126" x="537" y="5" width="100" height="20"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CTF_NUMERO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="aa45792a-1710-48ca-af7b-9d8e46d750e3" style="Column header" x="466" y="24" width="69" height="21" forecolor="#000000"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="cf7b3f69-674b-4877-a331-80e8430226b5" style="Column header" x="655" y="29" width="147" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="64" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="66056cef-ec07-401e-bbeb-97c9ba88465e" x="5" y="0" width="797" height="64"/>
+				<subreportParameter name="clave">
+					<subreportParameterExpression><![CDATA[$F{CTF_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{direccion} + "reportDetalleTomaFisica.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="49" splitType="Stretch">
+			<textField>
+				<reportElement uuid="948a5a10-1f4f-40ac-8e8c-df6ed2939401" style="Column header" x="679" y="-181" width="80" height="20" forecolor="#000000"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="70490990-482c-4a86-8631-c2f438b24416" style="Column header" x="759" y="-181" width="40" height="20" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="d2b58c7d-d788-450a-8933-c03280402d8e" x="10" y="10" width="143" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="2b6c2644-ffc9-4d30-8550-675cf43eff2c" x="35" y="11" width="93" height="17"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jefe de Bodega]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="bf32882e-f36c-4b33-b8d8-1bc346069884" x="5" y="10" width="143" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="86f45d44-8ffc-456f-a90b-672c33cec5f6" x="33" y="29" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CTF_JEFEBODEGA}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2c9bae66-c7d5-40c7-b22e-0220f8726c08" x="317" y="12" width="143" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="15bf106e-d081-48af-bc52-d0ff6bf851dd" x="648" y="11" width="143" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="17154285-f3de-4777-b47d-7c1e81b0dc58" x="323" y="14" width="135" height="17"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Delegado.Subd.Financiera]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="151da2ae-df5d-4745-a732-61131ec533ad" x="656" y="14" width="135" height="17"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Clasificador]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

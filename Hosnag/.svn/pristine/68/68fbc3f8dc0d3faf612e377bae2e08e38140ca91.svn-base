@@ -1,0 +1,209 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="formValidaMedi">
+        <p:fieldset legend="Validación de prescripción Médica">
+          
+            <p:panel id="filtro" visible="true" style="border: hidden">
+                 <p:selectOneRadio value="#" columns="1">
+                <f:selectItem itemLabel="Todas" itemValue="T" />
+                <f:selectItem itemLabel="Fecha" itemValue="B" />
+                 <f:selectItem itemLabel="Pacientes" itemValue="B" />
+            </p:selectOneRadio>
+                
+              <p:calendar  placeholder="Fecha Solic" 
+                                 required="true"  size="14"
+                                 pattern="dd/MM/yyyy" showOn="button" navigator="true" locale="es">
+                    </p:calendar>
+                <div class="EmptyBox5"/>
+                      <p:inputText placeholder="NoDNI" 
+                                 autocomplete="off" 
+                                 onblur="value = value.toUpperCase();" 
+                                 required="true">
+                    </p:inputText>
+                        
+                    
+                    <p:commandButton icon="#{botones['boton.iconbuscar']}"
+                                     action="#"
+                                     update="pResultado"
+                                     title="#{botones['title.bsq']}">
+                    </p:commandButton>
+                           
+                   
+      
+                   </p:panel>
+                
+              
+              
+         
+                <p:panel id="pResultado" style="border: hidden">
+                    
+                <p:dataTable id="dtSolicitudes" value="#" var="solic"
+                             paginatorPosition="top"
+                             reflow="true"
+                             paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} "
+                             paginator="true" rows="10" rowIndexVar="index" resizableColumns="true" 
+                            editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicitudes"/>
+                    <p:column headerText="No.Hc" filterBy="#" filterStyle="width: 80%" class="Wid10  TexAlCenter">
+                    <h:outputText value="2356" style="color: #000000"/>
+                </p:column>
+                    <p:column headerText="#{etiquetas['nombreApellidos']}" filterBy="#" filterStyle="width: 80%" class="Wid40 ">
+                    <h:outputText value="VALAREZO KERLY " style="color: #000000" />
+                </p:column>
+                <p:column headerText="Edad" class="Wid5  TexAlCenter">
+                    <h:outputText value="5" style="color: #000000" />
+                </p:column>
+                <p:column headerText="Servicio" class="Wid10  TexAlCenter">
+                    <h:outputText value="Hospitalizacion" style="color: #000000" />
+                </p:column>
+                    <p:column headerText="#{etiquetas.estado}" class="Wid10  TexAlCenter">
+                    <h:outputText value="Pendiente" style="color: #000000" />
+                </p:column>
+             
+             <p:column headerText="Validar"  class="Wid7  TexAlCenter" >
+                 <p:commandLink  class="#{botones.lnkConfirma}" title="Validar Medicación"
+                                    onclick="PF('dlgDetallePres').show();"
+                                    update="tabPrincipal:fmDetallePres" process="@this">
+                        <f:setPropertyActionListener value="#{solic}"  target="" /> 
+                    </p:commandLink>
+                </p:column>
+          
+                    
+                
+                </p:dataTable>                     
+            </p:panel>
+         
+            
+        </p:fieldset>
+        
+    </h:form>
+     <p:dialog header="Detalle Prescripción Médica" widgetVar="dlgDetallePres"  resizable="false" minHeight="40" width="60%"
+              modal="true" appendTo="@(body)">
+        <div class="ContainerIndent">
+            <h:form id="fmDetallePres" enctype="multipart/form-data" >
+                <p:outputPanel>
+      
+                    <div class="EmptyBox5"></div>
+               
+                    <p:dataTable id="dtSolicDetallePres" value="#" var="detalle" 
+                                 paginatorPosition="top"
+                                 reflow="true"
+                                 paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}"
+                                 paginator="true" rows="10" rowIndexVar="index"  editable="true" editMode="cell" emptyMessage="No se encontraron resultados">
+
+                    <p:ajax event="cellEdit" update="dtSolicDetallePres"/>
+
+
+                       
+                        <p:column headerText="#{etiquetas['ord']}" class="TexAlCenter Fnone" width="2%">
+                            <h:outputText value="#{index + 1}"/>
+                        </p:column>
+                     
+
+                        <p:column headerText="#{etiquetas['codigo']}" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                    <p:column headerText="#{etiquetas['descripcion']}" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                    <p:column headerText="Via" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                     <p:column headerText="Indicaciones" class="TexAlCenter" width="5%">
+                            <h:outputText value=""/>
+                        </p:column>
+                          <p:column headerText="Cantidad Solicitada" class="TexAlCenter" width="5%">
+                            <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="6"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="#{etiquetas['cant']}" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+                    <p:column headerText="Observaciones" class="TexAlCenter" width="10%">
+                            <p:cellEditor>
+
+                            <f:facet name="output">
+                                <h:outputText value="Modificar via"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  onblur="value = value.toUpperCase();" 
+                                              placeholder="Observaciones" 
+                                              value="#"
+                                              autocomplete="off" required="true">
+                                </p:inputText>
+                                
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+                        
+                       
+                        <p:column headerText="Estado" class="TexAlCenter" width="5%">
+                            <h:outputText value="Pendiente" />
+                        </p:column>
+                   
+                    <p:column headerText="Validar" class="Wid5 TexAlCenter">
+                            <p:commandLink  class="#{botones.lnkConfirma}"
+                                        title="#{botones['title.seleccion']}">
+                             <f:setPropertyActionListener value="#{art}" target="#" />
+                        </p:commandLink>
+                 
+                       
+
+                    </p:column>
+                        <p:column headerText="Anular" class="Wid5 TexAlCenter">
+                            <p:commandLink class="#{botones.lnkInactivar}"
+                                           title="#{botones['title.inactiva']}">
+                        </p:commandLink>
+                 
+                       
+
+                    </p:column>
+                
+               
+
+
+
+                    </p:dataTable> 
+
+                    <div class="EmptyBox5"></div>
+                    <center>
+                     
+                         <p:commandButton  value="#{botones['aceptar']}" 
+                                         icon="#{botones['boton.icongrabar']}"
+                                         action="#">
+                        </p:commandButton>
+                        <p:commandButton id="btnCancelar" value="#{botones['cancelar']}" 
+                                         icon="#{botones['boton.iconcancelar']}"
+                                         process="@this"
+                                         onclick="PF('dlgDetallePres').hide();">
+                        </p:commandButton>
+                    </center>
+
+
+
+
+                </p:outputPanel>
+            </h:form>  
+        </div>
+    </p:dialog>
+    
+   
+        
+       
+  
+
+</ui:composition>

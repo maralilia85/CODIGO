@@ -1,0 +1,176 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ec.mil.armada.inv.servicios.registro;
+
+
+
+import ec.mil.armada.inv.modelo.inventario.InvExistenciaBodega;
+import ec.mil.armada.inv.modelo.inventario.InvLoteArticulo;
+import ec.mil.armada.inv.modelo.registro.RegCabordencompra;
+import ec.mil.armada.inv.modelo.registro.RegDetordencompra;
+import ec.mil.armada.inv.servicios.abstractFacade.AbstractFacade;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+/**
+ *
+ * @author DET-PC
+ */
+@Stateless
+public class RegDetordencompraFacade extends AbstractFacade<RegDetordencompra> implements ec.mil.armada.inv.remotos.registro.RegDetordencompraFacadeRemote {
+
+    @PersistenceContext(unitName = "ec.mil.armada_Inv-Servicios_ejb_1.0PU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public RegDetordencompraFacade() {
+        super(RegDetordencompra.class);
+    }
+    @Override
+     public RegCabordencompra objCabOrdenCompra(BigInteger cocId){
+    
+       RegCabordencompra obj = null;
+
+        final Query query = em.createQuery("Select object (c) from RegCabordencompra c where c.cocId = :cocId  ");
+        query.setParameter("cocId", cocId);
+        query.setHint("eclipselink.refresh", true);
+        final List<RegCabordencompra> result = query.getResultList();
+        if (result.size() > 0) {
+            obj = result.get(0);
+        }
+        return obj;
+    }
+   
+    @Override
+    public InvLoteArticulo objLoteArt(BigInteger clave) {
+
+        InvLoteArticulo objeto = null;
+
+        final Query query = em.createQuery("Select object (l) from InvLoteArticulo l where l.lotId = :clave  ");
+        query.setParameter("clave", clave);
+        query.setHint("eclipselink.refresh", true);
+        final List<InvLoteArticulo> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+
+    @Override
+    public InvExistenciaBodega objExistenciaArt(BigInteger clave) {
+
+        InvExistenciaBodega objeto = null;
+
+        final Query query = em.createQuery("Select object (e) from InvExistenciaBodega e where e.exiId = :clave  ");
+        query.setParameter("clave", clave);
+        query.setHint("eclipselink.refresh", true);
+        final List<InvExistenciaBodega> result = query.getResultList();
+        if (result.size() > 0) {
+            objeto = result.get(0);
+        }
+        return objeto;
+    }
+
+    @Override
+    public List<RegDetordencompra> listAllByParam(BigInteger cabecera, String estado) {
+        final StringBuilder SQLNative = new StringBuilder();
+        boolean isCabecera = cabecera != null;
+        boolean isEstado = estado != null && estado.trim().length() > 0 && !(estado.trim().toLowerCase().compareTo("null") == 0);
+
+        SQLNative.append(" SELECT  DO.DOC_ID, DO.DOC_NUMERO, DO.DOC_CANTIDADSOL, DO.DOC_PRECIOCOMPRA, DO.DOC_ESTADO, DO.DOC_IVA, DO.DOC_DESC, DO.DOC_PORDESC, DO.DOC_VALORDESC, ");
+        SQLNative.append("   DO.COC_ID, DO.LOT_ID, DO.EXI_ID ");
+        SQLNative.append("   FROM REG_DETORDENCOMPRA DO ");
+        SQLNative.append("   WHERE 1=1 ");
+        if (isCabecera) {
+            if (isCabecera) {
+                SQLNative.append("   AND DO.COC_ID = ").append(cabecera);
+
+            }
+            if (isEstado) {
+                SQLNative.append(" AND DO.DOC_ESTADO =  '").append(estado).append("' ");
+
+            }
+
+        } else {
+            SQLNative.append(" AND 1=2   ");
+
+        }
+        final Query query = em.createNativeQuery(SQLNative.toString());
+        final List<Object[]> datos = query.getResultList();
+        final List<RegDetordencompra> datosRetorno = new ArrayList<>();
+        for (final Object[] obj : datos) {
+            int a = 0;
+            final RegDetordencompra inv = new RegDetordencompra();
+            inv.setDocId(new BigInteger(obj[a].toString()));
+            a++;
+            if (obj[a] != null) {
+                inv.setDocNumero(new BigInteger(obj[a].toString()));
+            }
+            a++;
+            if (obj[a] != null) {
+                inv.setDocCantidadsol(new BigInteger(obj[a].toString()));
+            }
+            a++;
+            if (obj[a] != null) {
+                inv.setDocPreciocompra(((BigDecimal) obj[a]).doubleValue());
+            }
+            a++;
+            if (obj[a] != null) {
+                inv.setDocEstado((String) obj[a]);
+
+            }
+            a++;
+            if (obj[a] != null) {
+                inv.setDocIva((String) obj[a]);
+
+            }
+            a++;
+             if (obj[a] != null) {
+                inv.setDocDesc((String) obj[a]);
+
+            }
+            a++;
+             if (obj[a] != null) {
+                inv.setDocPorDesc(new BigInteger(obj[a].toString()));
+
+            }
+            a++;
+              if (obj[a] != null) {
+                inv.setDocValorDesc(((BigDecimal) obj[a]).doubleValue());
+
+            }
+             a++;
+            inv.setRegCabordencompra(new RegCabordencompra());
+            if (obj[a] != null) {
+                inv.setRegCabordencompra(objCabOrdenCompra(new BigInteger(obj[a].toString())));
+            }
+            a++;
+            inv.setInvLoteArticulo(new InvLoteArticulo());
+            if (obj[a] != null) {
+                inv.setInvLoteArticulo(objLoteArt(new BigInteger(obj[a].toString())));
+            }
+            a++;
+            inv.setInvExistenciaBodega(new InvExistenciaBodega());
+            if (obj[a] != null) {
+                inv.setInvExistenciaBodega(objExistenciaArt(new BigInteger(obj[a].toString())));
+            }
+            datosRetorno.add(inv);
+        }
+
+        return datosRetorno;
+    }
+
+}
